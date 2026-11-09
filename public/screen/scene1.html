@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>场景1 · 远海护航态势与故障告警大屏</title>
+<style>
+:root{--navy0:#030A17;--navy1:#061226;--navy2:#0A1E3F;--navy3:#0E2E5C;
+--blue:#00A8FF;--blue2:#3D9BFF;--cyan:#33D6FF;--line:rgba(0,168,255,.28);
+--txt:#CBE6FF;--txt2:#7FA6CE;--txt3:#EAF7FF;--dim:#4E7499;
+--red:#FF4D5E;--org:#FF9F0A;--grn:#00D68F;--gold:#F5C542;--acc:#FF4D5E;--acc2:#FF9F0A;
+--mono:Bahnschrift,Consolas,'Courier New',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
+body{background:#01040B;color:var(--txt);font-family:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif;user-select:none}
+#env{position:fixed;inset:0;background:
+ radial-gradient(1200px 700px at 18% 8%,rgba(0,100,200,.12),transparent 60%),
+ radial-gradient(1000px 800px at 85% 92%,rgba(0,70,160,.10),transparent 55%),#01040B}
+#env:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(0,168,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,168,255,.045) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(circle at 50% 45%,#000 30%,transparent 95%)}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{width:1920px;height:1080px;flex:none;position:relative;transform-origin:center center;will-change:transform;background:
+ radial-gradient(1400px 760px at 50% -6%,rgba(0,120,240,.16),transparent 58%),
+ linear-gradient(160deg,#041129 0%,#06162F 45%,#041026 100%);box-shadow:0 0 90px rgba(0,60,150,.35);overflow:hidden}
+#stage:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,168,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,168,255,.05) 1px,transparent 1px);background-size:60px 60px;opacity:.5}
+#stage:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,20,60,.55),transparent 9%,transparent 91%,rgba(0,10,40,.6));z-index:2}
+.glow{text-shadow:0 0 14px rgba(0,170,255,.55)}
+/* ===== header ===== */
+#hd{position:absolute;top:0;left:0;right:0;height:112px;z-index:20;display:flex;align-items:center;padding:0 30px;background:linear-gradient(180deg,rgba(3,14,34,.9),rgba(4,18,40,.55) 70%,transparent);border-bottom:1px solid rgba(0,168,255,.18)}
+#hd:before{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,rgba(0,168,255,.55) 18%,rgba(51,214,255,.7) 50%,rgba(0,168,255,.55) 82%,transparent)}
+.brand{width:462px;display:flex;align-items:center;gap:14px}
+.brand .logo{width:54px;height:54px;flex:none}
+.brand b{display:block;font-size:24px;color:#EAF7FF;letter-spacing:2px;font-weight:600;white-space:nowrap}
+.brand span{display:block;font-size:13px;color:#5E8DB8;letter-spacing:2.2px;margin-top:3px}
+.brand small{display:block;font-size:15px;color:#3D6A8E;letter-spacing:1px;margin-top:1px}
+.hdmid{flex:1;text-align:center;position:relative}
+.hdmid h1{font-size:40px;letter-spacing:4px;color:#EAF7FF;font-weight:600}
+.hdmid h1 i{font-style:normal;color:var(--acc)}
+.hdmid .sub{display:inline-block;margin-top:7px;font-size:18px;letter-spacing:3px;color:var(--txt2);background:linear-gradient(90deg,transparent,rgba(0,168,255,.12),transparent);padding:2px 26px;border-top:1px solid rgba(0,168,255,.25);border-bottom:1px solid rgba(0,168,255,.25)}
+.hdright{width:646px;flex:none;display:flex;align-items:center;justify-content:flex-end;gap:18px}
+.steps{display:flex;gap:8px}
+.step{width:100px;height:46px;border:1px solid rgba(0,168,255,.32);background:rgba(0,40,90,.35);border-radius:6px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:19px;color:var(--txt2);cursor:pointer;transition:.3s;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.step i{font-style:normal;font-family:var(--mono);color:var(--blue)}
+.step.on{border-color:var(--acc);color:#fff;background:linear-gradient(180deg,rgba(255,77,94,.28),rgba(0,40,90,.5));box-shadow:0 0 18px rgba(255,77,94,.35);text-shadow:0 0 8px rgba(255,200,200,.6)}
+.step.on i{color:var(--acc)}
+#clock{text-align:right}
+#clock b{font-family:var(--mono);font-size:32px;color:#EAF7FF;letter-spacing:2px}
+#clock span{display:block;font-size:16px;color:#5E8DB8;letter-spacing:2px;margin-top:2px}
+#backHome{display:flex;align-items:center;gap:6px;height:44px;padding:0 12px;margin-right:18px;border:1px solid rgba(51,214,255,.45);border-radius:4px;color:#C9EBFF;letter-spacing:1.5px;text-decoration:none;background:rgba(0,60,140,.35);transition:.25s;flex:none;font-size:18px}
+#backHome:hover{background:rgba(0,130,235,.45);color:#fff;box-shadow:0 0 14px rgba(51,214,255,.45)}
+/* ===== panels common ===== */
+.panel{position:relative;background:linear-gradient(180deg,rgba(6,24,52,.72),rgba(3,12,28,.78));border:1px solid rgba(0,168,255,.22);box-shadow:inset 0 0 26px rgba(0,80,180,.10),0 0 18px rgba(0,30,80,.25)}
+.panel .phead{height:54px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid rgba(0,168,255,.16);position:relative;flex:none}
+.phead .dot{width:7px;height:7px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);transform:rotate(45deg)}
+.phead .tt{font-size:21px;color:#DDF1FF;letter-spacing:1.5px;font-weight:500;white-space:nowrap}
+.phead .en{display:none;font-size:15px}
+.phead .tag{margin-left:auto;font-size:15px;color:#7FA6CE;white-space:nowrap}
+/* corner ornaments */
+.panel:before{content:"";position:absolute;top:-1px;left:-1px;width:18px;height:18px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan);opacity:.9;pointer-events:none}
+.panel:after{content:"";position:absolute;bottom:-1px;right:-1px;width:18px;height:18px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);opacity:.9;pointer-events:none}
+/* ===== main ===== */
+#main{position:absolute;top:120px;left:22px;right:22px;bottom:216px;z-index:10;display:flex;gap:16px}
+.col-l{width:55%;display:flex;flex-direction:column;gap:14px}
+.col-r{flex:1;display:flex;flex-direction:column;gap:14px}
+/* GIS */
+#mapPanel{flex:1;display:flex;flex-direction:column}
+#mapBody{flex:1;position:relative;overflow:hidden}
+#mapBody svg{position:absolute;inset:0;width:100%;height:100%}
+.mapbtn{position:absolute;right:10px;top:10px;z-index:5;display:flex;flex-direction:column;gap:6px}
+.mapbtn b{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,168,255,.4);background:rgba(2,14,32,.8);color:var(--blue);font-size:27px;cursor:pointer;font-weight:400}
+.legend{position:absolute;left:12px;bottom:10px;z-index:5;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:16px;color:#A9CEF2;background:rgba(2,12,30,.72);padding:7px 12px;border:1px solid rgba(0,168,255,.2)}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
+.lbl-geo{position:absolute;z-index:5;font-size:16px;color:#9FC6E8;pointer-events:none}
+/* alarm */
+#alarm{height:29%;display:flex;flex-direction:column}
+#alarm .pbody{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+#alarm .idle{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:1;transition:.5s}
+body.st2 #alarmIdle,body.st3 #alarmIdle{opacity:0;visibility:hidden}
+.radar-ring{width:58px;height:58px;border:1px solid rgba(0,214,143,.7);border-radius:50%;position:relative;animation:ping 2.2s ease-out infinite}
+.radar-ring:before{content:"";position:absolute;inset:7px;border:1px solid rgba(0,214,143,.5);border-radius:50%;animation:ping 2.2s .7s ease-out infinite}
+@keyframes ping{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.9);opacity:0}}
+.idle b{color:#7FEBC6;font-size:24px;letter-spacing:3px}
+.idle span{color:var(--dim);font-size:18px;letter-spacing:2px}
+.alarmMain{position:absolute;inset:0;padding:10px 16px;display:flex;gap:14px;align-items:center;opacity:0;visibility:hidden;transform:translateY(8px);transition:.6s}
+body.st2 .alarmMain,body.st3 .alarmMain{opacity:1;visibility:visible;transform:none}
+.alarmLamp{width:96px;flex:none;text-align:center}
+.lampWave{width:88px;height:88px;margin:0 auto;border:1px solid rgba(255,77,94,.75);border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle,rgba(255,77,94,.35),rgba(255,77,94,.05) 70%);box-shadow:0 0 26px rgba(255,77,94,.6),inset 0 0 18px rgba(255,77,94,.5)}
+.lampWave:before,.lampWave:after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,77,94,.8);animation:alarmring 1.8s ease-out infinite}
+.lampWave:after{animation-delay:.9s}
+@keyframes alarmring{0%{transform:scale(.75);opacity:1}100%{transform:scale(1.7);opacity:0}}
+.alarmLamp b{display:block;font-size:24px;color:#FFB3BA;letter-spacing:2px;margin-top:8px}
+.alarmLamp span{font-size:16px;color:#8C5E64}
+.alarmInfo{flex:1;min-width:0}
+.alarmInfo h3{font-size:32px;color:#FFE3E6;letter-spacing:3px;display:flex;align-items:center;gap:14px}
+.lv{font-size:18px;padding:3px 12px;border:1px solid var(--org);color:#FFC46B;background:rgba(255,159,10,.15);clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%);letter-spacing:2px}
+.lv.red{border-color:var(--red);color:#FF9AA6;background:rgba(255,77,94,.15)}
+.alarmInfo .desc{margin-top:8px;font-size:21px;color:#D8EAFF;line-height:1.75}
+.alarmInfo .kpi{display:flex;gap:24px;margin-top:10px;font-size:18px;color:#9CBEE0}
+.alarmInfo .kpi i{font-style:normal;color:#FFB9A0}
+.alarmFoot{position:absolute;left:0;right:0;bottom:0;height:30px;display:flex;align-items:center;justify-content:center;font-size:18px;letter-spacing:3px;color:#FFB3BA;background:linear-gradient(90deg,transparent,rgba(255,77,94,.22),transparent);opacity:0;transition:.8s}
+body.st3 .alarmFoot{opacity:1}
+/* ship */
+#ship{height:32%;display:flex;flex-direction:column;min-width:0}
+#ship .pbody{flex:1;display:flex;align-items:center;gap:22px;padding:10px 18px}
+.shipIco{flex:none;width:112px;text-align:center;position:relative}
+.shipIco svg{width:100px;height:100px}
+.kv{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px 14px;align-content:center}
+.kv div{display:flex;align-items:baseline;gap:8px;border-bottom:1px dashed rgba(0,168,255,.16);padding:3px 0}
+.kv em{font-style:normal;font-size:16px;color:#6E97BE;flex:none}
+.kv b{font-size:24px;color:#EAF7FF;font-weight:500;letter-spacing:1px;white-space:nowrap}
+.kv b.u{color:var(--gold)}
+.chip{display:none;position:absolute;right:16px;top:8px;font-size:16px;color:#9FEAFF;border:1px solid rgba(0,168,255,.5);padding:3px 12px;background:rgba(0,120,220,.18);clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+body.st2 .chip,body.st3 .chip{display:block}
+/* stock */
+#stock{flex:1;display:flex;flex-direction:column;min-height:0}
+#stock .pbody{flex:1;display:flex;padding:6px 14px 8px;min-height:0;position:relative}
+.barArea{flex:1;display:flex;align-items:flex-end;justify-content:space-around;gap:10px;padding:0 4px;position:relative}
+.thLine{position:absolute;left:0;right:0;top:calc(80% - 16px);border-top:1px dashed rgba(255,159,10,.75);font-size:0}
+.thLine:before{content:"";display:none}
+.bcol{width:84px;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;height:100%}
+.bcol .bk{position:absolute;left:10px;right:10px;bottom:52px;top:6px;display:flex;align-items:flex-end;border-radius:3px;overflow:hidden;background:rgba(0,30,70,.4)}
+.bcol .bf{width:100%;height:0%;border-radius:3px;background:linear-gradient(180deg,#33D6FF,#0E6FCE);box-shadow:0 0 12px rgba(51,214,255,.55);transition:height .9s cubic-bezier(.2,.8,.3,1)}
+.bcol .num{font-family:var(--mono);font-size:24px;color:#EAF7FF;z-index:2;position:absolute;bottom:54px;text-shadow:0 0 6px rgba(0,0,0,.8)}
+.bcol .lb em{font-style:normal;font-size:15px;color:#7FA6CE}
+.bcol .lb{font-size:17px;color:#9DC3E6;letter-spacing:0;position:absolute;bottom:0;width:100%;text-align:center;white-space:normal;line-height:1.2}
+.bcol.hot .bf{background:linear-gradient(180deg,#FF8A93,#C81E34);box-shadow:0 0 16px rgba(255,77,94,.8);animation:hotpulse 1.6s ease-in-out infinite}
+.bcol.hot .num{color:#FF9AA6;animation:hotpulse 1.6s ease-in-out infinite}
+@keyframes hotpulse{50%{filter:brightness(1.5)}}
+.noStock{position:absolute;right:12px;top:6px;font-size:16px;color:#FFB3BA;letter-spacing:1px;border:1px solid rgba(255,77,94,.55);background:rgba(255,77,94,.12);padding:3px 10px;opacity:0;transition:.5s;z-index:6}
+body.st2 .noStock,body.st3 .noStock{opacity:1}
+/* meteo */
+#meteo{position:absolute;left:22px;right:22px;bottom:112px;height:44px;z-index:9;display:flex;align-items:center;overflow:hidden;border:1px solid rgba(0,168,255,.2);background:linear-gradient(90deg,rgba(4,16,38,.92),rgba(6,26,56,.85));font-size:18px}
+#meteo b{flex:none;height:100%;display:flex;align-items:center;gap:6px;padding:0 16px;color:#9FEAFF;letter-spacing:3px;background:linear-gradient(90deg,rgba(0,120,220,.35),rgba(0,120,220,.05));border-right:1px solid rgba(0,168,255,.3);font-weight:500}
+#meteo .mx{flex:1;overflow:hidden;position:relative;height:100%}
+#meteo ul{list-style:none;display:flex;flex-wrap:nowrap;width:max-content;height:100%;align-items:center;gap:0;position:absolute;white-space:nowrap;animation:mx 46s linear infinite}
+#meteo li{display:flex;align-items:center;gap:8px;padding:0 26px;color:#BFDBF5;border-right:1px solid rgba(0,168,255,.14);white-space:nowrap;font-size:17px}
+#meteo li i{font-style:normal;color:#7FEBC6}
+#meteo li.w i{color:#FFC46B}
+@keyframes mx{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* timeline footer */
+#ft{position:absolute;left:22px;right:22px;bottom:10px;height:96px;z-index:12;display:flex;align-items:center;border:1px solid rgba(0,168,255,.22);background:linear-gradient(180deg,rgba(5,20,44,.94),rgba(3,12,28,.96));padding:0 20px}
+#ft .ftT{flex:none;width:310px;font-size:24px;color:#DDF1FF;letter-spacing:3px}
+#ft .ftT small{display:block;font-size:15px;color:#4E7499;letter-spacing:2px;margin-top:3px}
+.tl{flex:1;display:flex;align-items:center;height:100%;position:relative}
+.tl .tn{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;z-index:2}
+.tl .c{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(0,168,255,.4);background:#081B3A;color:#7FA6CE;font-family:var(--mono);font-size:19px;transition:.5s;position:relative}
+.tl .nm{font-size:19px;color:#8FB4D8;letter-spacing:1px;transition:.4s}
+.tl .tm{font-family:var(--mono);font-size:16px;color:#4E7499;transition:.4s}
+.tl .ln{position:absolute;left:calc(-50% + 15px);right:calc(50% + 15px);top:15px;height:2px;background:rgba(0,168,255,.16);z-index:1}
+.tl .tn:first-child .ln{display:none}
+.tn.done .c{border-color:var(--blue);background:rgba(0,140,255,.25);color:#DFF6FF;box-shadow:0 0 12px rgba(0,168,255,.5)}
+.tn.done .nm{color:#D9F2FF}.tn.done .tm{color:#7FC9F2}
+.tn.done .ln{background:linear-gradient(90deg,rgba(0,168,255,.7),rgba(0,168,255,.35))}
+.tn.run .c{border-color:var(--acc);background:rgba(255,77,94,.28);color:#fff;box-shadow:0 0 16px rgba(255,77,94,.8);animation:runpulse 1.4s ease-in-out infinite}
+.tn.run .nm{color:#FFE3E6}.tn.run .tm{color:#FFB3BA}
+@keyframes runpulse{50%{box-shadow:0 0 30px rgba(255,77,94,1)}}
+.tn.warn .c{border-color:var(--org);background:rgba(255,159,10,.2);color:#FFE0AE}
+.tn.warn .nm{color:#FFD9A0}
+.ftLeg{flex:none;display:flex;flex-direction:column;gap:4px;margin-left:16px;font-size:15px;color:#6E97BE}
+.ftLeg i{display:inline-block;width:9px;height:9px;margin-right:5px}
+/* control */
+#ctrl{position:absolute;right:20px;bottom:172px;z-index:40;display:flex;gap:8px;align-items:center;opacity:.92}
+#ctrl button{width:92px;height:44px;border:1px solid rgba(0,168,255,.45);background:linear-gradient(180deg,rgba(4,30,70,.9),rgba(2,14,34,.95));color:#CFE9FF;font-size:21px;cursor:pointer;transition:.25s;letter-spacing:1px;border-radius:4px;font-family:'Microsoft YaHei',sans-serif}
+#ctrl button:hover{background:rgba(0,120,240,.4);box-shadow:0 0 14px rgba(0,168,255,.6)}
+#ctrl button.d{color:#3D5F85;cursor:default}
+#ctrl .cur{margin:0 6px;font-family:var(--mono);font-size:21px;color:#9FEAFF}
+#ctrl .hint{font-size:15px;color:#33567D;letter-spacing:1px}
+
+/* ============================================================
+   场景页视觉打磨 · 与首页统一设计语言
+   ============================================================ */
+:root{
+  --t1:#EAF7FF; --t2:#A9CBE8; --t3:#6E97BE; --t4:#4E7BA6;
+  --c1:#33D6FF; --c2:#7FE8FF; --c3:#BFE9FF;
+  --line:rgba(0,168,255,.20);
+  --anim:180ms cubic-bezier(.2,.9,.3,1);
+}
+
+/* 舞台暗角 */
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,4,12,.45) 100%)}
+
+/* 面板：统一描边/内发光 */
+.panel{border-color:var(--line);box-shadow:inset 0 1px 0 rgba(120,210,255,.10),inset 0 0 36px rgba(0,60,130,.10)}
+
+/* 顶栏按钮统一高度 */
+#backHome{height:42px;line-height:40px;font-size:18px;border-radius:2px;transition:all var(--anim)}
+#backHome:hover{transform:translateY(-1px)}
+
+/* 数字等宽 */
+*{font-variant-numeric:tabular-nums}
+
+/* 面板入场动效 */
+@keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.panel{animation:riseIn .5s var(--anim) both}
+.panel:nth-child(2){animation-delay:.08s}
+.panel:nth-child(3){animation-delay:.14s}
+
+/* 滚动条细化 */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:rgba(51,214,255,.18);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(51,214,255,.32)}
+
+/* 文字标签描边（叠加在深色底上更清晰） */
+svg text{paint-order:stroke;stroke:rgba(1,6,14,.7);stroke-width:2px;stroke-linejoin:round}
+
+</style>
+</head>
+<body class="sc1 st1">
+<div id="env"></div>
+<div id="wrap"><div id="stage">
+
+<header id="hd">
+ <div class="brand">
+   <svg class="logo" viewBox="0 0 60 60"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#33D6FF"/><stop offset="1" stop-color="#0E6FCE"/></linearGradient></defs>
+   <polygon points="30,3 53,16.5 53,43.5 30,57 7,43.5 7,16.5" fill="none" stroke="url(#lg)" stroke-width="2"/><polygon points="30,14 44,22 44,38 30,46 16,38 16,22" fill="rgba(0,168,255,.14)" stroke="#3D9BFF" stroke-width="1"/><circle cx="30" cy="30" r="6.5" fill="none" stroke="#33D6FF" stroke-width="2"/><circle cx="30" cy="30" r="1.8" fill="#33D6FF"/></svg>
+   <div><b>去中心化增材制造交付平台</b><span>DECENTRALIZED&nbsp;AM&nbsp;DELIVERY&nbsp;PLATFORM</span></div>
+ </div>
+ <div class="hdmid">
+   <h1>远海护航态势与故障告警<i>大屏</i></h1>
+   <div class="sub">阶段 0+1 · 开场引入 / 故障识别与远程求助</div>
+ </div>
+ <div class="hdright">
+   <a id="backHome" href="index.html">◀ 态势图</a><a target="_top" href="/workbench" style="margin-left:14px;height:42px !important;display:inline-flex !important;align-items:center;white-space:nowrap;padding:0 18px;color:#BFE9FF;text-decoration:none;border:1px solid rgba(51,214,255,.5);border-radius:2px;font-size:18px;letter-spacing:1px;transition:.18s;background:rgba(0,120,220,.14);" onmouseover="this.style.background='rgba(0,168,255,.28)'" onmouseout="this.style.background='rgba(0,120,220,.14)'">管理入口</a>
+   <div class="steps">
+     <div class="step" data-g="1"><i>①</i>态势巡航</div>
+     <div class="step" data-g="2"><i>②</i>故障告警</div>
+     <div class="step" data-g="3"><i>③</i>求助受理</div>
+   </div>
+   <div id="clock"><b id="tC">--:--:--</b><span id="tD">----</span></div>
+ </div>
+</header>
+
+<main id="main">
+ <div class="col-l">
+  <div class="panel" id="mapPanel">
+    <div class="phead"><span class="dot"></span><span class="tt">GIS 远海态势图</span><span class="en">· SOUTH CHINA SEA SITUATION</span><span class="tag">驱逐舰 168 · 北纬15°32′ 东经112°45′ · 航速18节 · 航向090°</span></div>
+    <div id="mapBody">
+      <div class="mapbtn"><b>+</b><b>−</b></div>
+      <svg id="gis" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="sea" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#07264F"/><stop offset="1" stop-color="#041226"/></radialGradient>
+          <radialGradient id="warn" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="rgba(255,77,94,.55)"/><stop offset="1" stop-color="rgba(255,77,94,0)"/></radialGradient>
+          <filter id="blur"><feGaussianBlur stdDeviation="2"/></filter>
+        </defs>
+        <rect width="1000" height="620" fill="url(#sea)"/>
+        <g stroke="rgba(90,170,255,.14)" stroke-width="1">
+          <path d="M90 0V620M250 0V620M410 0V620M570 0V620M730 0V620M890 0V620"/>
+          <path d="M0 96H1000M0 210H1000M0 324H1000M0 438H1000M0 552H1000"/>
+        </g>
+        <g font-size="19" fill="#4E82B4" font-family="Bahnschrift,Consolas">
+          <text x="38" y="90">20°N</text><text x="38" y="204">18°N</text><text x="38" y="318">16°N</text><text x="38" y="432">14°N</text><text x="38" y="546">12°N</text>
+          <text x="76" y="608">108°E</text><text x="236" y="608">110°E</text><text x="396" y="608">112°E</text><text x="556" y="608">114°E</text><text x="716" y="608">116°E</text><text x="876" y="608">118°E</text>
+        </g>
+        <path d="M0 150 C120 130 170 92 260 96 L330 110 L420 92 C470 88 505 100 560 108 L640 120 L720 98 L820 104 L1000 86 V270 C960 250 900 240 870 252 C800 236 700 230 640 246 C560 268 520 296 470 300 C430 303 400 290 350 300 L300 306 L260 280 C220 258 180 244 120 252 C70 258 30 250 0 240 Z" fill="#0A2A52" stroke="#3D7BB8" stroke-width="1.4" opacity=".9"/>
+        <g class="hlnd"><path d="M188 128 C230 108 268 112 296 134 C318 152 312 176 300 190 C286 206 262 214 244 206 C214 194 180 176 172 152 C168 140 172 134 188 128 Z" fill="#0E3A6E" stroke="#5FA7E8" stroke-width="1.3"/><text x="212" y="168" font-size="24" fill="#7FBCEF" letter-spacing="2">海南岛</text><text x="232" y="188" font-size="16" fill="#5E8DB8">三亚 · 某军港 直线≈250海里 · 航程1,280海里</text></g>
+        <g class="arch"><path d="M118 250 Q150 214 188 196" stroke="#2E7EC4" stroke-width="1" fill="none" stroke-dasharray="5 6" opacity=".8"/>
+          <circle cx="120" cy="252" r="3.5" fill="#33D6FF"/><text x="132" y="256" font-size="18" fill="#9FC6E8">西沙海域</text></g>
+        <g class="isls"><circle cx="520" cy="222" r="2.6" fill="#5FA7E8"/><circle cx="556" cy="250" r="2.2" fill="#5FA7E8"/><circle cx="608" cy="210" r="2.8" fill="#5FA7E8"/><text x="618" y="204" font-size="16" fill="#5E8DB8">岛礁</text></g>
+        <g id="route"><path id="routeL" d="M500 208 C540 200 580 196 618 188 C650 180 668 174 686 170" stroke="rgba(51,214,255,.85)" stroke-width="2" fill="none" stroke-dasharray="2 10" stroke-linecap="round"/><path id="routeA" d="M686 170 C700 188 700 220 690 244 C680 268 666 282 652 296" stroke="rgba(51,214,255,.6)" stroke-width="2" fill="none" stroke-dasharray="2 10" stroke-linecap="round"/><text x="560" y="168" font-size="18" fill="#7FEBC6">护航航线 A→B→C</text></g>
+        <g id="shipG" transform="translate(0,0)">
+          <path class="wship" d="M688 172 L662 190 L676 208 Z" fill="#33D6FF"/>
+          <path d="M668 192 C674 196 682 194 686 190" stroke="rgba(51,214,255,.5)" stroke-width="1.4" fill="none" opacity=".7"/>
+          <circle cx="670" cy="192" r="7" fill="none" stroke="#33D6FF" stroke-width="1" opacity=".6"><animate attributeName="r" values="7;20" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".6;0" dur="2.4s" repeatCount="indefinite"/></circle>
+        </g>
+        <g class="alert" id="alertG">
+          <circle cx="688" cy="180" r="90" fill="url(#warn)" opacity="0"/>
+          <circle cx="688" cy="180" r="12" fill="none" stroke="#FF4D5E" stroke-width="2" opacity="0"><animate attributeName="opacity" values="0;.9;0" dur="1.3s" repeatCount="indefinite"/></circle>
+          <path d="M688 150v60M658 180h60" stroke="#FF4D5E" stroke-width="2" opacity="0"/>
+          <g><circle cx="688" cy="180" r="6" fill="#FF4D5E"/><text x="700" y="200" font-size="19" fill="#FF9AA6" opacity="0">阀门泄漏 · 08:32</text></g>
+        </g>
+        <g class="nodes">
+          <g class="nd base"><circle cx="302" cy="286" r="8" fill="#0E3A6E" stroke="#33D6FF" stroke-width="2"/><circle cx="302" cy="286" r="13" fill="none" stroke="#33D6FF" stroke-width="1" opacity=".5"><animate attributeName="r" values="13;22" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".5;0" dur="2s" repeatCount="indefinite"/></circle><text x="302" y="266" text-anchor="middle" font-size="18" fill="#BFE8FF">岸上基地 · 三亚</text></g>
+          <g class="nd cx"><circle cx="452" cy="104" r="7" fill="#0E3A6E" stroke="#F5C542" stroke-width="2"/><text x="452" y="86" text-anchor="middle" font-size="18" fill="#F5C542">创新中心 · 广州</text></g>
+          <g class="nd cx"><circle cx="342" cy="118" r="7" fill="#0E3A6E" stroke="#F5C542" stroke-width="2"/><text x="342" y="100" text-anchor="middle" font-size="18" fill="#F5C542">增材供应商 · 湛江</text></g>
+          <g class="nd ship"><circle cx="672" cy="130" r="6" fill="#0E3A6E" stroke="#9FE8FF" stroke-width="1.6"/><text x="672" y="114" text-anchor="middle" font-size="18" fill="#9FE8FF">舰上节点 · 驱逐舰168</text></g>
+        </g>
+        <g class="links" id="links">
+          <path d="M304 288 C380 230 440 160 452 108" stroke="rgba(0,168,255,.3)" stroke-width="1.3" fill="none" stroke-dasharray="4 8"/>
+          <path d="M300 288 C330 220 350 170 344 122" stroke="rgba(0,168,255,.22)" stroke-width="1.3" fill="none" stroke-dasharray="4 8"/>
+        </g>
+        <g id="txBeam"><path d="M684 176 C560 200 430 240 306 288" stroke="#33D6FF" stroke-width="1.6" fill="none" opacity="0" stroke-dasharray="6 10"><animate attributeName="stroke-dashoffset" values="0;-32" dur="1.2s" repeatCount="indefinite"/></path><text x="486" y="228" font-size="18" fill="#7FEBC6" opacity="0">端到端加密传输中 · 需求已送达</text></g>
+        <rect x="856" y="12" width="132" height="40" rx="4" fill="rgba(2,14,32,.72)" stroke="rgba(255,77,94,.55)"/>
+        <text x="790" y="34" text-anchor="end" font-size="17" fill="#FF9AA6" letter-spacing="1">模拟态势数据</text>
+      </svg>
+      <div class="lbl-geo" style="left:470px;top:150px">A 点</div>
+      <div class="lbl-geo" style="left:700px;top:250px">B 点</div>
+      <div class="lbl-geo" style="left:560px;top:330px">C 点</div>
+      <div class="legend">
+        <span><i style="background:#33D6FF"></i>驱逐舰/舰上节点</span><span><i style="background:#0E3A6E;border:1px solid #F5C542"></i>岸上节点</span>
+        <span><i style="background:transparent;border:1px dashed #33D6FF;width:14px"></i>护航航线</span><span><i style="background:#FF4D5E"></i>故障告警点</span>
+      </div>
+    </div>
+  </div>
+ </div>
+
+ <div class="col-r">
+   <div class="panel" id="alarm">
+     <div class="phead"><span class="dot"></span><span class="tt">故障告警面板</span><span class="en">· ALARM CENTER</span><span class="tag">告警分级 红/橙/黄</span></div>
+     <div class="pbody">
+       <div class="idle" id="alarmIdle">
+         <div class="radar-ring"></div>
+         <b>全系统运行正常 · 无故障告警</b>
+         <span>护航态势平稳 · 传感器链路正常 · 节点在线 10/12</span>
+       </div>
+       <div class="alarmMain">
+         <div class="alarmLamp">
+           <div class="lampWave"></div>
+           <b>ACTIVE</b><span>二级告警</span>
+         </div>
+         <div class="alarmInfo">
+           <h3>阀门泄漏故障<span class="lv">二级 · 橙色告警</span></h3>
+           <div class="desc">左舷冷却系统 DN80 法兰阀门阀杆密封泄漏，泄漏量约 2L/min，故障部位压力与温度波动明显，已触发舰载传感联动。</div>
+           <div class="kpi"><span>发生时间<i> 2026-09-07 08:32</i></span><span>影响系统<i> 主机冷却回路</i></span><span>泄漏量<i> ≈2 L/min</i></span><span>故障位置<i> 左舷冷却系统</i></span></div>
+         </div>
+       </div>
+       <div class="alarmFoot">需求受理中 · 调度中心已接收加密求助（08:38）· 启动远程增材制造应急保障</div>
+     </div>
+   </div>
+
+   <div class="panel" id="ship">
+     <div class="phead"><span class="dot"></span><span class="tt">任务舰船信息</span><span class="en">· VESSEL STATUS</span><span class="tag">任务状态：执行中</span></div>
+     <div class="chip">需求发起方 · 远海护航任务中</div>
+     <div class="pbody">
+       <div class="shipIco">
+         <svg viewBox="0 0 120 120">
+           <circle cx="60" cy="60" r="47" fill="rgba(0,168,255,.07)" stroke="rgba(0,168,255,.35)" stroke-width="1.5" stroke-dasharray="4 5"/>
+           <circle cx="60" cy="60" r="37" fill="none" stroke="rgba(0,168,255,.2)" stroke-width="1"/>
+           <path d="M38 74 L52 60 L44 50 L50 46 L60 58 L70 46 L76 50 L68 60 L82 74 Z" fill="#0E3A6E" stroke="#33D6FF" stroke-width="1.6"/>
+           <path d="M50 60 h20 M60 50 v20" stroke="#33D6FF" stroke-width="1" opacity=".7"/>
+           <text x="60" y="86" text-anchor="middle" font-size="21" fill="#9FEAFF" font-family="Bahnschrift">168</text>
+         </svg>
+       </div>
+       <div class="kv">
+         <div><em>舷号</em><b>168</b></div>
+         <div><em>舰型</em><b>导弹驱逐舰</b></div>
+         <div><em>任务类型</em><b class="u">远海护航</b></div>
+         <div><em>任务开始</em><b>08-20</b></div>
+         <div><em>已执行</em><b>18 天</b></div>
+         <div><em>当前海况</em><b>4 级</b></div>
+         <div><em>舰员人数</em><b>280 人</b></div>
+         <div><em>护航海域</em><b>南海 15.5°N</b></div>
+       </div>
+     </div>
+   </div>
+
+   <div class="panel" id="stock">
+     <div class="phead"><span class="dot"></span><span class="tt">舰上备件库存统计</span><span class="en">· SPARE INVENTORY</span><span class="tag">阀门类备件 · 库存红线 ≤1件</span></div>
+     <div class="pbody">
+       <div class="barArea">
+         <div class="thLine"></div>
+         <div class="bcol" data-v="3" data-h="0.6"><span class="num">3</span><span class="lb">DN50<br><em>闸阀</em></span><div class="bk"><div class="bf"></div></div></div>
+         <div class="bcol" data-v="2" data-h="0.4"><span class="num">2</span><span class="lb">DN65<br><em>球阀</em></span><div class="bk"><div class="bf"></div></div></div>
+         <div class="bcol hot" data-v="0" data-h="0.02"><span class="num">0</span><span class="lb">DN80<br><em>法兰阀</em></span><div class="bk"><div class="bf"></div></div></div>
+         <div class="bcol" data-v="1" data-h="0.2"><span class="num">1</span><span class="lb">DN100<br><em>止回阀</em></span><div class="bk"><div class="bf"></div></div></div>
+         <div class="bcol" data-v="2" data-h="0.4"><span class="num">2</span><span class="lb">DN150<br><em>蝶阀</em></span><div class="bk"><div class="bf"></div></div></div>
+       </div>
+       <div class="noStock">DN80 法兰阀库存 0 件 · 需远程补制</div>
+     </div>
+   </div>
+ </div>
+</main>
+
+<div id="meteo">
+ <b>海域气象信息</b>
+ <div class="mx"><ul id="mxA">
+   <li>天气<i>多云</i></li><li>气温<i>29℃</i></li><li>海水温度<i>28℃</i></li><li class="w">风速<i>12 m/s · 东北风</i></li><li class="w">浪高<i>1.5 m</i></li><li>能见度<i>8 km</i></li><li>潮汐<i>涨潮</i></li><li>海况<i>4 级</i></li>
+   <li>天气<i>多云</i></li><li>气温<i>29℃</i></li><li>海水温度<i>28℃</i></li><li class="w">风速<i>12 m/s · 东北风</i></li><li class="w">浪高<i>1.5 m</i></li><li>能见度<i>8 km</i></li><li>潮汐<i>涨潮</i></li><li>海况<i>4 级</i></li>
+ </ul></div>
+</div>
+
+<footer id="ft">
+ <div class="ftT">远程保障流程时间线<small>REMOTE SUPPORT TIMELINE</small></div>
+ <div class="tl" id="tl"></div>
+ <div class="ftLeg">
+   <span><i style="background:#33D6FF"></i>已完成</span>
+   <span><i style="background:#FF4D5E;border-radius:50%"></i>进行中</span>
+   <span><i style="border:1px solid #33567D;background:none"></i>待开始</span>
+ </div>
+</footer>
+
+<div id="ctrl">
+  <button id="bReset" title="重置">⟲ 重置</button>
+  <button id="bPrev" class="d">‹ 上一步</button>
+  <span class="cur" id="curTxt">① 态势巡航</span>
+  <button id="bNext">下一步 ›</button>
+  <span class="hint">←/→ 或 空格 推进 · 单击①②③直达</span>
+</div>
+</div></div>
+
+<script>
+var TL=[
+ {t:"故障发生",d:"08:32",i:"01"},{t:"故障上报",d:"08:35",i:"02"},{t:"库存核查",d:"08:36",i:"03"},
+ {t:"远程求助",d:"08:37",i:"04"},{t:"调度接收",d:"08:38",i:"05"},{t:"方案生成",d:"待开始",i:"06"},{t:"制造派单",d:"待开始",i:"07"}
+];
+var ST={1:["todo","todo","todo","todo","todo","todo","todo"],
+        2:["done","done","warn","todo","todo","todo","todo"],
+        3:["done","done","warn","done","run","todo","todo"]};
+var STATES=[{n:1,k:"① 态势巡航",t:"护航任务常态监控 · 各节点在线"}, {n:2,k:"② 故障告警",t:"DN80 法兰阀泄漏 · 库存核查不足"}, {n:3,k:"③ 求助受理",t:"加密求助已送达调度中心"}];
+var cur=1, t0=new Date().getTime();
+function $id(i){return document.getElementById(i)}
+function buildTL(){var h=$id("tl");h.innerHTML="";for(var i=0;i<TL.length;i++){var d=document.createElement("div");d.className="tn";d.innerHTML='<div class="c">'+TL[i].i+'</div><div class="nm">'+TL[i].t+'</div><div class="tm">'+TL[i].d+'</div><div class="ln"></div>';h.appendChild(d)}}
+function apply(){
+ document.body.className="sc1 st"+cur;
+ for(var i=0;i<TL.length;i++){var n=$id("tl").children[i],s=ST[cur][i];n.className="tn "+s}
+ var sv=document.getElementById("shipG"); sv.style.display=(cur>=2?"none":"block");
+ var al=document.getElementById("alertG");al.style.display=(cur>=2?"block":"none");
+ var aG=al.querySelectorAll("*");
+ var be=document.getElementById("txBeam");
+ be.style.opacity=(cur>=3?1:0); be.querySelector("path").style.opacity=(cur>=3?1:0);
+ be.querySelector("text").style.opacity=(cur>=3?1:0);
+ var q=document.querySelectorAll("#alarmMain .alarmMain"); 
+ var sels=document.querySelectorAll(".step");for(var k=0;k<sels.length;k++)sels[k].className="step"+(k+1==cur?" on":"");
+ var bp=$id("bPrev");if(cur>1){bp.classList.remove("d")}else{bp.classList.add("d")}
+ $id("curTxt").textContent=STATES[cur-1].k;
+ document.title="场景1 · "+STATES[cur-1].t;
+ var bars=document.querySelectorAll(".bcol");bars.forEach(function(b){var h=b.getAttribute("data-h");b.querySelector(".bf").style.height=h*100+"%";});
+}
+function go(n){if(n<1||n>3)return;cur=n;apply()}
+document.querySelectorAll(".step").forEach(function(s){s.onclick=function(){go(+s.getAttribute("data-g"))}});
+$id("bNext").onclick=function(){if(cur<3){go(cur+1)}else{go(1)}};
+$id("bPrev").onclick=function(){if(cur>1){go(cur-1)}};
+$id("bReset").onclick=function(){go(1)};
+window.addEventListener("keydown",function(e){if(e.key==="ArrowRight"||e.key===" "){go(cur<3?cur+1:1);e.preventDefault()}if(e.key==="ArrowLeft"){go(cur>1?cur-1:3);e.preventDefault()}});
+function tick(){var d=new Date(),p=function(x){return x<10?"0"+x:x};$id("tC").textContent=p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());$id("tD").textContent=d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+" 北京时间"}
+function fit(){var s=Math.min(innerWidth/1920,innerHeight/1080);var el=document.getElementById("stage");el.style.transformOrigin="0 0";el.style.transform="scale("+s+")";el.style.left=Math.round((innerWidth-1920*s)/2)+"px";el.style.top=Math.round((innerHeight-1080*s)/2)+"px";el.style.position="absolute";el.style.opacity=1}
+function boot(){buildTL();go(1);tick();fit();setInterval(tick,1000);setTimeout(function(){apply()},50)}
+addEventListener("resize",fit);
+boot();
+/* 舰船沿护航航线缓慢巡航 */
+(function(){var rp=document.getElementById("routeL");if(!rp||!rp.getTotalLength)return;var L=rp.getTotalLength(),t=0.12,sg=document.getElementById("shipG");
+(function step(){if(!document.hidden&&sg.style.display!=="none"){t+=0.00055;if(t>0.92)t=0.05;var p=rp.getPointAtLength(L*t);var p2=rp.getPointAtLength(Math.min(L*(t+0.01),L));var a=Math.atan2(p2.y-p.y,p2.x-p.x)*180/Math.PI;sg.setAttribute("transform","translate("+(p.x-675).toFixed(1)+","+(p.y-190).toFixed(1)+") rotate("+(a+90).toFixed(1)+" 675 190)")}requestAnimationFrame(step)})()})();
+
+</script>
+</body>
+</html>

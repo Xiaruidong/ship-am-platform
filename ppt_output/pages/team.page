@@ -1,0 +1,61 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>核心团队</p>
+  - elementId: placeholder-bg
+    elementType: shape
+    bounds: [80, 130, 1120, 500]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: placeholder-icon
+    elementType: icon
+    bounds: [600, 280, 80, 80]
+    iconName: "fas:user-group"
+    fill:
+      type: solid
+      color: "#333333"
+  - elementId: placeholder-text
+    elementType: text
+    bounds: [340, 380, 600, 80]
+    content:
+      fontSize: 20
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [center, middle]
+      text: |
+        <p>（此处由参赛方补充核心团队成员照片与履历）</p>
+        <p><span style="font-size:16px;">建议包含：创始人、技术负责人、市场负责人等关键角色</span></p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>19</p>

@@ -1,0 +1,1 @@
+{"order_name": "多明细测试：主机滑油泵故障", "priority": "紧急", "scene": "舰", "note": "涉及叶轮与密封环", "items": [{"part_id": "part-002", "material_id": "mat-001", "quantity": 2}, {"part_id": "part-001", "material_id": "mat-002", "quantity": 1}]}

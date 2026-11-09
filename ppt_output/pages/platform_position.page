@@ -1,0 +1,210 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>平台定位：去中心化智能协同服务平台</p>
+  - elementId: left-card
+    elementType: shape
+    bounds: [80, 130, 550, 260]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: left-icon
+    elementType: icon
+    bounds: [110, 160, 36, 36]
+    iconName: "fas:bolt"
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: left-title
+    elementType: text
+    bounds: [160, 160, 440, 36]
+    content:
+      fontSize: 22
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>定位一：去中心化智能维护协作平台</p>
+  - elementId: left-body
+    elementType: text
+    bounds: [110, 210, 490, 160]
+    content:
+      fontSize: 16
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>提供"需求识别—分布式排产—就近制造—远程交付"全流程线上闭环服务</p>
+        <p style="margin-top:6px">制造数据不出域，工艺参数按需受控流转</p>
+        <p style="margin-top:6px">面向区域保障节点、制造产能集群提供区块链存证、数字孪生质检、智能合约调度</p>
+  - elementId: right-card
+    elementType: shape
+    bounds: [650, 130, 550, 260]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: right-icon
+    elementType: icon
+    bounds: [680, 160, 36, 36]
+    iconName: "fas:network-wired"
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: right-title
+    elementType: text
+    bounds: [730, 160, 440, 36]
+    content:
+      fontSize: 22
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>定位二：特种装备维护资源协同网</p>
+  - elementId: right-body
+    elementType: text
+    bounds: [680, 210, 490, 160]
+    content:
+      fontSize: 16
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>维护需求、制造产能、备件库存、质量数据等资源目录融合共享与智能寻址</p>
+        <p style="margin-top:6px">各节点具备全网资源动态调度能力</p>
+        <p style="margin-top:6px">构建全寿命周期可追溯、平战结合的装备保障新体系</p>
+  - elementId: divider
+    elementType: shape
+    bounds: [80, 420, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: role-title
+    elementType: text
+    bounds: [80, 440, 300, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>平台四大核心角色</p>
+  - elementId: role1-icon
+    elementType: icon
+    bounds: [80, 500, 32, 32]
+    iconName: "fas:shield-halved"
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: role1-text
+    elementType: text
+    bounds: [125, 500, 220, 32]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>标准制定者</p>
+  - elementId: role2-icon
+    elementType: icon
+    bounds: [380, 500, 32, 32]
+    iconName: "fas:microscope"
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: role2-text
+    elementType: text
+    bounds: [425, 500, 220, 32]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>质量管控者</p>
+  - elementId: role3-icon
+    elementType: icon
+    bounds: [680, 500, 32, 32]
+    iconName: "fas:sliders"
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: role3-text
+    elementType: text
+    bounds: [725, 500, 220, 32]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>资源调度者</p>
+  - elementId: role4-icon
+    elementType: icon
+    bounds: [980, 500, 32, 32]
+    iconName: "fas:stamp"
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: role4-text
+    elementType: text
+    bounds: [1025, 500, 220, 32]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>信任背书者</p>
+  - elementId: note
+    elementType: text
+    bounds: [80, 560, 1120, 60]
+    content:
+      fontSize: 16
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>运营模式：加盟合作制——制造工厂、检测机构、材料供应商通过资质审核后加盟入驻，平台统一输出标准、分配订单、管控质量、结算费用</p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>07</p>

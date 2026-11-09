@@ -1,0 +1,127 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>竞争对比：四大壁垒构建难以复刻的竞争护城河</p>
+  - elementId: comp-table
+    elementType: table
+    bounds: [80, 120, 1120, 500]
+    columnWidths: [0.2, 0.2, 0.2, 0.2, 0.2]
+    rowHeights: [0.12, 0.22, 0.22, 0.22, 0.22]
+    style: "$default"
+    rows:
+      - - content:
+            text: |
+              <p>对比维度</p>
+        - content:
+            text: |
+              <p>传统保障服务商</p>
+        - content:
+            text: |
+              <p>增材制造厂商</p>
+        - content:
+            text: |
+              <p>工业互联网厂商</p>
+        - content:
+            text: |
+              <p><strong style="color:$primary;">本项目方案</strong></p>
+      - - content:
+            text: |
+              <p><strong>产能覆盖</strong></p>
+        - content:
+            text: |
+              <p>单一有限，依赖外协</p>
+        - content:
+            text: |
+              <p>自有产能，品类受限</p>
+        - content:
+            text: |
+              <p>广而不精，质量参差</p>
+        - content:
+            text: |
+              <p><strong style="color:$primary;">精选加盟节点，全工艺全工序覆盖</strong></p>
+      - - content:
+            text: |
+              <p><strong>质量管控</strong></p>
+        - content:
+            text: |
+              <p>基本无管控，责任界定难</p>
+        - content:
+            text: |
+              <p>内部可控，无统一行业标准</p>
+        - content:
+            text: |
+              <p>弱管控，仅做形式审核</p>
+        - content:
+            text: |
+              <p><strong style="color:$primary;">统一工艺标准 + 孪生质检 + 全链追溯</strong></p>
+      - - content:
+            text: |
+              <p><strong>协同效率</strong></p>
+        - content:
+            text: |
+              <p>沟通成本高，多线下流转</p>
+        - content:
+            text: |
+              <p>内部高效，跨厂协同弱</p>
+        - content:
+            text: |
+              <p>信息撮合为主，无深度协同</p>
+        - content:
+            text: |
+              <p><strong style="color:$primary;">全流程数字化智能协同，一站式闭环</strong></p>
+      - - content:
+            text: |
+              <p><strong>资产模式</strong></p>
+        - content:
+            text: |
+              <p>中资产（仓储+人员）</p>
+        - content:
+            text: |
+              <p>重资产（设备+厂房）</p>
+        - content:
+            text: |
+              <p>中资产（平台研发+运营）</p>
+        - content:
+            text: |
+              <p><strong style="color:$primary;">轻资产平台化，无自有产线投入</strong></p>
+  - elementId: advantage-text
+    elementType: text
+    bounds: [80, 640, 1120, 30]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      align: [left, middle]
+      text: |
+        <p>五大核心壁垒：技术原创壁垒 + 数据资产壁垒 + 模式首创壁垒 + 行业准入壁垒 + 网络效应壁垒</p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>11</p>

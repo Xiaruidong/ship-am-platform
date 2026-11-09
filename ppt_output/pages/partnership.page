@@ -1,0 +1,188 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>加盟体系与生态合作：精选节点 · 分级管理 · 双向赋能</p>
+  - elementId: left-title
+    elementType: text
+    bounds: [80, 120, 300, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>四类加盟节点</p>
+  - elementId: left-body
+    elementType: text
+    bounds: [80, 160, 520, 200]
+    content:
+      fontSize: 16
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p><span style="color:#FFFFFF;"><strong>制造类</strong></span>：增材制造工厂、机加工厂、后处理工厂</p>
+        <p style="margin-top:6px"><span style="color:#FFFFFF;"><strong>检测类</strong></span>：第三方检测机构、材料实验室</p>
+        <p style="margin-top:6px"><span style="color:#FFFFFF;"><strong>材料类</strong></span>：金属粉末、光敏树脂等增材材料供应商</p>
+        <p style="margin-top:6px"><span style="color:#FFFFFF;"><strong>设计类</strong></span>：设计服务机构、逆向工程服务商</p>
+  - elementId: left-divider
+    elementType: shape
+    bounds: [80, 380, 520, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: left-title2
+    elementType: text
+    bounds: [80, 400, 300, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>准入与管理机制</p>
+  - elementId: left-body2
+    elementType: text
+    bounds: [80, 440, 520, 200]
+    content:
+      fontSize: 16
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p><strong style="color:#FFFFFF;">准入审核</strong>：资质审核 + 能力验证 + 样品测试三重认证</p>
+        <p style="margin-top:6px"><strong style="color:#FFFFFF;">分级管理</strong>：A/B/C三级，对应不同订单权限与费率</p>
+        <p style="margin-top:6px"><strong style="color:#FFFFFF;">动态考核</strong>：月度质量、交付、服务评分，末位淘汰</p>
+        <p style="margin-top:6px"><strong style="color:#FFFFFF;">标准化输出</strong>：统一工艺标准、质控流程、数据接口</p>
+  - elementId: right-title
+    elementType: text
+    bounds: [640, 120, 300, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>生态合作模式</p>
+  - elementId: right-card1
+    elementType: shape
+    bounds: [640, 160, 260, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: right-card1-text
+    elementType: text
+    bounds: [660, 170, 220, 80]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p><strong>行业协会</strong></p>
+        <p><span style="font-size:14px; color:$secondary;">共同制定行业标准，拓展行业资源</span></p>
+  - elementId: right-card2
+    elementType: shape
+    bounds: [920, 160, 260, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: right-card2-text
+    elementType: text
+    bounds: [940, 170, 220, 80]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p><strong>龙头企业</strong></p>
+        <p><span style="font-size:14px; color:$secondary;">战略合作，承接整体协同外包业务</span></p>
+  - elementId: right-card3
+    elementType: shape
+    bounds: [640, 280, 260, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: right-card3-text
+    elementType: text
+    bounds: [660, 290, 220, 80]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p><strong>产业园区</strong></p>
+        <p><span style="font-size:14px; color:$secondary;">批量引入园区企业成为加盟节点</span></p>
+  - elementId: right-card4
+    elementType: shape
+    bounds: [920, 280, 260, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: right-card4-text
+    elementType: text
+    bounds: [940, 290, 220, 80]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p><strong>产学研合作</strong></p>
+        <p><span style="font-size:14px; color:$secondary;">与高校、科研院所持续迭代技术与标准</span></p>
+  - elementId: right-note
+    elementType: text
+    bounds: [640, 410, 560, 80]
+    content:
+      fontSize: 16
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>核心逻辑：加盟合作制快速整合社会优质产能，不与制造节点抢市场，以订单赋能、技术赋能、资质赋能吸引优质节点入驻。</p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>14</p>

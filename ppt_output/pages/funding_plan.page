@@ -1,0 +1,209 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>融资规划：A+B轮共8000万，投向技术研发与质控壁垒</p>
+  - elementId: left-card
+    elementType: shape
+    bounds: [80, 120, 540, 280]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: left-label
+    elementType: text
+    bounds: [110, 140, 100, 30]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "Liter"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>A 轮</p>
+  - elementId: left-title
+    elementType: text
+    bounds: [110, 180, 480, 36]
+    content:
+      fontSize: 22
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>2000万元 · 2027年 · 产品验证与标杆落地</p>
+  - elementId: left-body
+    elementType: text
+    bounds: [110, 230, 480, 150]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>平台1.0系统上线、舰船/海工标杆客户实装验证</p>
+        <p style="margin-top:6px">签约优质加盟节点 ≥ 50 家，服务终端客户 ≥ 10 家</p>
+        <p style="margin-top:6px">全年营收突破 3500 万元，实现正向盈利</p>
+        <p style="margin-top:6px">拟释放股权 10%-15%，优先对接产业资本</p>
+  - elementId: right-card
+    elementType: shape
+    bounds: [640, 120, 560, 280]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: right-label
+    elementType: text
+    bounds: [670, 140, 100, 30]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "Liter"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>B 轮</p>
+  - elementId: right-title
+    elementType: text
+    bounds: [670, 180, 500, 36]
+    content:
+      fontSize: 22
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>6000万元 · 2028年 · 全国规模扩张与生态建设</p>
+  - elementId: right-body
+    elementType: text
+    bounds: [670, 230, 500, 150]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>全国加盟节点突破 100 家，覆盖多赛道终端客户 50 家以上</p>
+        <p style="margin-top:6px">年度营收突破 8500 万元，净利润高速增长</p>
+        <p style="margin-top:6px">拟释放股权 15%-20%，引入军工集团/工业互联网战略投资</p>
+        <p style="margin-top:6px">具备跨高端装备领域复制扩张能力</p>
+  - elementId: fund-title
+    elementType: text
+    bounds: [80, 420, 300, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>资金分配明细</p>
+  - elementId: fund-table
+    elementType: table
+    bounds: [80, 460, 1120, 180]
+    columnWidths: [0.25, 0.15, 0.20, 0.40]
+    rowHeights: [0.25, 0.25, 0.25, 0.25]
+    style: "$default"
+    rows:
+      - - content:
+            text: |
+              <p>投向板块</p>
+        - content:
+            text: |
+              <p>占比</p>
+        - content:
+            text: |
+              <p>对应金额</p>
+        - content:
+            text: |
+              <p>核心用途</p>
+      - - content:
+            text: |
+              <p>技术研发</p>
+        - content:
+            text: |
+              <p>38%</p>
+        - content:
+            text: |
+              <p>3040万元</p>
+        - content:
+            text: |
+              <p>平台迭代、AI算法、数据库扩容、知识产权</p>
+      - - content:
+            text: |
+              <p>市场拓展</p>
+        - content:
+            text: |
+              <p>30%</p>
+        - content:
+            text: |
+              <p>2400万元</p>
+        - content:
+            text: |
+              <p>直销团队、招商渠道、区域运营中心建设</p>
+      - - content:
+            text: |
+              <p>质控体系建设</p>
+        - content:
+            text: |
+              <p>20%</p>
+        - content:
+            text: |
+              <p>1600万元</p>
+        - content:
+            text: |
+              <p>标准编制、质检中心布局、分级认证体系</p>
+      - - content:
+            text: |
+              <p>运营储备</p>
+        - content:
+            text: |
+              <p>12%</p>
+        - content:
+            text: |
+              <p>960万元</p>
+        - content:
+            text: |
+              <p>流动资金、长周期回款垫资、风险对冲</p>
+  - elementId: exit-text
+    elementType: text
+    bounds: [80, 650, 1120, 30]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      align: [left, middle]
+      text: |
+        <p>退出路径：科创板/北交所 IPO（5-7年） | 产业战略并购（3-5年） | 年度利润分红 | 原股东回购</p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>17</p>

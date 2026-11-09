@@ -1,0 +1,144 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>财务预测：三年营收从800万到8500万，毛利率提升至78%</p>
+  - elementId: fin-chart
+    elementType: chart
+    bounds: [80, 120, 1120, 340]
+    type: combo
+    data:
+      - {year: "第1年", revenue: 800, profit: 120, margin: 0.70}
+      - {year: "第2年", revenue: 3500, profit: 1050, margin: 0.75}
+      - {year: "第3年", revenue: 8500, profit: 2975, margin: 0.78}
+    x: year
+    y: [revenue, profit, margin]
+    names: ["营业收入(万元)", "净利润(万元)", "毛利率"]
+    colors: ["#FF112D", "#FFFFFF", "#FF8A95"]
+    seriesStyle:
+      revenue: {type: bar}
+      profit: {type: bar}
+      margin: {type: line, axis: secondary, smooth: true, width: 3}
+    yAxis: {title: "金额(万元)", numberFormat: "#,##0", gridLine: {style: solid, color: "#333333", width: 1}}
+    secondaryAxis: {title: "毛利率", numberFormat: "0%", min: 0.5, max: 1.0}
+    legend: {show: true, position: top, color: "$secondary", fontSize: 12}
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: kpi-row1-num
+    elementType: text
+    bounds: [80, 480, 280, 50]
+    content:
+      style: "$kpi"
+      fontSize: 40
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>5000<span style="font-size:20px;">万</span></p>
+  - elementId: kpi-row1-label
+    elementType: text
+    bounds: [80, 534, 280, 24]
+    content:
+      style: "$kpiLabel"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>第1年平台交易额</p>
+  - elementId: kpi-row2-num
+    elementType: text
+    bounds: [380, 480, 280, 50]
+    content:
+      style: "$kpi"
+      fontSize: 40
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>25000<span style="font-size:20px;">万</span></p>
+  - elementId: kpi-row2-label
+    elementType: text
+    bounds: [380, 534, 280, 24]
+    content:
+      style: "$kpiLabel"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>第2年平台交易额</p>
+  - elementId: kpi-row3-num
+    elementType: text
+    bounds: [680, 480, 280, 50]
+    content:
+      style: "$kpi"
+      fontSize: 40
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>50000<span style="font-size:20px;">万</span></p>
+  - elementId: kpi-row3-label
+    elementType: text
+    bounds: [680, 534, 280, 24]
+    content:
+      style: "$kpiLabel"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>第3年平台交易额</p>
+  - elementId: kpi-row4-num
+    elementType: text
+    bounds: [980, 480, 280, 50]
+    content:
+      style: "$kpi"
+      fontSize: 40
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>220<span style="font-size:20px;">家</span></p>
+  - elementId: kpi-row4-label
+    elementType: text
+    bounds: [980, 534, 280, 24]
+    content:
+      style: "$kpiLabel"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>第3年加盟节点数量</p>
+  - elementId: note
+    elementType: text
+    bounds: [80, 580, 1120, 60]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>第1年重点拓展节点与用户，实现初步盈利；第2年进入快速增长期，交易额与收入随节点和用户数量同步爆发；第3年形成规模效应，增值服务占比提升，盈利能力持续增强。</p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>16</p>

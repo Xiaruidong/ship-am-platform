@@ -1,0 +1,63 @@
+pageType: cover
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: bg-img
+    elementType: image
+    bounds: [0, 0, 1280, 720]
+    src: "https://images.unsplash.com/photo-1544550581-5f7ceaf7f992?w=1920"
+    fit:
+      mode: cover
+  - elementId: bg-mask
+    elementType: shape
+    bounds: [0, 0, 1280, 720]
+    shapeName: rect
+    fill:
+      type: gradient
+      gradientType: linear
+      angle: 90
+      stops:
+        - {position: 0, color: "#0A0A0A33"}
+        - {position: 0.4, color: "#0A0A0ACC"}
+        - {position: 1, color: "#0A0A0A"}
+  - elementId: top-line
+    elementType: shape
+    bounds: [540, 240, 200, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: main-title
+    elementType: text
+    bounds: [140, 260, 1000, 70]
+    content:
+      style: "$title"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>面向特种装备维护的去中心化智能协同系统</p>
+  - elementId: sub-title
+    elementType: text
+    bounds: [240, 350, 800, 40]
+    content:
+      style: "$subtitle"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>AI + AM 驱动的新一代装备保障范式</p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [540, 410, 200, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: placeholder-text
+    elementType: text
+    bounds: [340, 580, 600, 80]
+    content:
+      fontSize: 16
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [center, top]
+      text: |
+        <p>（参赛主体信息待补充）</p>
+        <p>2026年6月</p>

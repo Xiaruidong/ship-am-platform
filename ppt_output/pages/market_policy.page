@@ -1,0 +1,193 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>政策驱动与万亿赛道：特种装备保障进入新时代</p>
+  - elementId: kpi1-num
+    elementType: text
+    bounds: [80, 130, 360, 70]
+    content:
+      style: "$kpi"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>600<span style="font-size:28px;">亿元</span></p>
+  - elementId: kpi1-label
+    elementType: text
+    bounds: [80, 206, 360, 24]
+    content:
+      style: "$kpiLabel"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>国内增材制造产业市场规模</p>
+  - elementId: kpi1-line
+    elementType: shape
+    bounds: [80, 238, 360, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: kpi1-detail
+    elementType: text
+    bounds: [80, 250, 360, 50]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>年复合增长率 <span style="color:$primary;"><strong>20%+</strong></span></p>
+        <p>金属增材占比约 <span style="color:$primary;"><strong>40%</strong></span></p>
+  - elementId: kpi2-num
+    elementType: text
+    bounds: [460, 130, 360, 70]
+    content:
+      style: "$kpi"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>400<span style="font-size:28px;">亿元/年</span></p>
+  - elementId: kpi2-label
+    elementType: text
+    bounds: [460, 206, 360, 24]
+    content:
+      style: "$kpiLabel"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>船舶维修配套领域市场规模</p>
+  - elementId: kpi2-line
+    elementType: shape
+    bounds: [460, 238, 360, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: kpi2-detail
+    elementType: text
+    bounds: [460, 250, 360, 50]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>船舶与海洋平台产业年产值</p>
+        <p>超过 <span style="color:$primary;"><strong>6000</strong></span> 亿元</p>
+  - elementId: kpi3-num
+    elementType: text
+    bounds: [840, 130, 360, 70]
+    content:
+      style: "$kpi"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>百亿<span style="font-size:28px;">级</span></p>
+  - elementId: kpi3-label
+    elementType: text
+    bounds: [840, 206, 360, 24]
+    content:
+      style: "$kpiLabel"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>高端装备增材协同服务市场</p>
+  - elementId: kpi3-line
+    elementType: shape
+    bounds: [840, 238, 360, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: kpi3-detail
+    elementType: text
+    bounds: [840, 250, 360, 50]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>航空、航天、兵器、核电、海工</p>
+        <p>整体市场规模预计超百亿</p>
+  - elementId: divider-line
+    elementType: shape
+    bounds: [80, 320, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: policy-title
+    elementType: text
+    bounds: [80, 340, 300, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>国家顶层战略指引</p>
+  - elementId: policy-body
+    elementType: text
+    bounds: [80, 380, 520, 220]
+    content:
+      style: "$body"
+      fontSize: 16
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p><strong>军民融合深度发展</strong>：推动军工装备保障体系现代化升级</p>
+        <p><strong>制造强国</strong>：加快增材制造、人工智能等新兴技术应用</p>
+        <p><strong>数字中国</strong>：鼓励分布式制造与协同制造新模式</p>
+        <p style="margin-top:8px"><span style="font-size:14px; color:$secondary;">工信部《增材制造产业发展行动计划》将"高端装备维修保障"列为重点应用方向</span></p>
+  - elementId: trend-title
+    elementType: text
+    bounds: [640, 340, 300, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>产业趋势与增长动力</p>
+  - elementId: trend-body
+    elementType: text
+    bounds: [640, 380, 560, 220]
+    content:
+      style: "$body"
+      fontSize: 16
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>特种装备服役周期长达 <span style="color:$primary;"><strong>30-40年</strong></span>，传统中心化保障模式已难以满足前沿部署需求</p>
+        <p>增材制造（AM）的高数字化特性使制造能力下沉至前沿节点成为可能</p>
+        <p>人工智能（AI）的进步使分布式智能决策成为可能</p>
+        <p style="margin-top:8px"><span style="font-size:14px; color:$secondary;">特种船舶领域是唯一具备应急替代、实船搭载条件的场景，增长潜力巨大</span></p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>04</p>

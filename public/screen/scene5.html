@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>场景5 · 质量评估大屏</title>
+<style>
+:root{--navy0:#030A17;--navy1:#061226;--navy2:#0A1E3F;
+--blue:#00A8FF;--cyan:#33D6FF;
+--txt:#CBE6FF;--txt2:#7FA6CE;--txt3:#EAF7FF;--dim:#4E7499;
+--red:#FF4D5E;--org:#FF9F0A;--grn:#00D68F;--gold:#F5C542;
+--acc:#F5C542;--acc2:#FFE3A0;
+--mono:Bahnschrift,Consolas,'Courier New',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
+body{background:#01040B;color:var(--txt);font-family:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif;user-select:none}
+#env{position:fixed;inset:0;background:radial-gradient(1200px 700px at 18% 8%,rgba(245,197,66,.08),transparent 60%),radial-gradient(1000px 800px at 85% 92%,rgba(0,70,160,.10),transparent 55%),#01040B}
+#env:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(245,197,66,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,168,255,.04) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(circle at 50% 45%,#000 30%,transparent 95%)}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{width:1920px;height:1080px;flex:none;position:relative;transform-origin:center center;will-change:transform;background:radial-gradient(1400px 760px at 50% -6%,rgba(210,160,0,.10),transparent 58%),linear-gradient(160deg,#071126,#081530 45%,#051024);box-shadow:0 0 90px rgba(140,110,0,.28);overflow:hidden}
+#stage:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(245,197,66,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,168,255,.045) 1px,transparent 1px);background-size:60px 60px;opacity:.5}
+#stage:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(40,22,0,.5),transparent 9%,transparent 91%,rgba(30,16,0,.55));z-index:2}
+#hd{position:absolute;top:0;left:0;right:0;height:112px;z-index:20;display:flex;align-items:center;padding:0 30px;background:linear-gradient(180deg,rgba(30,16,2,.92),rgba(18,12,8,.6) 70%,transparent);border-bottom:1px solid rgba(245,197,66,.28)}
+#hd:before{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,rgba(245,197,66,.7) 18%,rgba(255,227,160,.9) 50%,rgba(245,197,66,.7) 82%,transparent)}
+.brand{width:430px;display:flex;align-items:center;gap:14px}
+.brand .logo{width:54px;height:54px;flex:none}
+.brand b{display:block;font-size:24px;color:#EAF7FF;letter-spacing:2px;font-weight:600;white-space:nowrap}
+.brand span{display:block;font-size:13px;color:#5E8DB8;letter-spacing:2.2px;margin-top:3px}
+.brand small{display:block;font-size:15px;color:#A8863F;letter-spacing:1px;margin-top:1px}
+.hdmid{flex:1;text-align:center}
+.hdmid h1{font-size:49px;letter-spacing:4px;color:#FFF9EA;font-weight:600}
+.hdmid h1 i{font-style:normal;color:var(--acc)}
+.hdmid .sub{display:inline-block;margin-top:7px;font-size:18px;letter-spacing:3px;color:#EDD79A;background:linear-gradient(90deg,transparent,rgba(245,197,66,.16),transparent);padding:2px 26px;border-top:1px solid rgba(245,197,66,.45);border-bottom:1px solid rgba(245,197,66,.45)}
+.hdright{width:560px;display:flex;align-items:center;justify-content:flex-end;gap:14px;flex:none}
+.steps{display:flex;gap:8px}
+.step{width:112px;height:38px;border:1px solid rgba(245,197,66,.45);background:rgba(80,50,0,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:19px;color:#E3C98E;cursor:pointer;transition:.3s;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.step i{font-style:normal;font-family:var(--mono);color:var(--acc)}
+.step.on{border-color:var(--acc2);color:#fff;background:linear-gradient(180deg,rgba(245,197,66,.35),rgba(110,70,0,.55));box-shadow:0 0 18px rgba(245,197,66,.5);text-shadow:0 0 8px rgba(255,240,200,.9)}
+.step.on i{color:var(--acc2)}
+#clock{text-align:right}
+#clock b{font-family:var(--mono);font-size:32px;color:#FFF9EA;letter-spacing:2px}
+#clock span{display:block;font-size:16px;color:#D9BC7A;letter-spacing:2px;margin-top:2px}
+.panel{position:relative;background:linear-gradient(180deg,rgba(30,24,10,.74),rgba(10,8,4,.84));border:1px solid rgba(245,197,66,.28);box-shadow:inset 0 0 26px rgba(220,170,0,.06),0 0 18px rgba(110,80,0,.3)}
+.panel:before{content:"";position:absolute;top:-1px;left:-1px;width:18px;height:18px;border-top:2px solid var(--acc);border-left:2px solid var(--acc);pointer-events:none;z-index:5}
+.panel:after{content:"";position:absolute;bottom:-1px;right:-1px;width:18px;height:18px;border-bottom:2px solid var(--acc);border-right:2px solid var(--acc);pointer-events:none;z-index:5}
+.phead{height:54px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid rgba(245,197,66,.24);flex:none}
+.phead .dot{width:7px;height:7px;background:var(--acc2);box-shadow:0 0 8px var(--acc2);transform:rotate(45deg)}
+.phead .tt{font-size:21px;color:#DDF1FF;letter-spacing:1.5px;font-weight:500;white-space:nowrap}
+.phead .en{display:none;font-size:15px}
+.phead .tag{margin-left:auto;font-size:15px;color:#7FA6CE;white-space:nowrap}
+#main{position:absolute;top:120px;left:22px;right:22px;bottom:138px;z-index:10;display:flex;gap:14px}
+.col-l{width:39%;display:flex;flex-direction:column;gap:12px;min-width:0}
+.col-m{width:30.5%;display:flex;flex-direction:column;gap:12px;min-width:0}
+.col-r{flex:1;display:flex;flex-direction:column;gap:12px;min-width:0}
+/* dims */
+#dm{flex:1.10;display:flex;flex-direction:column;min-height:0}
+.dmBody{padding:4px 12px 4px;flex:1;display:flex;flex-direction:column;min-height:0}
+.dmH{display:grid;grid-template-columns:130px 1.12fr 1fr 1fr 84px 78px;gap:6px;padding:0 8px 2px;font-size:15px;color:#A8863F;letter-spacing:.5px;border-bottom:1px dashed rgba(245,197,66,.2)}
+.dmR{display:grid;grid-template-columns:130px 1.12fr 1fr 1fr 84px 78px;gap:6px;align-items:center;padding:1px 8px;font-size:16px;border-bottom:1px solid rgba(245,197,66,.09);transition:.3s}
+body.st1 .dmR{opacity:.75}
+body.st1 .dmR.act{opacity:1;background:linear-gradient(90deg,rgba(245,197,66,.12),transparent)}
+.dmR b{font-weight:500;color:#E8DCAF;font-size:16px}
+.dmR .dv{font-family:var(--mono);color:#FFE3A0}
+.dmR .dev{font-family:var(--mono);color:#A5E8CE;font-size:16px}
+.dmR .dev.n{color:#FFC9A0}
+.dmR .tol{font-family:var(--mono);color:#8A7A4A;font-size:15px}
+.pass{font-size:15px;color:#7FEBC6;border:1px solid rgba(0,214,143,.5);padding:1px 6px;text-align:center;background:rgba(0,120,90,.12)}
+.dmFoot{margin-top:auto;display:flex;align-items:center;gap:14px;font-size:15px;color:#9E8C5A;padding-top:3px}
+.dmFoot b{color:#7FEBC6;font-weight:500}
+.blockChip{margin-left:auto;font-size:15px;color:#9FE0FF;border:1px solid rgba(51,214,255,.5);padding:2px 10px;background:rgba(0,120,180,.15);font-family:var(--mono)}
+/* mech */
+#mc{flex:1;display:flex;flex-direction:column;min-height:0}
+.mcBody{flex:1;padding:4px 12px 4px;display:flex;flex-direction:column;gap:3px;min-height:0}
+.mcR{display:flex;align-items:center;gap:10px}
+.mcR .lb{width:76px;flex:none;font-size:16px;color:#E8DCAF}
+.mcR .bar{flex:1;height:9px;background:rgba(245,197,66,.12);border-radius:4px;overflow:hidden;position:relative}
+.mcR .bar i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,#1E63B0,#3D9BFF);transition:width 1s}
+.mcR.gold .bar i{background:linear-gradient(90deg,#1E63B0,#3D9BFF)}
+.mcR .val{width:120px;flex:none;font-family:var(--mono);font-size:19px;color:#FFF6E2;text-align:right}
+.mcR .val small{font-family:inherit;font-size:15px;color:#A8863F;margin-left:2px}
+.mcR .ov{width:62px;flex:none;font-size:15px;color:#7FEBC6;text-align:right;font-family:var(--mono)}
+.mcFoot{font-size:15px;color:#8A7A4A;margin-top:2px;display:flex;gap:14px}
+.mcFoot b{color:#D9BC7A;font-weight:500}
+/* ndt */
+#ndt{flex:1.12;display:flex;flex-direction:column;min-height:0}
+.ndtBody{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px 10px;min-height:0}
+.nd{position:relative;border:1px solid rgba(0,214,143,.35);background:rgba(0,50,30,.25);padding:5px 10px;display:flex;flex-direction:column;gap:3px}
+.nd b{font-size:20px;color:#7FEBC6;font-weight:500;display:flex;align-items:center;gap:8px}
+.nd b:before{content:"";width:9px;height:9px;background:var(--grn);box-shadow:0 0 8px var(--grn);border-radius:2px;transform:rotate(45deg)}
+.nd span{font-size:15px;color:#9E8C5A;line-height:1.35}
+.nd span em{font-style:normal;color:#E8DCAF;font-family:var(--mono)}
+.nd.small b{font-size:18px}
+.nd .big{font-family:var(--mono);font-size:28px;color:#FFF6E2}
+.nd .big i{font-style:normal;color:#7FEBC6;font-size:18px;font-family:inherit}
+/* gis mid */
+#gp{flex:1.5;display:flex;flex-direction:column;min-height:0}
+#gBody{flex:1;position:relative;min-height:0;overflow:hidden}
+#gBody svg{position:absolute;inset:0;width:100%;height:100%}
+.leg{position:absolute;left:8px;bottom:6px;z-index:6;display:flex;flex-wrap:wrap;gap:3px 10px;font-size:15px;color:#D9C98F;background:rgba(20,12,2,.72);padding:4px 10px;border:1px solid rgba(245,197,66,.25)}
+.leg i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px;border-radius:2px}
+.gstat{position:absolute;left:8px;top:6px;z-index:6;font-size:16px;color:#E3C98E;display:flex;gap:8px;align-items:center;background:rgba(20,12,2,.7);padding:3px 10px;border:1px solid rgba(245,197,66,.3)}
+.gstat b{color:#FFE3A0;font-weight:500}
+/* env */
+#envP{flex:.92;display:flex;flex-direction:column;min-height:0}
+.envBody{height:240px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr;gap:8px;padding:8px 12px}
+.ec{position:relative;border:1px solid rgba(245,197,66,.16);background:rgba(30,20,4,.4);overflow:hidden}
+.ec canvas{position:absolute;inset:0;width:100%;height:100%}
+.ec .et{position:absolute;left:7px;top:3px;font-size:15px;color:#A8863F;z-index:2}
+.ec .ev{position:absolute;right:7px;top:3px;font-family:var(--mono);font-size:16px;color:#FFE3A0;z-index:2}
+.ec .tr{position:absolute;right:6px;bottom:2px;font-size:15px;color:#5E8A72;z-index:2}
+/* right benefits */
+#bf{flex:1.35;display:flex;flex-direction:column;min-height:0}
+.bfHead{display:flex;gap:8px;padding:6px 12px 0;font-size:15px;color:#A8863F}
+.bfCards{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:6px 12px;min-height:0}
+.bc{position:relative;border:1px solid rgba(245,197,66,.3);background:linear-gradient(180deg,rgba(245,197,66,.1),rgba(30,20,4,.5));padding:10px 12px;display:flex;flex-direction:column;overflow:hidden}
+.bc:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--gold),transparent)}
+.bc .lb{font-size:16px;color:#E3C98E;letter-spacing:2px}
+.bc .lb em{font-style:normal;display:block;font-size:15px;color:#8A7A4A;letter-spacing:1px;font-family:var(--mono);margin-top:2px}
+.bc .vv{font-family:var(--mono);font-size:36px;color:#FFF9EA;margin-top:8px;line-height:1}
+.bc .vv small{font-size:19px;color:#A8863F;font-family:inherit}
+.bc .dl{margin-top:auto;padding-top:6px;display:flex;align-items:baseline;gap:6px;font-size:15px;color:#8A7A4A}
+.bc .dl i{font-style:normal;font-family:var(--mono)}
+.bc .delta{font-family:var(--mono);font-size:19px;color:#7FEBC6;font-weight:500}
+.bc.fin .delta{color:#FFE3A0}
+.bfFoot{display:flex;gap:6px;padding:0 12px 8px}
+.chip{font-size:15px;padding:2px 8px;border:1px solid rgba(245,197,66,.4);color:#E3C98E;background:rgba(60,40,0,.3);white-space:nowrap}
+.chip.g{border-color:rgba(0,214,143,.5);color:#7FEBC6;background:rgba(0,90,50,.2)}
+/* exp */
+#ex{flex:1.15;display:flex;flex-direction:column;min-height:0}
+.exBody{flex:1;padding:6px 12px 8px;display:flex;flex-direction:column;min-height:0}
+.exTop{display:flex;align-items:center;gap:10px;border:1px solid rgba(0,214,143,.4);background:rgba(0,70,40,.3);padding:6px 12px}
+.exTop .ico{width:30px;height:30px;flex:none;border:1px solid var(--grn);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#7FEBC6;font-size:21px}
+.exTop b{font-size:21px;color:#7FEBC6;font-weight:500}
+.exTop b small{display:block;font-size:15px;color:#5E8A72;font-family:var(--mono);letter-spacing:1px}
+.exTop span{margin-left:auto;font-size:15px;color:#9E8C5A;border:1px dashed rgba(245,197,66,.45);padding:2px 8px;font-family:var(--mono)}
+.exGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.ex{background:rgba(30,20,4,.45);border:1px solid rgba(245,197,66,.13);padding:5px 10px}
+.ex b{font-family:var(--mono);font-size:24px;color:#FFF6E2;display:block;font-weight:500}
+.ex b i{font-style:normal;color:#FFE3A0;font-size:18px;font-family:inherit}
+.ex span{font-size:15px;color:#8A7A4A;line-height:1.5;display:block;margin-top:2px}
+.exDone{margin-top:auto;padding-top:6px;font-size:15px;color:#9E8C5A;border-top:1px dashed rgba(245,197,66,.25)}
+.exDone b{color:#E3C98E;font-weight:500}
+/* bottom */
+#ft{position:absolute;left:22px;right:22px;bottom:10px;height:106px;z-index:12;display:flex;align-items:center;border:1px solid rgba(245,197,66,.3);background:linear-gradient(180deg,rgba(24,16,4,.96),rgba(12,8,2,.97));padding:0 22px}
+#ft .ftT{flex:none;width:280px;font-size:24px;color:#DDF1FF;letter-spacing:2px}
+#ft .ftT b{font-size:24px;color:#FFF6E2;letter-spacing:2px;font-weight:500}
+#ft .ftT small{display:block;font-size:15px;color:#A8863F;letter-spacing:2px;margin-top:3px}
+.tl{flex:1;display:flex;align-items:center;height:100%}
+.tn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;min-width:0}
+.tn .c{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(245,197,66,.45);background:#221A08;color:#E3C98E;font-size:15px;transition:.5s;position:relative;z-index:2}
+.tn .nm{font-size:16px;color:#C9AE6E;letter-spacing:.5px;transition:.4s;white-space:nowrap}
+.tn .tm{font-family:var(--mono);font-size:15px;color:#8A6A3A;transition:.4s;white-space:nowrap}
+.tn .ln{position:absolute;left:calc(-50% + 14px);right:calc(50% + 14px);top:14px;height:2px;background:rgba(245,197,66,.16);z-index:1}
+.tn:first-child .ln{display:none}
+.tn.done .c{border-color:var(--gold);background:rgba(245,197,66,.3);color:#FFF9EA}
+.tn.done .nm{color:#FFE9B8}.tn.done .tm{color:#D9B45E}
+.tn.done .ln{background:linear-gradient(90deg,rgba(245,197,66,.8),rgba(0,214,143,.4))}
+.tn.run .c{border-color:#33D6FF;background:rgba(51,214,255,.25);color:#fff;box-shadow:0 0 16px rgba(51,214,255,.8);animation:rp 1.3s ease-in-out infinite}
+.tn.run .nm{color:#BFE8FF}.tn.run .tm{color:#9FE0FF}
+@keyframes rp{50%{box-shadow:0 0 28px rgba(51,214,255,1)}}
+.ftLeg{flex:none;display:flex;flex-direction:column;gap:4px;margin-left:12px;font-size:15px;color:#A8863F}
+.ftLeg i{display:inline-block;width:9px;height:9px;margin-right:4px}
+#ctrl{position:absolute;right:20px;bottom:104px;z-index:40;display:flex;gap:8px;align-items:center;opacity:.94;bottom:138px}
+#ctrl button{width:96px;height:44px;border:1px solid rgba(245,197,66,.5);background:linear-gradient(180deg,rgba(80,50,0,.92),rgba(20,12,2,.95));color:#FFE9B8;font-size:21px;cursor:pointer;border-radius:4px;font-family:inherit;transition:.25s}
+#ctrl button:hover{background:rgba(245,197,66,.3);box-shadow:0 0 14px rgba(245,197,66,.6)}
+#ctrl .cur{margin:0 6px;font-family:var(--mono);font-size:21px;color:#FFE9B8}
+#ctrl .hint{font-size:15px;color:#6E5A28;letter-spacing:1px}
+/* ===== 孪生质检结果 ===== */
+#tw5{flex:1;display:flex;flex-direction:column;min-height:0}
+.tw5Body{flex:1;position:relative;display:flex;flex-direction:column;min-height:0;padding:4px 10px 0}
+#twin5{flex:1;min-height:0;width:100%}
+.tabs{display:flex;gap:6px;padding:3px 0 4px;flex:none}
+.tabs b{font-size:15px;font-weight:400;color:#A8863F;border:1px solid rgba(245,197,66,.3);padding:2px 10px;cursor:pointer;background:rgba(40,26,4,.4);transition:.25s}
+.tabs b.on{color:#3A2A00;background:linear-gradient(180deg,#FFE3A0,#E0B84A);border-color:#FFE3A0;box-shadow:0 0 10px rgba(245,197,66,.4)}
+.legH{position:absolute;right:12px;top:42px;z-index:5;display:flex;align-items:center;gap:5px;font-size:15px;color:#D9C98F;background:rgba(20,12,2,.68);padding:2px 8px;border:1px solid rgba(245,197,66,.25)}
+.legH i{display:inline-block;width:9px;height:9px;margin-left:6px}
+.legH i:first-child{margin-left:0}
+.tw5Cap{position:absolute;left:14px;top:44px;font-size:15px;color:#8A7A4A;letter-spacing:1px;line-height:1.7;z-index:5}
+.tw5Cap b{color:#FFE3A0;font-weight:500}
+.tw5Stat{flex:none;padding:2px 0 5px;font-size:15px;color:#9E8C5A;letter-spacing:.5px}
+.tw5Stat b{color:#7FEBC6;font-weight:500}
+.tw5Info{flex:none;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 10px 8px}
+.ti5{border:1px solid rgba(245,197,66,.16);background:rgba(30,20,4,.4);padding:6px 8px;text-align:center}
+.ti5 b{font-family:var(--mono);font-size:21px;color:#FFE3A0;display:block}
+.ti5 b.g{color:#7FEBC6}
+.ti5 b small{font-size:15px;color:#A8863F}
+.ti5 span{font-size:15px;color:#8A7A4A;display:block;margin-top:1px}
+/* ===== 质量综合评定 ===== */
+#verdict{flex:1.32;display:flex;flex-direction:column;min-height:0}
+.vdBody{flex:1;display:flex;flex-direction:column;gap:8px;padding:9px 12px;min-height:0}
+.vdMain{display:flex;align-items:center;gap:14px;border:1px solid rgba(0,214,143,.45);background:linear-gradient(120deg,rgba(0,120,80,.3),rgba(30,20,4,.42));padding:9px 14px;position:relative;flex:none}
+.vdMain:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#7FEBC6,transparent)}
+.vdMain .ico{width:52px;height:52px;flex:none;border-radius:50%;border:2px solid #7FEBC6;display:flex;align-items:center;justify-content:center;font-size:34px;color:#7FEBC6;box-shadow:0 0 22px rgba(0,214,143,.55);transition:.5s}
+.vdMain .vt span{font-size:15px;color:#9EDCC4;letter-spacing:3px;display:block}
+.vdMain .vt b{font-size:46px;letter-spacing:12px;color:#FFF9EA;text-shadow:0 0 20px rgba(0,214,143,.7);display:block;line-height:1.2;transition:.4s}
+.vdMain .vt small{font-size:15px;color:#7FAE9A;font-family:var(--mono);display:block;margin-top:2px;letter-spacing:.5px}
+.vdScore{margin-left:auto;text-align:right;flex:none}
+.vdScore b{font-family:var(--mono);font-size:36px;color:#FFE3A0;line-height:1}
+.vdScore span{font-size:15px;color:#A8863F;display:block;margin-top:2px}
+.vdScore em{font-style:normal;font-size:15px;color:#7FEBC6;border:1px solid rgba(0,214,143,.4);padding:1px 8px;margin-top:4px;display:inline-block;letter-spacing:1px}
+.vdBasis{flex:1;display:flex;flex-direction:column;gap:5px;min-height:0}
+.vdBasis .bt{font-size:15px;color:#A8863F;letter-spacing:2px;flex:none}
+.vb{display:flex;align-items:center;gap:8px;border:1px solid rgba(0,214,143,.16);background:rgba(0,60,40,.16);padding:5px 10px;font-size:16px;color:#D9C98F;opacity:.42;transition:.45s;flex:none}
+.vb i{width:15px;height:15px;border-radius:50%;border:1px solid #7FEBC6;color:#7FEBC6;font-style:normal;display:flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+.vb b{color:#FFF6E2;font-weight:500}
+.vb.v1 b,.vb.v2 b,.vb.v3 b{color:#9FE0FF}
+.vb.v4 b{color:#FFD9A0}
+.vb span{margin-left:auto;font-family:var(--mono);font-size:15px;color:#7FEBC6;white-space:nowrap}
+body.st2 .vb.v1,body.st2 .vb.v2,body.st2 .vb.v3,body.st3 .vb{opacity:1;border-color:rgba(0,214,143,.45);background:rgba(0,80,50,.26)}
+.vdFoot{flex:none;font-size:15px;color:#8A7A4A;border-top:1px dashed rgba(245,197,66,.28);padding-top:6px;display:flex;justify-content:space-between;gap:8px;letter-spacing:.4px}
+.vdFoot b{color:#9EDCC4;font-weight:500}
+/* ===== 质量指标 ===== */
+#qkpi{flex:.82;display:flex;flex-direction:column;min-height:0}
+.qkBody{flex:1;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:6px;padding:8px 12px;min-height:0}
+.qk{display:flex;flex-direction:column;justify-content:center;align-items:center;border:1px solid rgba(245,197,66,.16);background:rgba(30,20,4,.4);transition:.4s}
+.qk b{font-family:var(--mono);font-size:24px;color:#FFF6E2;line-height:1}
+.qk b.gg{color:#7FEBC6}
+.qk b small{font-size:15px;color:#A8863F;font-family:inherit}
+.qk span{font-size:15px;color:#8A7A4A;margin-top:3px;text-align:center;line-height:1.3}
+/* ===== 自动进度轴 ===== */
+.axwrap{width:430px;display:flex;flex-direction:column;gap:6px}
+.axTop{display:flex;align-items:center;gap:10px;height:20px}
+.axTop b{font-size:21px;letter-spacing:2px;color:#7FEBC6}
+.axLegWrap{display:none}
+.axLegT{font-size:15px;color:#6E5A28;letter-spacing:.5px}
+.lg{display:flex;align-items:center;gap:3px;font-size:15px;letter-spacing:.5px}
+.lg i{width:7px;height:7px;border-radius:50%;display:block}
+.lg.k1{color:#9FE0FF}.lg.k1 i{background:#33D6FF;box-shadow:0 0 6px #33D6FF}
+.lg.k2{color:#FFD9A0}.lg.k2 i{background:#FFC46B;box-shadow:0 0 6px #FFC46B}
+.lg.k3{color:#7FEBC6}.lg.k3 i{background:#7FEBC6;box-shadow:0 0 6px #7FEBC6}
+.axTop em{margin-left:auto;font-style:normal;font-size:18px;color:#FFE3A0;font-family:var(--mono);letter-spacing:.5px}
+.axis{position:relative;padding:0 2px}
+.axLine{position:absolute;left:42px;right:42px;top:14px;height:3px;background:rgba(245,197,66,.15);overflow:hidden}
+.axLine i{display:block;height:100%;width:0;background:linear-gradient(90deg,#33D6FF,#FFC46B,#7FEBC6);box-shadow:0 0 10px rgba(127,235,198,.45)}
+.axNodes{position:relative;display:flex}
+.axN{width:33.333%;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.axN .c{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(245,197,66,.3);background:#221A08;font-size:16px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);transition:.5s;z-index:2}
+.axN b{font-size:16px;letter-spacing:1.5px;transition:.4s;margin-top:1px}
+.axN span{font-size:15px;color:#6E5A28;letter-spacing:.2px;transition:.4s;white-space:nowrap}
+.axN.k1 b{color:#9FE0FF}.axN.k2 b{color:#FFD9A0}.axN.k3 b{color:#7FEBC6}
+.axN.k1 .c{border-color:rgba(51,214,255,.55);color:#9FE0FF}
+.axN.k2 .c{border-color:rgba(255,196,107,.55);color:#FFD9A0}
+.axN.k3 .c{border-color:rgba(127,235,198,.55);color:#7FEBC6}
+.axN.k1.done .c{background:rgba(0,70,110,.5);box-shadow:0 0 12px rgba(51,214,255,.4)}
+.axN.k2.done .c{background:rgba(70,42,0,.5);box-shadow:0 0 12px rgba(255,196,107,.4)}
+.axN.k3.on .c{background:rgba(0,110,75,.55);box-shadow:0 0 18px rgba(0,214,143,.8);animation:axpG 1.6s ease-in-out infinite}
+@keyframes axpG{50%{box-shadow:0 0 28px rgba(0,214,143,1)}}
+
+/* ===== 三方数据对比（要求 / 孪生 / 实测） ===== */
+.srcLeg{display:flex;align-items:center;gap:12px;padding:0 12px 2px;font-size:15px;color:#8A7A4A;flex:none}
+.srcLeg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.dmH span.cRq,.dmR .dv.rq{color:#9DB8D4}
+.dmH span.cTw,.dmR .dv.tw{color:#7FE8FF}
+.dmH span.cMs,.dmR .dv.ms{color:#FFE3A0}
+.dmR .dv.rq{font-size:15px}
+.mcH{display:flex;align-items:center;gap:10px;font-size:15px;color:#8A7A4A;padding:0 0 2px}
+.mcH .lbl{width:76px;flex:none}
+.mcH .barSp{flex:1}
+.mcH span.v3{width:56px;flex:none;text-align:right;letter-spacing:.5px}
+.mcH span.rq{color:#9DB8D4}.mcH span.tw{color:#7FE8FF}.mcH span.ms{color:#FFE3A0}
+.mcR .v3{width:56px;flex:none;font-family:var(--mono);font-size:16px;text-align:right}
+.mcR .v3.req{color:#9DB8D4}.mcR .v3.tw{color:#7FE8FF}.mcR .v3.ms{color:#FFE3A0}
+.mcR .bar{position:relative}
+.mcR .bar .reqBand{position:absolute;top:0;bottom:0;background:rgba(157,184,212,.14);border-left:1px dashed rgba(157,184,212,.45);border-right:1px dashed rgba(157,184,212,.45)}
+.mcR .bar .mk{position:absolute;top:-4px;width:3px;height:17px;border-radius:1px;box-shadow:0 0 0 1px rgba(4,12,24,.7)}
+.mcR .bar .mk.tw{background:#7FE8FF;box-shadow:0 0 0 1px rgba(4,12,24,.7),0 0 7px #7FE8FF}
+.mcR .bar .mk.ms{background:#FFE3A0;box-shadow:0 0 0 1px rgba(4,12,24,.7),0 0 7px #FFE3A0}
+#backHome{display:flex;align-items:center;gap:6px;height:44px;padding:0 12px;margin-right:6px;border:1px solid rgba(51,214,255,.45);border-radius:4px;color:#C9EBFF;letter-spacing:1.5px;text-decoration:none;background:rgba(0,60,140,.35);transition:.25s;flex:none;font-size:21px}
+#backHome:hover{background:rgba(0,130,235,.45);color:#fff;box-shadow:0 0 14px rgba(51,214,255,.45)}
+
+/* ============================================================
+   场景页视觉打磨 · 与首页统一设计语言
+   ============================================================ */
+:root{
+  --t1:#EAF7FF; --t2:#A9CBE8; --t3:#6E97BE; --t4:#4E7BA6;
+  --c1:#33D6FF; --c2:#7FE8FF; --c3:#BFE9FF;
+  --line:rgba(0,168,255,.20);
+  --anim:180ms cubic-bezier(.2,.9,.3,1);
+}
+
+/* 舞台暗角 */
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,4,12,.45) 100%)}
+
+/* 面板：统一描边/内发光 */
+.panel{border-color:var(--line);box-shadow:inset 0 1px 0 rgba(120,210,255,.10),inset 0 0 36px rgba(0,60,130,.10)}
+
+/* 顶栏按钮统一高度 */
+#backHome{height:42px;line-height:40px;font-size:18px;border-radius:2px;transition:all var(--anim)}
+#backHome:hover{transform:translateY(-1px)}
+
+/* 数字等宽 */
+*{font-variant-numeric:tabular-nums}
+
+/* 面板入场动效 */
+@keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.panel{animation:riseIn .5s var(--anim) both}
+.panel:nth-child(2){animation-delay:.08s}
+.panel:nth-child(3){animation-delay:.14s}
+
+/* 滚动条细化 */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:rgba(51,214,255,.18);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(51,214,255,.32)}
+
+/* 文字标签描边（叠加在深色底上更清晰） */
+svg text{paint-order:stroke;stroke:rgba(1,6,14,.7);stroke-width:2px;stroke-linejoin:round}
+
+</style>
+</head>
+<body class="st1">
+<div id="env"></div>
+<div id="wrap"><div id="stage">
+<header id="hd">
+ <div class="brand">
+   <svg class="logo" viewBox="0 0 60 60"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE3A0"/><stop offset="1" stop-color="#C89200"/></linearGradient></defs>
+   <polygon points="30,3 53,16.5 53,43.5 30,57 7,43.5 7,16.5" fill="none" stroke="url(#lg)" stroke-width="2"/><polygon points="30,14 44,22 44,38 30,46 16,38 16,22" fill="rgba(245,197,66,.15)" stroke="#FFE3A0" stroke-width="1"/><circle cx="30" cy="30" r="6.5" fill="none" stroke="#FFE3A0" stroke-width="2"/><circle cx="30" cy="30" r="1.8" fill="#FFE3A0"/></svg>
+   <div><b>去中心化增材制造交付平台</b><span>DECENTRALIZED&nbsp;AM&nbsp;DELIVERY&nbsp;PLATFORM</span></div>
+ </div>
+ <div class="hdmid">
+   <h1>质量评估<i>大屏</i></h1>
+   <div class="sub">阶段5 · 质量评估：检测数据对比 · 孪生复核 · 合格判定（00:10:00 - 00:12:00）</div>
+ </div>
+ <div class="hdright">
+   <a id="backHome" href="index.html">◀ 态势图</a><a target="_top" href="/workbench" style="margin-left:14px;height:42px !important;display:inline-flex !important;align-items:center;white-space:nowrap;padding:0 18px;color:#BFE9FF;text-decoration:none;border:1px solid rgba(51,214,255,.5);border-radius:2px;font-size:18px;letter-spacing:1px;transition:.18s;background:rgba(0,120,220,.14);" onmouseover="this.style.background='rgba(0,168,255,.28)'" onmouseout="this.style.background='rgba(0,120,220,.14)'">管理入口</a>
+   <div class="axwrap">
+     <div class="axTop"><b id="axNow">判定</b>
+       <div class="axLegWrap"><span class="axLegT">阶段字体色</span><span class="lg k1"><i></i>检测</span><span class="lg k2"><i></i>复核</span><span class="lg k3"><i></i>判定</span></div>
+       <em id="axClock">--:--:--</em></div>
+     <div class="axis">
+       <div class="axLine"><i id="axFill"></i></div>
+       <div class="axNodes">
+         <div class="axN k1 done"><div class="c">01</div><b>检 测</b><span>尺寸 · 力学 · 无损</span></div>
+         <div class="axN k2 done"><div class="c">02</div><b>复 核</b><span>孪生 vs 实测</span></div>
+         <div class="axN k3 on"><div class="c">03</div><b>判 定</b><span>全项合格</span></div>
+       </div>
+     </div>
+   </div>
+ </div>
+</header>
+
+<main id="main">
+ <div class="col-l">
+  <div class="panel" id="dm">
+    <div class="phead"><span class="dot"></span><span class="tt">尺寸检测结果对比</span><span class="en">· DIMENSION QC</span><span class="tag">要求 / 孪生 / 实测 三方对比 · CMM 全检</span></div>
+    <div class="dmBody">
+      <div class="dmH"><span>检测项</span><span class="cRq" style="text-align:right">要求值</span><span class="cTw" style="text-align:right">孪生值</span><span class="cMs" style="text-align:right">实测值</span><span style="text-align:right">孪-实差</span><span style="text-align:center">判定</span></div>
+      <div class="dmR act"><b>法兰外径</b><span class="dv rq">195.0±0.1</span><span class="dv tw">195.01</span><span class="dv ms">195.02</span><span class="dev">+0.01</span><span class="pass">合格</span></div>
+      <div class="dmR act"><b>法兰厚度</b><span class="dv rq">22.0±0.1</span><span class="dv tw">22.02</span><span class="dv ms">22.01</span><span class="dev">-0.01</span><span class="pass">合格</span></div>
+      <div class="dmR act"><b>阀座孔径</b><span class="dv rq">80.0±0.05</span><span class="dv tw">80.00</span><span class="dv ms">80.01</span><span class="dev">+0.01</span><span class="pass">合格</span></div>
+      <div class="dmR act"><b>阀杆直径</b><span class="dv rq">25.0±0.02</span><span class="dv tw">25.00</span><span class="dv ms">25.00</span><span class="dev">0.00</span><span class="pass">合格</span></div>
+      <div class="dmR act"><b>总高度</b><span class="dv rq">150.0±0.15</span><span class="dv tw">150.02</span><span class="dv ms">150.03</span><span class="dev">+0.01</span><span class="pass">合格</span></div>
+      <div class="dmR act"><b>密封面平面度</b><span class="dv rq">≤0.02</span><span class="dv tw">0.014</span><span class="dv ms">0.015</span><span class="dev">+0.001</span><span class="pass">合格</span></div>
+      <div class="dmFoot"><span>三方对比：孪生 vs 实测最大差 <b>0.01mm</b> · 6/6 项落入要求公差带</span><span class="blockChip">区块链存证 0x7a3f…e9b2</span></div>
+    </div>
+  </div>
+
+  <div class="panel" id="mc">
+    <div class="phead"><span class="dot"></span><span class="tt">力学性能对比（实测 vs 标准）</span><span class="en">· MECHANICAL TEST</span><span class="tag">3 组试样平均值 · GB/T 228.1-2021</span></div>
+    <div class="mcBody">
+      <div class="mcH"><span class="lbl">性能项目</span><span class="barSp"></span><span class="v3 rq">要求</span><span class="v3 tw">孪生</span><span class="v3 ms">实测</span><span style="width:62px;flex:none;text-align:right">达标偏差</span></div>
+      <div class="mcR gold"><span class="lb">抗拉强度</span><div class="bar"><span class="reqBand" style="left:80%;width:20%"></span><i style="width:90%"></i><b class="mk tw" style="left:88.9%"></b><b class="mk ms" style="left:90%"></b></div><span class="v3 req">≥520</span><span class="v3 tw">578</span><span class="v3 ms">585</span><span class="ov">+12.5%</span></div>
+      <div class="mcR gold"><span class="lb">屈服强度</span><div class="bar"><span class="reqBand" style="left:51.3%;width:48.7%"></span><i style="width:78.8%"></i><b class="mk tw" style="left:77.5%"></b><b class="mk ms" style="left:78.8%"></b></div><span class="v3 req">≥205</span><span class="v3 tw">310</span><span class="v3 ms">315</span><span class="ov">+53.7%</span></div>
+      <div class="mcR"><span class="lb">延伸率</span><div class="bar"><span class="reqBand" style="left:66.7%;width:33.3%"></span><i style="width:76.7%"></i><b class="mk tw" style="left:75%"></b><b class="mk ms" style="left:76.7%"></b></div><span class="v3 req">≥40</span><span class="v3 tw">45</span><span class="v3 ms">46</span><span class="ov">+15%</span></div>
+      <div class="mcR"><span class="lb">硬度</span><div class="bar"><span class="reqBand" style="left:77.3%;width:13.6%"></span><i style="width:84.1%"></i><b class="mk tw" style="left:83.2%"></b><b class="mk ms" style="left:84.1%"></b></div><span class="v3 req">170-200</span><span class="v3 tw">HB183</span><span class="v3 ms">HB185</span><span class="ov">达标</span></div>
+      <div class="mcR gold"><span class="lb">冲击功</span><div class="bar"><span class="reqBand" style="left:42.9%;width:57.1%"></span><i style="width:85.7%"></i><b class="mk tw" style="left:84.3%"></b><b class="mk ms" style="left:85.7%"></b></div><span class="v3 req">≥60</span><span class="v3 tw">118</span><span class="v3 ms">120</span><span class="ov">+100%</span></div>
+      <div class="mcFoot"><span>要求值：抗拉≥520MPa · 屈服≥205MPa · 延伸率≥40% · 硬度HB170-200 · 冲击≥60J（孪生预测均低于实测，偏保守）</span></div>
+    </div>
+  </div>
+
+  <div class="panel" id="ndt">
+    <div class="phead"><span class="dot"></span><span class="tt">无损检测结果</span><span class="en">· NDT</span><span class="tag">标准 NB/T 47013 · 检测人员：二级无损检测员</span></div>
+    <div class="ndtBody">
+      <div class="nd"><b>渗透检测 PT</b><span>要求 <em>无表面开口缺陷</em> · 孪生 <em>未检出</em> · 实测 <em>未检出</em></span><span>结论 合格 · 荧光渗透/黑光灯检查</span></div>
+      <div class="nd"><b>超声检测 UT</b><span>要求 <em>无 ≥0.5mm 缺陷</em> · 孪生 <em>未检出</em> · 实测 <em>未检出</em></span><span>结论 合格 · 直探头 + 斜探头扫查</span></div>
+      <div class="nd small"><span>内部气孔率</span><span class="big"><i style="color:#7FE8FF;font-size:15px">孪 0.06%</i> <i style="color:#FFE3A0;font-size:17px">实 0.08%</i></span><span>要求 ≤0.5% · 远低于阈值</span></div>
+      <div class="nd small"><span>致密度</span><span class="big"><i style="color:#7FE8FF;font-size:15px">孪 99.94%</i> <i style="color:#FFE3A0;font-size:17px">实 99.92%</i></span><span>要求 ≥99.5% · 已上链存证</span></div>
+    </div>
+  </div>
+ </div>
+
+ <div class="col-m">
+  <div class="panel" id="tw5">
+    <div class="phead"><span class="dot"></span><span class="tt">数字孪生质检结果</span><span class="en">· TWIN RESULT</span><span class="tag" id="twTag5">全零件比对 · 热区已生成</span></div>
+    <div class="tw5Body">
+      <div class="tabs"><b class="on" data-t="d">尺寸偏差分布</b><b data-t="s">残余应力分布</b><b data-t="f">内部缺陷检出</b></div>
+      <div class="legH" id="leg5"><i style="background:#2E7BE0"></i>-0.05<i style="background:#00D68F"></i>0<i style="background:#FFD54A"></i>+0.03<i style="background:#FF4D5E"></i>超差</div>
+      <div class="tw5Cap"><b>AM-2026-0907-001</b><br>DN80 法兰阀 · 316L<br>扫描层 2167 / 2167</div>
+      <svg id="twin5" viewBox="0 0 560 400" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="stl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9DB8D4"/><stop offset="1" stop-color="#55708E"/></linearGradient>
+          <linearGradient id="stl2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B3CBE3"/><stop offset="1" stop-color="#607A96"/></linearGradient>
+          <radialGradient id="hd" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="rgba(255,213,74,.75)"/><stop offset=".6" stop-color="rgba(255,159,10,.45)"/><stop offset="1" stop-color="rgba(46,123,224,.12)"/></radialGradient>
+          <radialGradient id="hs" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="rgba(255,77,94,.72)"/><stop offset=".55" stop-color="rgba(255,122,69,.5)"/><stop offset="1" stop-color="rgba(0,214,143,.15)"/></radialGradient>
+        </defs>
+        <g stroke="rgba(245,197,66,.05)"><path d="M0 100H560M0 200H560M0 300H560M140 0V400M280 0V400M420 0V400"/></g>
+        <rect x="18" y="176" width="112" height="46" fill="url(#stl)" stroke="#3C4F68" opacity=".85"/>
+        <rect x="430" y="176" width="112" height="46" fill="url(#stl)" stroke="#3C4F68" opacity=".85"/>
+        <ellipse cx="280" cy="199" rx="126" ry="66" fill="url(#stl2)" stroke="#41607F" stroke-width="1.4"/>
+        <ellipse cx="280" cy="199" rx="46" ry="36" fill="#08131F" stroke="#2E3F55" stroke-width="2"/>
+        <rect x="112" y="140" width="44" height="118" rx="5" fill="url(#stl)" stroke="#41607F" stroke-width="1.3"/>
+        <rect x="404" y="140" width="44" height="118" rx="5" fill="url(#stl)" stroke="#41607F" stroke-width="1.3"/>
+        <g fill="#0A1A2A" stroke="#4E7BA0">
+          <circle cx="134" cy="156" r="5"/><circle cx="134" cy="242" r="5"/><circle cx="426" cy="156" r="5"/><circle cx="426" cy="242" r="5"/>
+        </g>
+        <rect x="262" y="98" width="36" height="62" fill="url(#stl2)" stroke="#41607F"/>
+        <ellipse cx="280" cy="96" rx="58" ry="13" fill="none" stroke="#9DB8D4" stroke-width="4"/>
+        <line x1="222" y1="96" x2="338" y2="96" stroke="#7E96B0" stroke-width="2"/>
+        <g id="hD" opacity="1">
+          <ellipse cx="426" cy="186" rx="30" ry="22" fill="url(#hd)"/>
+          <ellipse cx="280" cy="150" rx="42" ry="20" fill="url(#hd)" opacity=".55"/>
+          <ellipse cx="134" cy="214" rx="18" ry="26" fill="url(#hd)" opacity=".4"/>
+          <circle cx="426" cy="186" r="3" fill="#FF4D5E"/><circle cx="280" cy="150" r="2.6" fill="#FFD54A"/>
+        </g>
+        <g id="hS" opacity="0">
+          <ellipse cx="280" cy="212" rx="96" ry="42" fill="url(#hs)" opacity=".8"/>
+          <ellipse cx="150" cy="196" rx="26" ry="34" fill="url(#hs)" opacity=".6"/>
+          <ellipse cx="410" cy="196" rx="26" ry="34" fill="url(#hs)" opacity=".6"/>
+        </g>
+        <g id="hF" opacity="0">
+          <circle cx="238" cy="186" r="3" fill="#00D68F"/><circle cx="314" cy="214" r="2.4" fill="#00D68F"/><circle cx="280" cy="172" r="2" fill="#00D68F"/>
+          <text x="280" y="378" text-anchor="middle" font-size="16" fill="#7FEBC6">未检出 ≥0.5mm 内部缺陷 · 气孔率 0.08%</text>
+        </g>
+        <g font-size="15" fill="#E3C98E">
+          <g stroke="rgba(245,197,66,.55)" stroke-width="1" stroke-dasharray="3 3" fill="none">
+            <path d="M134 140V112H76"/><path d="M112 258H66V286"/><path d="M280 235V286"/>
+            <path d="M298 130H372V96"/><path d="M448 258H500V286"/>
+          </g>
+          <g fill="#9DB8D4" font-family="Bahnschrift,Consolas" font-size="15">
+            <text x="10" y="104">A 法兰外径 195.0±0.1</text><text x="10" y="296">B 法兰厚度 22.0±0.1</text><text x="236" y="296">C 阀座孔径 80.0±0.05</text>
+            <text x="378" y="88">D 阀杆直径 25.0±0.02</text><text x="556" y="296" text-anchor="end">E 密封面 ≤0.02</text>
+          </g>
+          <g font-size="15" font-family="Bahnschrift,Consolas">
+            <text x="10" y="116"><tspan fill="#7FE8FF">孪 195.01</tspan><tspan fill="#FFE3A0"> · 实 195.02</tspan></text>
+            <text x="10" y="308"><tspan fill="#7FE8FF">孪 22.02</tspan><tspan fill="#FFE3A0"> · 实 22.01</tspan></text>
+            <text x="236" y="308"><tspan fill="#7FE8FF">孪 80.00</tspan><tspan fill="#FFE3A0"> · 实 80.01</tspan></text>
+            <text x="378" y="100"><tspan fill="#7FE8FF">孪 25.00</tspan><tspan fill="#FFE3A0"> · 实 25.00</tspan></text>
+            <text x="556" y="308" text-anchor="end"><tspan fill="#7FE8FF">孪 0.014</tspan><tspan fill="#FFE3A0"> · 实 0.015</tspan></text>
+            
+          </g>
+        </g>
+      </svg>
+      <div class="tw5Stat">孪生与实物逐层比对 · 一致性系数 <b>R² = 0.972</b> · 最大残差 <b>0.006mm</b> · 数据已上链存证</div>
+      <div class="tw5Info">
+        <div class="ti5"><b>+0.03<small>mm</small></b><span>最大偏差</span></div>
+        <div class="ti5"><b class="g">±0.012<small>mm</small></b><span>平均偏差</span></div>
+        <div class="ti5"><b class="g">0<small>处</small></b><span>超差区域</span></div>
+        <div class="ti5"><b class="g">99.92<small>%</small></b><span>致密度</span></div>
+      </div>
+    </div>
+  </div>
+ </div>
+
+ <div class="col-r">
+  <div class="panel" id="verdict">
+    <div class="phead"><span class="dot"></span><span class="tt">质量综合评定 · 合格判定</span><span class="en">· QUALITY VERDICT</span><span class="tag" id="vdTag">检测数据汇总中</span></div>
+    <div class="vdBody">
+      <div class="vdMain">
+        <div class="ico" id="vdIco">…</div>
+        <div class="vt"><span>综合评定结论</span><b id="vdTxt">评 估 中</b><small id="vdSub">AM-2026-0907-001 · DN80 法兰阀 · 316L</small></div>
+        <div class="vdScore"><b id="vdScore">—</b><span id="vdScoreT">质量综合得分</span><em id="vdGrade">待评</em></div>
+      </div>
+      <div class="vdBasis">
+        <div class="bt">判定依据 · 全项检测结果</div>
+        <div class="vb v1"><i>✓</i><b>尺寸检测</b> 6/6 项合格<span>实测-要求 ≤0.03mm</span></div>
+        <div class="vb v2"><i>✓</i><b>力学性能</b> 5/5 项达标<span>实 585 / 孪 578</span></div>
+        <div class="vb v3"><i>✓</i><b>无损检测</b> 2/2 项合格<span>实 0.08% / 孪 0.06%</span></div>
+        <div class="vb v4"><i>✓</i><b>孪生复核</b> 实测-孪生 ≤0.01mm<span>一致性 97.2%</span></div>
+      </div>
+      <div class="vdFoot"><span>检验员：<b>二级质检员 · 张工</b></span><span>2026-09-07 23:20</span><span>哈希 <b>0x7a3f…e9b2</b></span></div>
+    </div>
+  </div>
+
+  <div class="panel" id="qkpi">
+    <div class="phead"><span class="dot"></span><span class="tt">质量指标总览</span><span class="en">· QUALITY KPI</span><span class="tag">全流程一次合格</span></div>
+    <div class="qkBody">
+      <div class="qk"><b class="gg">99.2<small>%</small></b><span>一次合格率</span></div>
+      <div class="qk"><b class="gg">6/6</b><span>尺寸项合格</span></div>
+      <div class="qk"><b class="gg">5/5</b><span>力学项达标</span></div>
+      <div class="qk"><b class="gg">2/2</b><span>无损项合格</span></div>
+      <div class="qk"><b>0.08<small>%</small></b><span>内部气孔率（≤0.5%）</span></div>
+      <div class="qk"><b class="gg">0<small>次</small></b><span>返修 / 返工</span></div>
+      <div class="qk"><b>48<small>h</small></b><span>交付用时（传统 21 天）</span></div>
+      <div class="qk"><b class="gg">A</b><span>质量等级</span></div>
+    </div>
+  </div>
+ </div>
+</main>
+
+<footer id="ft">
+ <div class="ftT"><b>质量评估流程</b><small>QUALITY ASSESSMENT</small></div>
+ <div class="tl" id="tl"></div>
+ <div class="ftLeg"><span><i style="background:#F5C542"></i>已完成</span><span><i style="background:#33D6FF;border-radius:50%"></i>进行中</span><span><i style="border:1px solid #8A6A3A;background:none"></i>待开始</span></div>
+</footer>
+
+</div></div>
+
+<script>
+var TL=[{t:"后处理完成",d:"22:20"},{t:"尺寸检测",d:"22:50"},{t:"力学试验",d:"23:00"},{t:"无损检测",d:"23:10"},{t:"孪生复核",d:"23:15"},{t:"综合评定",d:"23:18"},{t:"合格放行",d:"23:20"},{t:"档案上链",d:"23:20"}];
+var CFG=[
+ {st:["done","run","todo","todo","todo","todo","todo","todo"],tag:"尺寸检测数据采集中 · CMM 测量 6 项",vd:"评 估 中",sc:"—",gr:"待评",ico:"…",vtag:"检测数据汇总中"},
+ {st:["done","done","done","done","run","todo","todo","todo"],tag:"全零件孪生复核中 · 偏差热区与实测比对",vd:"复 核 中",sc:"96.8",gr:"复核",ico:"…",vtag:"孪生复核中 · 一致性 97.2%"},
+ {st:["done","done","done","done","done","done","done","done"],tag:"质量评定完成 · 全项合格 · 档案已上链",vd:"合 格",sc:"96.8",gr:"A 级",ico:"✓",vtag:"评定完成 · 全部合格"}
+];
+var cur=1;
+function $(i){return document.getElementById(i)}
+function buildTL(){var h=$("tl");h.innerHTML="";TL.forEach(function(t,i){var d=document.createElement("div");d.className="tn";d.innerHTML='<div class="c">'+(i+1)+'</div><div class="nm">'+t.t+'</div><div class="tm">'+t.d+'</div><div class="ln"></div>';h.appendChild(d)})}
+var STAGE_POS=[33.3,66.6,100];
+function apply(){
+ document.body.className="st3";cur=3;
+ var c=CFG[2];
+ var ns=$("tl").children;for(var i=0;i<ns.length;i++){ns[i].className="tn "+c.st[i];}
+ $("twTag5").textContent=c.tag;
+ $("vdTag").textContent=c.vtag;
+ $("vdTxt").textContent=c.vd;
+ $("vdScore").textContent=c.sc;
+ $("vdGrade").textContent=c.gr;
+ $("vdIco").textContent=c.ico;
+ var nodes=document.querySelectorAll(".axN");
+ nodes.forEach(function(n,j){n.className="axN k"+(j+1)+(j<2?" done":" on")});
+ $("axNow").textContent="判定";
+ var f=$("axFill");
+ f.style.transition="width 1.1s cubic-bezier(.2,.8,.3,1)";
+ f.style.width="100%";
+}
+document.querySelectorAll(".tabs b").forEach(function(b){b.onclick=function(){
+ document.querySelectorAll(".tabs b").forEach(function(x){x.className=""});b.className="on";
+ var t=b.getAttribute("data-t");
+ $("hD").style.opacity=t==="d"?1:0;$("hS").style.opacity=t==="s"?1:0;$("hF").style.opacity=t==="f"?1:0;
+ $("leg5").innerHTML = t==="d" ? '<i style="background:#2E7BE0"></i>-0.05<i style="background:#00D68F"></i>0<i style="background:#FFD54A"></i>+0.03<i style="background:#FF4D5E"></i>超差'
+  : t==="s" ? '<i style="background:#2E7BE0"></i>低应力<i style="background:#00D68F"></i>100MPa<i style="background:#FFD54A"></i>180<i style="background:#FF7A45"></i>210MPa'
+  : '<i style="background:#00D68F"></i>无缺陷<i style="background:#FFD54A"></i>微孔<i style="background:#FF4D5E"></i>超标缺陷';
+}});
+function tick(){var d=new Date(),p=function(x){return x<10?"0"+x:x};$("axClock").textContent=p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds())}
+function fit(){var s=Math.min(innerWidth/1920,innerHeight/1080);var el=$("stage");el.style.transformOrigin="0 0";el.style.transform="scale("+s+")";el.style.left=Math.round((innerWidth-1920*s)/2)+"px";el.style.top=Math.round((innerHeight-1080*s)/2)+"px";el.style.position="absolute"}
+function boot(){buildTL();apply();tick();fit();setInterval(tick,1000);addEventListener("resize",fit)}
+boot();
+</script>
+</body>
+</html>

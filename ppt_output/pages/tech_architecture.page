@@ -1,0 +1,269 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>五层一链技术架构：高内聚、低耦合、可扩展、高可信</p>
+  - elementId: layer1-bg
+    elementType: shape
+    bounds: [80, 120, 200, 480]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: layer1-num
+    elementType: text
+    bounds: [80, 130, 200, 30]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "Liter"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>LAYER 1</p>
+  - elementId: layer1-title
+    elementType: text
+    bounds: [80, 165, 200, 30]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>基础层</p>
+  - elementId: layer1-body
+    elementType: text
+    bounds: [95, 205, 170, 380]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [center, top]
+      text: |
+        <p>算力/网络/存储</p>
+        <p>区块链底层节点</p>
+        <p>身份认证体系</p>
+        <p>访问控制机制</p>
+  - elementId: layer2-bg
+    elementType: shape
+    bounds: [300, 120, 200, 480]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: layer2-num
+    elementType: text
+    bounds: [300, 130, 200, 30]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "Liter"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>LAYER 2</p>
+  - elementId: layer2-title
+    elementType: text
+    bounds: [300, 165, 200, 30]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>数据层</p>
+  - elementId: layer2-body
+    elementType: text
+    bounds: [315, 205, 170, 380]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [center, top]
+      text: |
+        <p>增材材料库</p>
+        <p>零部件模型库</p>
+        <p>产线设备库</p>
+        <p>检测方案库</p>
+        <p>标准规范库</p>
+  - elementId: layer3-bg
+    elementType: shape
+    bounds: [520, 120, 200, 480]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: layer3-num
+    elementType: text
+    bounds: [520, 130, 200, 30]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "Liter"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>LAYER 3</p>
+  - elementId: layer3-title
+    elementType: text
+    bounds: [520, 165, 200, 30]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>服务功能层</p>
+  - elementId: layer3-body
+    elementType: text
+    bounds: [535, 205, 170, 380]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [center, top]
+      text: |
+        <p>中心化运营调度</p>
+        <p>分布式产能协同</p>
+        <p>合约空间</p>
+        <p>孪生质检</p>
+  - elementId: layer4-bg
+    elementType: shape
+    bounds: [740, 120, 200, 480]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: layer4-num
+    elementType: text
+    bounds: [740, 130, 200, 30]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "Liter"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>LAYER 4</p>
+  - elementId: layer4-title
+    elementType: text
+    bounds: [740, 165, 200, 30]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>智能层</p>
+  - elementId: layer4-body
+    elementType: text
+    bounds: [755, 205, 170, 380]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [center, top]
+      text: |
+        <p>大模型全局调度</p>
+        <p>小模型本地部署</p>
+        <p>参数/知识共享</p>
+        <p>模型协同进化</p>
+  - elementId: layer5-bg
+    elementType: shape
+    bounds: [960, 120, 200, 480]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: layer5-num
+    elementType: text
+    bounds: [960, 130, 200, 30]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "Liter"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>LAYER 5</p>
+  - elementId: layer5-title
+    elementType: text
+    bounds: [960, 165, 200, 30]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>应用层</p>
+  - elementId: layer5-body
+    elementType: text
+    bounds: [975, 205, 170, 380]
+    content:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [center, top]
+      text: |
+        <p>协同制造</p>
+        <p>孪生质检</p>
+        <p>远程运维</p>
+        <p>应急保障</p>
+  - elementId: chain-bar
+    elementType: shape
+    bounds: [80, 620, 1080, 40]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: chain-text
+    elementType: text
+    bounds: [80, 620, 1080, 40]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>区块链全链路可信赋能 — 贯穿基础设施、数据资源、业务流程、智能决策、场景应用</p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>08</p>

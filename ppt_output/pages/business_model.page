@@ -1,0 +1,171 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>轻资产商业模式：四大收入来源构建高毛利平台型业务</p>
+  - elementId: revenue-chart
+    elementType: chart
+    bounds: [80, 120, 520, 340]
+    type: pie
+    data:
+      - {category: "交易服务费", value: 50}
+      - {category: "加盟服务费", value: 20}
+      - {category: "SaaS订阅", value: 15}
+      - {category: "增值服务", value: 15}
+    x: category
+    y: [value]
+    colors: ["#FF112D", "#FF4D5E", "#FF8A95", "#FFB8C0"]
+    options:
+      innerRadius: 0.45
+    legend:
+      show: true
+      position: bottom
+      color: "$secondary"
+      fontSize: 12
+    dataLabels:
+      show: true
+      content: percentage
+      numberFormat: "0%"
+      color: "$text"
+      fontSize: 14
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: item1-title
+    elementType: text
+    bounds: [640, 130, 560, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>交易服务费（核心收入，50%）</p>
+  - elementId: item1-body
+    elementType: text
+    bounds: [640, 166, 560, 60]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>按订单金额5%-10%阶梯收取，用户端免费</p>
+        <p>与平台交易额挂钩，是核心现金流来源</p>
+  - elementId: item2-title
+    elementType: text
+    bounds: [640, 240, 560, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>加盟服务费（稳定收入，20%）</p>
+  - elementId: item2-body
+    elementType: text
+    bounds: [640, 276, 560, 60]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>年度加盟费/席位费，含平台使用、技术赋能、品牌授权</p>
+        <p>预付费模式，现金流稳定，随节点数量增长稳步提升</p>
+  - elementId: item3-title
+    elementType: text
+    bounds: [640, 350, 560, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>SaaS订阅（增值收入，15%）</p>
+  - elementId: item3-body
+    elementType: text
+    bounds: [640, 386, 560, 60]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>高级版质量追溯、AI工艺优化、私有部署协同系统</p>
+        <p>边际成本极低，毛利率高，面向中高端客户</p>
+  - elementId: item4-title
+    elementType: text
+    bounds: [640, 460, 560, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>增值服务（补充收入，15%）</p>
+  - elementId: item4-body
+    elementType: text
+    bounds: [640, 496, 560, 54]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>检测认证佣金、材料集中采购差价、工艺咨询、定制开发</p>
+        <p>多元化补充，增强平台生态粘性</p>
+  - elementId: divider
+    elementType: shape
+    bounds: [80, 560, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: summary-text
+    elementType: text
+    bounds: [80, 570, 1120, 40]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.5
+      align: [left, middle]
+      text: |
+        <p><strong>平台型轻资产盈利结构</strong>：无需自建产线，毛利高、可持续、规模效应显著。核心收入来自交易服务费，具备高复购、强现金流特征。</p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>13</p>

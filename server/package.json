@@ -1,0 +1,22 @@
+{
+  "name": "am-database-server",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "init-db": "node src/init-db.js",
+    "seed": "node --import tsx db/seed.mjs",
+    "test-data": "node --import tsx db/test-data.mjs",
+    "test-data:clean": "node --import tsx db/test-data.mjs --clean"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mysql2": "^3.11.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0"
+  }
+}

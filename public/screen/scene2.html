@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>场景2 · 远程支援与方案生成大屏</title>
+<style>
+:root{--navy0:#030A17;--navy1:#061226;--navy2:#0A1E3F;--navy3:#0E2E5C;
+--blue:#00A8FF;--blue2:#3D9BFF;--cyan:#33D6FF;--line:rgba(0,168,255,.28);
+--txt:#CBE6FF;--txt2:#7FA6CE;--txt3:#EAF7FF;--dim:#4E7499;
+--red:#FF4D5E;--org:#FF9F0A;--grn:#00D68F;--gold:#F5C542;
+--acc:#B9CFE8;--acc2:#7A93B8;
+--mono:Bahnschrift,Consolas,'Courier New',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
+body{background:#01040B;color:var(--txt);font-family:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif;user-select:none}
+#env{position:fixed;inset:0;background:radial-gradient(1200px 700px at 18% 8%,rgba(0,100,200,.12),transparent 60%),radial-gradient(1000px 800px at 85% 92%,rgba(0,70,160,.1),transparent 55%),#01040B}
+#env:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(0,168,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,168,255,.045) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(circle at 50% 45%,#000 30%,transparent 95%)}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{width:1920px;height:1080px;flex:none;position:relative;transform-origin:center center;will-change:transform;background:radial-gradient(1400px 760px at 50% -6%,rgba(0,120,240,.16),transparent 58%),linear-gradient(160deg,#041129,#06162F 45%,#041026);box-shadow:0 0 90px rgba(0,60,150,.35);overflow:hidden}
+#stage:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,168,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,168,255,.05) 1px,transparent 1px);background-size:60px 60px;opacity:.5}
+#stage:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,20,60,.55),transparent 9%,transparent 91%,rgba(0,10,40,.6));z-index:2}
+/* header */
+#hd{position:absolute;top:0;left:0;right:0;height:112px;z-index:20;display:flex;align-items:center;padding:0 30px;background:linear-gradient(180deg,rgba(3,14,34,.9),rgba(4,18,40,.55) 70%,transparent);border-bottom:1px solid rgba(0,168,255,.18)}
+#hd:before{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,rgba(0,168,255,.55) 18%,rgba(51,214,255,.7) 50%,rgba(0,168,255,.55) 82%,transparent)}
+.brand{width:462px;display:flex;align-items:center;gap:14px}
+.brand .logo{width:54px;height:54px;flex:none}
+.brand b{display:block;font-size:24px;color:#EAF7FF;letter-spacing:2px;font-weight:600;white-space:nowrap}
+.brand span{display:block;font-size:13px;color:#5E8DB8;letter-spacing:2.4px;margin-top:3px}
+.brand small{display:block;font-size:15px;color:#3D6A8E;letter-spacing:1px;margin-top:1px}
+.hdmid{flex:1;text-align:center}
+.hdmid h1{font-size:49px;letter-spacing:4px;color:#EAF7FF;font-weight:600}
+.hdmid h1 i{font-style:normal;color:var(--acc)}
+.hdmid .sub{display:inline-block;margin-top:7px;font-size:18px;letter-spacing:3px;color:var(--txt2);background:linear-gradient(90deg,transparent,rgba(120,170,255,.14),transparent);padding:2px 26px;border-top:1px solid rgba(140,190,255,.28);border-bottom:1px solid rgba(140,190,255,.28)}
+.hdright{width:660px;display:flex;align-items:center;justify-content:flex-end;gap:16px;flex:none}
+.steps{display:flex;gap:8px}
+.step{width:108px;height:38px;border:1px solid rgba(120,170,255,.35);background:rgba(0,40,90,.35);border-radius:6px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:19px;color:var(--txt2);cursor:pointer;transition:.3s;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.step i{font-style:normal;font-family:var(--mono);color:var(--blue)}
+.step.on{border-color:var(--acc);color:#fff;background:linear-gradient(180deg,rgba(150,200,255,.25),rgba(0,40,90,.5));box-shadow:0 0 16px rgba(160,210,255,.3);text-shadow:0 0 8px rgba(220,240,255,.7)}
+.step.on i{color:var(--acc)}
+#clock{text-align:right}
+#clock b{font-family:var(--mono);font-size:32px;color:#EAF7FF;letter-spacing:2px}
+#clock span{display:block;font-size:16px;color:#5E8DB8;letter-spacing:2px;margin-top:2px}
+/* panel */
+.panel{position:relative;background:linear-gradient(180deg,rgba(6,24,52,.72),rgba(3,12,28,.78));border:1px solid rgba(120,170,255,.24);box-shadow:inset 0 0 26px rgba(0,80,180,.1),0 0 18px rgba(0,30,80,.25)}
+.panel:before{content:"";position:absolute;top:-1px;left:-1px;width:18px;height:18px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan);pointer-events:none;z-index:5}
+.panel:after{content:"";position:absolute;bottom:-1px;right:-1px;width:18px;height:18px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);pointer-events:none;z-index:5}
+.phead{height:54px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid rgba(120,170,255,.18);flex:none}
+.phead .dot{width:7px;height:7px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);transform:rotate(45deg)}
+.phead .tt{font-size:21px;color:#E6F2FF;letter-spacing:1.5px;font-weight:500;white-space:nowrap}
+.phead .en{display:none;font-size:15px}
+.phead .tag{margin-left:auto;font-size:16px;color:var(--txt2)}
+/* main */
+#main{position:absolute;top:120px;left:22px;right:22px;bottom:182px;z-index:10;display:flex;gap:14px}
+.col-l{width:39%;display:flex;flex-direction:column}
+.col-m{flex:1;display:flex;flex-direction:column;gap:12px;min-width:0}
+.col-r{width:25.5%;display:flex;flex-direction:column;gap:12px}
+/* 3d */
+#view3d{flex:1;display:flex;flex-direction:column}
+.vBody{flex:1;position:relative;overflow:hidden}
+.vBody svg{position:absolute;inset:0;width:100%;height:100%}
+.vtools{position:absolute;right:12px;top:12px;z-index:6;display:flex;gap:6px}
+.vtools b{font-weight:400;font-size:18px;padding:4px 12px;border:1px solid rgba(120,170,255,.4);background:rgba(2,14,32,.75);color:#AFD3F5;cursor:pointer;border-radius:3px;font-family:inherit}
+.vtools b.on{background:rgba(60,140,255,.4);color:#fff;border-color:var(--cyan)}
+.vmeta{position:absolute;left:0;right:0;bottom:0;z-index:6;display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px;background:linear-gradient(0deg,rgba(2,10,24,.88),transparent);font-size:16px;color:#9DC3E6}
+.vmeta i{font-style:normal;color:#EAF7FF;font-family:var(--mono)}
+.vmeta em{font-style:normal;color:#4E7BA6}
+.vBadge{position:absolute;left:14px;top:12px;z-index:7;font-size:18px;letter-spacing:2px;color:#B7D9F7;border:1px solid rgba(120,170,255,.45);padding:3px 12px;background:rgba(4,20,48,.7);clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);opacity:.9}
+.vBadge.b2{display:none}
+body.st2 .vBadge.b2,body.st3 .vBadge.b2{display:block;color:#BFE8FF;border-color:var(--cyan);box-shadow:0 0 14px rgba(0,168,255,.35)}
+.optTag{position:absolute;left:14px;bottom:46px;z-index:7;display:none;font-size:16px;color:#A8EFD0;border:1px solid rgba(0,214,143,.6);background:rgba(0,120,90,.2);padding:2px 10px}
+body.st2 .optTag,body.st3 .optTag{display:block}
+body.st1 .optTag{display:none}
+/* models */
+#ms{flex:.95;display:flex;flex-direction:column;min-height:0}
+.mList{padding:5px 12px;flex:1;display:flex;flex-direction:column;gap:6px}
+.mrow{display:flex;align-items:center;gap:12px;border:1px solid rgba(120,170,255,.16);background:rgba(3,16,38,.6);padding:5px 12px;position:relative;transition:.3s}
+.mrow.sel{border-color:var(--cyan);background:linear-gradient(90deg,rgba(0,140,255,.16),rgba(3,16,38,.4));box-shadow:inset 0 0 16px rgba(0,140,255,.14)}
+.mrow .no{font-family:var(--mono);font-size:21px;color:#4E7BA6;width:20px}
+.mrow .nm{font-size:21px;color:#D9EDFF;white-space:nowrap}
+.mrow .bar{flex:1;height:8px;background:rgba(0,60,120,.4);border-radius:4px;overflow:hidden;margin:0 4px}
+.mrow .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3D9BFF,#33D6FF);border-radius:4px;transition:width 1s cubic-bezier(.2,.8,.3,1)}
+.mrow.sel .bar i{background:linear-gradient(90deg,#00D68F,#33D6FF)}
+.mrow .mt{font-family:var(--mono);font-size:21px;color:#7FEBC6;width:56px;text-align:right}
+.chip{font-size:15px;padding:2px 8px;border:1px solid #33567D;color:#7FA6CE;white-space:nowrap}
+.chip.ok{border-color:rgba(0,214,143,.6);color:#7FEBC6;background:rgba(0,120,90,.15)}
+.chip.gray{border-color:#33567D;color:#5A7FA4;background:rgba(30,60,90,.25)}
+.chip.rec{border-color:var(--gold);color:#FFE3A0;background:rgba(245,197,66,.12)}
+.mrow .selTag{position:absolute;right:10px;top:-9px;display:none;font-size:15px;color:#04142B;background:var(--cyan);padding:1px 8px;clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%);font-weight:500}
+body.st2 .mrow.sel .selTag,body.st3 .mrow.sel .selTag{display:block}
+body.st1 .mrow:not(:first-child){opacity:.55}
+/* params */
+#op{flex:1.15;display:flex;flex-direction:column;min-height:0}
+.pGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 12px}
+.pcell{border:1px solid rgba(120,170,255,.15);background:rgba(3,16,38,.55);padding:6px 10px;display:flex;align-items:center;gap:10px}
+.pcell .ic{width:60px;height:30px;flex:none;border:1px solid rgba(120,170,255,.3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);color:#9DC3E6;font-size:14px;background:rgba(0,60,130,.25)}
+.pcell b{font-size:24px;color:#E6F2FF;font-family:var(--mono);letter-spacing:0}
+.pcell b small{font-size:16px;color:#6E9AC2;font-family:inherit;margin-left:3px}
+.pcell span{display:none}
+.pcell .st{display:none}
+.pcell.good .st{color:#7FEBC6}
+body.st1 .pcell .st{color:#5A7FA4}
+body.st1 .pcell.good .st{color:#5A7FA4}
+.pSim{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 12px 10px}
+.psim{text-align:center;border:1px solid rgba(120,170,255,.14);background:rgba(3,16,38,.5);padding:7px 4px}
+.psim b{font-family:var(--mono);font-size:22px;color:#D9EDFF}
+.psim b small{font-size:13px;color:#6E9AC2;font-family:inherit}
+.psim span{display:block;font-size:15px;color:#6E9AC2;margin-top:3px;letter-spacing:1px}
+body.st1 .psim{opacity:.5}
+/* radar */
+#rad{flex:.85;display:flex;flex-direction:column;min-height:0}
+#rad .pbody{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:0;overflow:hidden}
+.radWrap{position:relative;width:100%;height:100%}
+.radWrap svg{width:100%;height:100%}
+.radNote{position:absolute;left:12px;top:8px;font-size:16px;color:#7FA6CE;letter-spacing:1px}
+.radNote em{font-style:normal;color:#7FEBC6}
+/* file */
+#file{flex:1.5;display:flex;flex-direction:column;min-height:0}
+.fRows{padding:8px 12px 6px;display:flex;flex-direction:column;gap:7px;flex:1}
+.frow{display:flex;align-items:center;gap:10px;border:1px solid rgba(120,170,255,.14);background:rgba(3,16,38,.55);padding:6px 10px;font-size:18px}
+.frow .ft{width:64px;flex:none;text-align:center;font-size:15px;color:#B7D9F7;border:1px solid rgba(120,170,255,.4);padding:2px 0;font-family:var(--mono);letter-spacing:1px;background:rgba(0,60,130,.3)}
+.frow .nm{color:#D9EDFF;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frow .ds{display:none;font-family:var(--mono);font-size:16px;color:#5A7FA4}
+.frow .sz{font-family:var(--mono);font-size:16px;color:#5A7FA4}
+.frow .cs{margin-left:4px}
+.frow .cs.g{color:#7FEBC6}
+.fSign{margin:0 12px 8px;padding:6px 10px;font-size:16px;color:#9DC3E6;border:1px dashed rgba(120,170,255,.3);display:flex;gap:8px;align-items:center}
+.fSign em{font-style:normal;color:#7FEBC6}
+/* mat quick */
+#mat{flex:1;display:flex;flex-direction:column;min-height:0}
+.mMini{padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:center;flex:1}
+.mm{border-left:2px solid rgba(120,170,255,.5);padding:3px 10px;background:rgba(3,16,38,.5)}
+.mm b{font-family:var(--mono);font-size:24px;color:#E6F2FF}
+.mm b small{font-family:inherit;font-size:15px;color:#6E9AC2}
+.mm span{display:block;font-size:15px;color:#6E9AC2;margin-top:2px}
+.mm.ok{border-left-color:var(--grn)}.mm.ok b{color:#7FEBC6}
+/* bottom progress */
+#ft{position:absolute;left:22px;right:22px;bottom:10px;height:110px;z-index:12;display:flex;align-items:center;border:1px solid rgba(120,170,255,.22);background:linear-gradient(180deg,rgba(5,20,44,.94),rgba(3,12,28,.96));padding:0 22px}
+#ft .ftT{flex:none;width:300px;font-size:24px;color:#DDF1FF;letter-spacing:2px}
+#ft .ftT b{font-size:24px;color:#E6F2FF;letter-spacing:3px;font-weight:500}
+#ft .ftT small{display:block;font-size:15px;color:#4E7499;letter-spacing:2px;margin-top:3px}
+.sg{flex:1;display:flex;align-items:center}
+.sg .sn{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.sg .rk{width:44px;height:44px;border-radius:50%;border:2px solid rgba(120,170,255,.3);display:flex;align-items:center;justify-content:center;position:relative;background:#081B3A}
+.sg .rk svg{position:absolute;inset:-2px;width:44px;height:44px;transform:rotate(-90deg)}
+.sg .rk svg circle{fill:none;stroke-width:2;stroke:#33567D}
+.sg .rk svg .pr{stroke:var(--cyan);stroke-linecap:round;transition:stroke-dashoffset 1s}
+.sg .rk b{font-family:var(--mono);font-size:16px;color:#7FA6CE}
+.sg .nm{font-size:19px;color:#9DC3E6;letter-spacing:1px}
+.sg .tm{font-family:var(--mono);font-size:16px;color:#4E7499}
+.sg .ln{position:absolute;left:calc(-50% + 22px);right:calc(50% + 22px);top:21px;height:2px;background:rgba(120,170,255,.15);z-index:1}
+.sg .sn:first-child .ln{display:none}
+.sn.done .rk{border-color:var(--cyan);background:rgba(0,140,255,.22)}
+.sn.done .rk b{color:#EAF7FF}
+.sn.done .nm{color:#D9EDFF}
+.sn.done .tm{color:#7FC9F2}
+.sn.done .rk svg .pr{stroke:#00D68F}
+.sn.run .rk{border-color:var(--gold);box-shadow:0 0 18px rgba(245,197,66,.5)}
+.sn.run .rk b{color:#FFE3A0}
+.sn.run .nm{color:#FFE3A0}
+.sn.run .rk svg .pr{stroke:var(--gold)}
+.sn.todo .rk{opacity:.55}
+#ft .ring{flex:none;width:190px;text-align:center;position:relative;height:92px}
+#ft .ring svg{position:absolute;right:0;top:8px}
+#ft .ring b{font-family:var(--mono);font-size:32px;color:#EAF7FF}
+#ft .ring b small{font-size:16px;color:#6E9AC2}
+#ft .ring span{font-size:16px;color:#6E9AC2;letter-spacing:1px}
+/* ctrl */
+#ctrl{position:absolute;right:20px;bottom:106px;z-index:40;display:flex;gap:8px;align-items:center;opacity:.92;bottom:140px}
+#ctrl button{width:96px;height:44px;border:1px solid rgba(120,170,255,.45);background:linear-gradient(180deg,rgba(4,30,70,.9),rgba(2,14,34,.95));color:#CFE9FF;font-size:21px;cursor:pointer;border-radius:4px;font-family:inherit;transition:.25s}
+#ctrl button:hover{background:rgba(60,140,255,.4);box-shadow:0 0 14px rgba(120,190,255,.6)}
+#ctrl .cur{margin:0 6px;font-family:var(--mono);font-size:21px;color:#AFD3F5}
+#ctrl .hint{font-size:15px;color:#33567D;letter-spacing:1px}
+#backHome{display:flex;align-items:center;gap:6px;height:44px;padding:0 12px;margin-right:18px;border:1px solid rgba(51,214,255,.45);border-radius:4px;color:#C9EBFF;letter-spacing:1.5px;text-decoration:none;background:rgba(0,60,140,.35);transition:.25s;flex:none;font-size:27px}
+#backHome:hover{background:rgba(0,130,235,.45);color:#fff;box-shadow:0 0 14px rgba(51,214,255,.45)}
+
+/* ============================================================
+   场景页视觉打磨 · 与首页统一设计语言
+   ============================================================ */
+:root{
+  --t1:#EAF7FF; --t2:#A9CBE8; --t3:#6E97BE; --t4:#4E7BA6;
+  --c1:#33D6FF; --c2:#7FE8FF; --c3:#BFE9FF;
+  --line:rgba(0,168,255,.20);
+  --anim:180ms cubic-bezier(.2,.9,.3,1);
+}
+
+/* 舞台暗角 */
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,4,12,.45) 100%)}
+
+/* 面板：统一描边/内发光 */
+.panel{border-color:var(--line);box-shadow:inset 0 1px 0 rgba(120,210,255,.10),inset 0 0 36px rgba(0,60,130,.10)}
+
+/* 顶栏按钮统一高度 */
+#backHome{height:42px;line-height:40px;font-size:18px;border-radius:2px;transition:all var(--anim)}
+#backHome:hover{transform:translateY(-1px)}
+
+/* 数字等宽 */
+*{font-variant-numeric:tabular-nums}
+
+/* 面板入场动效 */
+@keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.panel{animation:riseIn .5s var(--anim) both}
+.panel:nth-child(2){animation-delay:.08s}
+.panel:nth-child(3){animation-delay:.14s}
+
+/* 滚动条细化 */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:rgba(51,214,255,.18);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(51,214,255,.32)}
+
+/* 文字标签描边（叠加在深色底上更清晰） */
+svg text{paint-order:stroke;stroke:rgba(1,6,14,.7);stroke-width:2px;stroke-linejoin:round}
+
+</style>
+</head>
+<body class="st1">
+<div id="env"></div>
+<div id="wrap"><div id="stage">
+<header id="hd">
+ <div class="brand">
+   <svg class="logo" viewBox="0 0 60 60"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#33D6FF"/><stop offset="1" stop-color="#0E6FCE"/></linearGradient></defs>
+   <polygon points="30,3 53,16.5 53,43.5 30,57 7,43.5 7,16.5" fill="none" stroke="url(#lg)" stroke-width="2"/><polygon points="30,14 44,22 44,38 30,46 16,38 16,22" fill="rgba(0,168,255,.14)" stroke="#3D9BFF" stroke-width="1"/><circle cx="30" cy="30" r="6.5" fill="none" stroke="#33D6FF" stroke-width="2"/><circle cx="30" cy="30" r="1.8" fill="#33D6FF"/></svg>
+   <div><b>去中心化增材制造交付平台</b><span>DECENTRALIZED&nbsp;AM&nbsp;DELIVERY&nbsp;PLATFORM</span></div>
+ </div>
+ <div class="hdmid">
+   <h1>远程支援与方案生成<i>大屏</i></h1>
+   <div class="sub">阶段2 · 远程支援与方案生成（00:03:00 - 00:05:30）</div>
+ </div>
+ <div class="hdright">
+   <a id="backHome" href="index.html">◀ 态势图</a><a target="_top" href="/workbench" style="margin-left:14px;height:42px !important;display:inline-flex !important;align-items:center;white-space:nowrap;padding:0 18px;color:#BFE9FF;text-decoration:none;border:1px solid rgba(51,214,255,.5);border-radius:2px;font-size:18px;letter-spacing:1px;transition:.18s;background:rgba(0,120,220,.14);" onmouseover="this.style.background='rgba(0,168,255,.28)'" onmouseout="this.style.background='rgba(0,120,220,.14)'">管理入口</a>
+   <div class="steps">
+     <div class="step" data-g="1"><i>①</i>模型检索</div>
+     <div class="step" data-g="2"><i>②</i>优化达标</div>
+     <div class="step" data-g="3"><i>③</i>下发完成</div>
+   </div>
+   <div id="clock"><b id="tC">--:--:--</b><span id="tD">----</span></div>
+ </div>
+</header>
+
+<main id="main">
+ <div class="col-l">
+  <div class="panel" id="view3d">
+    <div class="phead"><span class="dot"></span><span class="tt">三维模型视图 · 阀门数字模型</span><span class="en">· CAD VIEWER</span><span class="tag">DN80 法兰截止阀 · STEP · 316L 不锈钢</span></div>
+    <div class="vBody">
+      <div class="vBadge">模型库共享 · DN80法兰截止阀 V3.2</div>
+      <div class="vBadge b2">增材适配性优化完成 · 打印方向 / 支撑 / 壁厚 已调整</div>
+      <div class="optTag">应力仿真 215 MPa &lt; 屈服强度 310 MPa ✓ · 变形预测 0.04 mm ✓</div>
+      <div class="vtools"><b class="on">旋转</b><b>剖切</b><b>缩放</b><b>重置</b></div>
+      <svg id="valve" viewBox="0 0 860 560">
+       <defs>
+        <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6E88A6"/><stop offset=".35" stop-color="#A9C2DE"/><stop offset=".65" stop-color="#93ADC9"/><stop offset="1" stop-color="#5A7290"/></linearGradient>
+        <linearGradient id="steelV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9DB8D4"/><stop offset="1" stop-color="#55708E"/></linearGradient>
+        <linearGradient id="steelD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5E7692"/><stop offset="1" stop-color="#3C4F68"/></linearGradient>
+        <linearGradient id="hot" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="rgba(255,120,60,.75)"/><stop offset=".55" stop-color="rgba(255,200,90,.5)"/><stop offset="1" stop-color="rgba(60,220,255,.28)"/></linearGradient>
+        <radialGradient id="plate" cx=".5" cy=".2" r=".9"><stop offset="0" stop-color="#142C4E"/><stop offset="1" stop-color="#050E20"/></radialGradient>
+        <pattern id="hatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="7" stroke="rgba(140,180,220,.5)" stroke-width="1"/></pattern>
+        <marker id="arr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 1L8 5L0 9" fill="none" stroke="#33D6FF" stroke-width="1.5"/></marker>
+       </defs>
+       <rect x="0" y="0" width="860" height="560" fill="url(#plate)"/>
+       <g stroke="rgba(90,170,255,.10)"><path d="M0 56H860M0 112H860M0 168H860M0 224H860M0 280H860M0 336H860M0 392H860M0 448H860M0 504H860"/><path d="M86 0V560M172 0V560M258 0V560M344 0V560M430 0V560M516 0V560M602 0V560M688 0V560M774 0V560"/></g>
+       <g id="supG" opacity="0">
+         <g id="supy"><rect x="98" y="452" width="10" height="52" fill="#7FA6CE"/><rect x="132" y="452" width="10" height="52" fill="#7FA6CE"/><rect x="706" y="452" width="10" height="52" fill="#7FA6CE"/><rect x="740" y="452" width="10" height="52" fill="#7FA6CE"/></g>
+       </g>
+       <rect id="plateLine" x="40" y="452" width="780" height="6" fill="#33D6FF" opacity=".65"/>
+       <text x="470" y="478" text-anchor="middle" font-size="18" fill="#7FA6CE">打印基板</text>
+       <g id="model">
+         <path d="M310 96 L360 96 L360 158 Q330 168 300 160 Z" fill="url(#steel)" stroke="#3C4F68" stroke-width="1.5"/>
+         <rect x="252" y="158" width="140" height="60" rx="10" fill="url(#steel)" stroke="#3C4F68" stroke-width="1.5"/>
+         <path d="M252 218 L392 218 L380 296 Q322 336 264 296 Z" fill="url(#steelD)" stroke="#3C4F68" stroke-width="1.5"/>
+         <path d="M266 296 L360 296 L346 372 Q313 392 278 372 Z" fill="url(#steelD)" stroke="#3C4F68" stroke-width="1.5"/>
+         <rect x="98" y="210" width="92" height="96" rx="6" fill="url(#steelV)" stroke="#3C4F68" stroke-width="1.5"/>
+         <rect x="392" y="210" width="92" height="96" rx="6" fill="url(#steelV)" stroke="#3C4F68" stroke-width="1.5"/>
+         <circle cx="310" cy="206" r="13" fill="none" stroke="#2E3F55" stroke-width="3"/>
+         <rect x="214" y="218" width="30" height="44" fill="#35475F"/><rect x="240" y="218" width="26" height="44" fill="url(#hatch)"/>
+         <rect x="384" y="218" width="30" height="44" fill="#35475F"/><rect x="358" y="218" width="26" height="44" fill="url(#hatch)"/>
+         <path d="M300 372 L326 372 L316 452 L310 452 Z" fill="url(#steel)" stroke="#3C4F68" stroke-width="1.2"/>
+         <ellipse cx="310" cy="218" rx="19" ry="7" fill="none" stroke="#2E3F55" stroke-width="2.5"/>
+         <circle cx="310" cy="372" r="14" fill="#142C4E" stroke="#33D6FF" stroke-width="1.5" opacity="0"/>
+         <path d="M176 250 h40 M176 262 h40" stroke="#2E3F55" stroke-width="2.5"/>
+         <path d="M226 250 q10 -8 18 0 M226 262 q10 -8 18 0" stroke="#2E3F55" stroke-width="2" fill="none"/>
+         <path d="M226 238 q10 -8 18 0 M226 274 q10 -8 18 0" stroke="#2E3F55" stroke-width="2" fill="none"/>
+         <path d="M406 250 h40 M406 262 h40" stroke="#2E3F55" stroke-width="2.5"/>
+         <path d="M446 250 q-10 -8 -18 0 M446 262 q-10 -8 -18 0" stroke="#2E3F55" stroke-width="2" fill="none"/>
+         <path d="M446 238 q-10 -8 -18 0 M446 274 q-10 -8 -18 0" stroke="#2E3F55" stroke-width="2" fill="none"/>
+         <rect x="252" y="282" width="140" height="90" fill="url(#hatch)" opacity=".5"/>
+         <path d="M320 180 q8 10 6 22" stroke="#33D6FF" stroke-width="2" fill="none" opacity="0"/>
+       </g>
+       <g id="wheel"><ellipse cx="310" cy="86" rx="58" ry="11" fill="none" stroke="#9DB8D4" stroke-width="7"/><ellipse cx="310" cy="86" rx="58" ry="11" fill="none" stroke="#C6D8EC" stroke-width="1.5"/><line x1="310" y1="60" x2="310" y2="112" stroke="#C6D8EC" stroke-width="3"/><circle cx="310" cy="86" r="7" fill="#33D6FF"/></g>
+       <g id="dim" opacity="0">
+         <path d="M470 150 h96" stroke="#33D6FF" stroke-width="1" marker-end="url(#arr)"/>
+         <line x1="470" y1="150" x2="470" y2="452" stroke="rgba(51,214,255,.8)" stroke-width="1" stroke-dasharray="3 5"/>
+         <line x1="566" y1="150" x2="566" y2="452" stroke="rgba(51,214,255,.8)" stroke-width="1" stroke-dasharray="3 5"/>
+         <text x="518" y="306" font-size="21" fill="#8CE0FF" text-anchor="middle" transform="rotate(-90 518 306)">总长 280 mm</text>
+         <path d="M98 150 h-28 M98 258 h-28" stroke="#33D6FF" stroke-width="1.2"/>
+         <line x1="70" y1="150" x2="70" y2="258" stroke="#33D6FF" stroke-width="1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+         <text x="48" y="206" font-size="19" fill="#8CE0FF" text-anchor="middle" transform="rotate(-90 48 206)">法兰外径195</text>
+         <path d="M310 428 v44 M310 418 h-40 M310 418 h40" stroke="#33D6FF" stroke-width="1.2"/>
+         <line x1="270" y1="418" x2="270" y2="452" stroke="#33D6FF" stroke-width="1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+         <line x1="350" y1="418" x2="350" y2="452" stroke="#33D6FF" stroke-width="1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+         <text x="270" y="442" font-size="18" fill="#8CE0FF" text-anchor="middle">150 mm</text>
+       </g>
+       <g id="stress" opacity="0">
+         <ellipse cx="310" cy="206" rx="30" ry="18" fill="url(#hot)" filter="url(#sblur)"/>
+         <ellipse cx="300" cy="372" rx="20" ry="14" fill="url(#hot)" filter="url(#sblur)"/>
+         <rect x="760" y="360" width="92" height="120" rx="6" fill="rgba(3,16,38,.85)" stroke="rgba(51,214,255,.4)"/>
+         <text x="806" y="382" text-anchor="middle" font-size="18" fill="#D9EDFF">应力云图 MPa</text>
+         <rect x="768" y="392" width="76" height="8" fill="#33D6FF"/><rect x="768" y="404" width="52" height="8" fill="#FFD54A"/><rect x="768" y="416" width="26" height="8" fill="#FF7A45"/>
+         <text x="768" y="442" font-size="15" fill="#7FA6CE">0</text><text x="844" y="442" font-size="15" fill="#7FA6CE">315</text>
+         <text x="806" y="462" text-anchor="middle" font-size="15" fill="#FF9AA6">峰值 215 MPa · 阀杆根部</text>
+       </g>
+       <g id="pdir" opacity="0">
+         <line x1="310" y1="40" x2="310" y2="14" stroke="#33D6FF" stroke-width="2.4" marker-end="url(#arr)"/>
+         <text x="342" y="30" font-size="19" fill="#8CE0FF" letter-spacing="1">打印方向 垂直（阀杆向上）</text>
+         <path d="M120 250 v-40 M124 210 h80 M122 250 h80" stroke="rgba(245,197,66,.8)" stroke-width="1" stroke-dasharray="3 4" opacity="0"/>
+       </g>
+       <defs><filter id="sblur"><feGaussianBlur stdDeviation="7"/></filter></defs>
+      </svg>
+      <div class="vmeta">
+        <span><em>名称</em> <i>DN80法兰截止阀 V3.2</i></span><span><em>格式</em> <i>STEP</i></span>
+        <span><em>材质</em> <i>316L 不锈钢</i></span><span><em>法兰外径</em> <i>195 mm</i></span>
+        <span><em>总长×高</em> <i>280×150 mm</i></span><span><em>支撑体积</em> <i class="su">12.3 cm³</i></span><span><em>预计打印时长</em> <i class="su">6.5 h</i></span>
+      </div>
+    </div>
+  </div>
+ </div>
+
+ <div class="col-m">
+  <div class="panel" id="ms">
+    <div class="phead"><span class="dot"></span><span class="tt">模型库搜索结果</span><span class="en">· MODEL MATCH</span><span class="tag">去中心化共享模型库 · 检索耗时 0.6s</span></div>
+    <div class="mList">
+      <div class="mrow sel"><span class="no">M1</span><span class="nm">DN80法兰截止阀 V3.2</span><div class="bar"><i style="width:98%"></i></div><span class="mt">98%</span><span class="chip ok">已验证</span><span class="chip">历史使用 47 次</span><span class="chip rec">推荐</span><span class="selTag">已选用</span></div>
+      <div class="mrow"><span class="no">M2</span><span class="nm">DN80法兰截止阀 V2.1</span><div class="bar"><i style="width:85%"></i></div><span class="mt">85%</span><span class="chip ok">已验证</span><span class="chip">历史使用 23 次</span><span class="selTag"></span></div>
+      <div class="mrow"><span class="no">M3</span><span class="nm">DN80闸阀</span><div class="bar"><i style="width:72%"></i></div><span class="mt">72%</span><span class="chip gray">待验证</span><span class="chip">历史使用 5 次</span><span class="selTag"></span></div>
+      <div style="margin-top:auto;font-size:11px;color:#5A7FA4;letter-spacing:1px">* 按阀门型号 / 尺寸 / 材质参数自动检索 · 匹配度 = 参数特征加权相似度 · 模型均经验证后入库共享，避免重复建模</div>
+    </div>
+  </div>
+
+  <div class="panel" id="op">
+    <div class="phead"><span class="dot"></span><span class="tt">增材制造适配性优化</span><span class="en">· DFAM OPTIMIZE</span><span class="tag" id="opTag">等待优化…</span></div>
+    <div class="pGrid">
+      <div class="pcell good"><div class="ic">层厚</div><div><b>30<small>μm</small></b><span>打印层厚 · 已适配设备</span></div><span class="st">✓ 达标</span></div>
+      <div class="pcell good"><div class="ic">W</div><div><b>280<small>W</small></b><span>激光功率 · SLM 金属打印</span></div><span class="st">✓ 达标</span></div>
+      <div class="pcell good"><div class="ic">mm/s</div><div><b>800<small>mm/s</small></b><span>扫描速度 · 稳定区间</span></div><span class="st">✓ 达标</span></div>
+      <div class="pcell good"><div class="ic">棋盘</div><div><b>6<small>mm</small></b><span>扫描策略 · 棋盘式分区</span></div><span class="st">✓ 达标</span></div>
+    </div>
+    <div class="pSim">
+      <div class="psim"><b>215<small> MPa</small></b><span>最大应力（仿真）</span></div>
+      <div class="psim"><b>0.04<small> mm</small></b><span>最大变形（预测）</span></div>
+      <div class="psim"><b>12.3<small> cm³</small></b><span>支撑体积</span></div>
+      <div class="psim"><b>6.5<small> h</small></b><span>预计打印时长</span></div>
+    </div>
+  </div>
+
+  <div class="panel" id="rad">
+    <div class="phead"><span class="dot"></span><span class="tt">316L 材料性能雷达图</span><span class="en">· MATERIAL RADAR</span><span class="tag">实测 vs 标准要求（虚线=达标线）</span></div>
+    <div class="pbody"><div class="radWrap" id="radBox"><div class="radNote">相对达标线百分比 <em>100%</em> 为合格基准</div></div></div>
+  </div>
+ </div>
+
+ <div class="col-r">
+  <div class="panel" id="file">
+    <div class="phead"><span class="dot"></span><span class="tt">“模型-材料-工艺”三位一体文件包</span><span class="en">· FILE PACKAGE</span><span class="tag" id="fpTag">打包中…</span></div>
+    <div class="fRows">
+      <div class="frow"><span class="ft">MODEL</span><span class="nm">阀门模型_V3.2.step</span><span class="ds">模型文件</span><span class="sz">2.4MB</span><span class="chip gray cs">V3.2</span><span class="chip gray cs">待生成</span></div>
+      <div class="frow"><span class="ft">PDF</span><span class="nm">材料规范_316L.pdf</span><span class="ds">材料文件</span><span class="sz">1.1MB</span><span class="chip gray cs">V1.0</span><span class="chip gray cs">待生成</span></div>
+      <div class="frow"><span class="ft">JSON</span><span class="nm">工艺参数_打印方案.json</span><span class="ds">工艺文件</span><span class="sz">12KB</span><span class="chip gray cs">V1.0</span><span class="chip gray cs">待生成</span></div>
+      <div class="frow"><span class="ft">PDF</span><span class="nm">后处理规范.pdf</span><span class="ds">工艺文件</span><span class="sz">0.8MB</span><span class="chip gray cs">V1.0</span><span class="chip gray cs">待生成</span></div>
+      <div class="frow"><span class="ft">PDF</span><span class="nm">质检标准.pdf</span><span class="ds">质检文件</span><span class="sz">1.5MB</span><span class="chip gray cs">V2.0</span><span class="chip gray cs">待生成</span></div>
+    </div>
+    <div class="fSign">数字签名 · SHA-256 校验 <em id="signSt">文件包尚未生成</em></div>
+  </div>
+
+  <div class="panel" id="mat">
+    <div class="phead"><span class="dot"></span><span class="tt">316L 增材件性能速览</span><span class="en">· MECHANICAL</span><span class="tag">全部达标</span></div>
+    <div class="mMini">
+      <div class="mm ok"><b>580<small>MPa</small></b><span>抗拉强度 ≥520</span></div>
+      <div class="mm ok"><b>310<small>MPa</small></b><span>屈服强度 ≥205</span></div>
+      <div class="mm ok"><b>45<small>%</small></b><span>延伸率 ≥40</span></div>
+      <div class="mm ok"><b>HB180</b><span>硬度 170-200</span></div>
+      <div class="mm ok" style="grid-column:1/3"><b>优良</b><span>耐腐蚀性 · 盐雾试验合格</span></div>
+    </div>
+  </div>
+ </div>
+</main>
+
+<footer id="ft">
+ <div class="ftT"><b>方案生成全流程进度</b><small>SOLUTION GENERATION FLOW</small></div>
+ <div class="sg" id="sg"></div>
+ <div class="ring">
+   <svg width="96" height="76" viewBox="0 0 96 76"><circle cx="48" cy="40" r="30" fill="none" stroke="rgba(120,170,255,.2)" stroke-width="6"/><circle id="ringPr" cx="48" cy="40" r="30" fill="none" stroke="#33D6FF" stroke-width="6" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="188.5" transform="rotate(-90 48 40)"/></svg>
+   <div style="position:absolute;right:0;top:24px;width:96px;text-align:center"><b id="ringTx" style="font-size:22px;color:#EAF7FF">18%</b></div><div style="position:absolute;right:-14px;bottom:0;width:124px;text-align:center;font-size:14px;white-space:nowrap;color:#4E7499" id="ringNoteW"><span id="ringNote">耗时 7 分钟</span></div>
+ </div>
+</footer>
+
+<div id="ctrl">
+  <button id="bReset">⟲ 重置</button>
+  <button id="bPrev">‹ 上一步</button>
+  <span class="cur" id="curTxt">① 模型检索</span>
+  <button id="bNext">下一步 ›</button>
+  <span class="hint">←/→ 或 空格 推进</span>
+</div>
+</div></div>
+
+<script>
+var SG=[{t:"需求识别",d:"08:38"},{t:"模型搜索",d:"08:40"},{t:"优化设计",d:"08:43"},{t:"文件包生成",d:"08:45"},{t:"工程师审核",d:"08:45"}];
+var CFG=[
+ {tag:"等待模型检索…",fp:"文件包尚未生成",sign:"文件包尚未生成",radar:0.4,ring:.18,ringT:"18%",st:["done","run","todo","todo","todo"],seg:[100,45,0,0,0]},
+ {tag:"优化设计进行中 · 预计1分钟",fp:"打包中 · 已完成 3/5",sign:"3 项已生成 · 部分签名",radar:1,ring:.72,ringT:"72%",st:["done","done","done","run","todo"],seg:[100,100,100,60,0]},
+ {tag:"审核通过 · 已确认下发",fp:"5 项全部生成",sign:"数字签名有效 · 校验通过",radar:1,ring:1,ringT:"100%",st:["done","done","done","done","done"],seg:[100,100,100,100,100]}
+];
+var DIMS=[["抗拉强度","580 MPa","112%"],["屈服强度","310 MPa","151%"],["延伸率","45%","112%"],["硬度","HB180","106%"],["耐腐蚀性","优良","表征120%"]];
+var cur=1;
+function $(i){return document.getElementById(i)}
+function poly(pts){return pts.map(function(p){return p[0].toFixed(1)+","+p[1].toFixed(1)}).join(" ")}
+function drawRadar(anim){
+ var box=$("radBox");var w=box.clientWidth||430,h=box.clientHeight||300;
+ var svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.setAttribute("viewBox","0 0 "+w+" "+h);
+ var cx=w*.5,cy=h*.5,R=Math.min(w,h)*.33,r0=R*100/160;
+ var ang=function(i){return -Math.PI/2+i*Math.PI*2/5};
+ var vals=[1.12,1.51,1.12,1.06,1.2];
+ var g1="";
+ for(var i=0;i<5;i++){
+   var a=ang(i);
+   g1+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+Math.cos(a)*R)+'" y2="'+(cy+Math.sin(a)*R)+'" stroke="rgba(120,170,255,.18)"/>';
+ }
+ var g2="";
+ for(var s=0;s<=2;s++){var rr=R*(s===0?.35:(s===1?.7:1));g2+='<polygon points="'+poly([[cx+rr*Math.cos(ang(0)),cy+rr*Math.sin(ang(0))],[cx+rr*Math.cos(ang(1)),cy+rr*Math.sin(ang(1))],[cx+rr*Math.cos(ang(2)),cy+rr*Math.sin(ang(2))],[cx+rr*Math.cos(ang(3)),cy+rr*Math.sin(ang(3))],[cx+rr*Math.cos(ang(4)),cy+rr*Math.sin(ang(4))]])+'" fill="none" stroke="rgba(120,170,255,.14)"/>';
+   }
+ var std=Math.min(r0,R);
+ var ring100='<polygon points="'+poly([[cx+std*Math.cos(ang(0)),cy+std*Math.sin(ang(0))],[cx+std*Math.cos(ang(1)),cy+std*Math.sin(ang(1))],[cx+std*Math.cos(ang(2)),cy+std*Math.sin(ang(2))],[cx+std*Math.cos(ang(3)),cy+std*Math.sin(ang(3))],[cx+std*Math.cos(ang(4)),cy+std*Math.sin(ang(4))]])+'" fill="none" stroke="rgba(255,214,74,.8)" stroke-width="1.4" stroke-dasharray="6 6"/>';
+ var pts=vals.map(function(v,i){var rr=R*Math.min(1.6,v)/1.6;var a=ang(i);return [cx+Math.cos(a)*rr,cy+Math.sin(a)*rr]});
+ var mat="";
+ for(var i2=0;i2<5;i2++){mat+=(pts[i2][0].toFixed(1)+","+pts[i2][1].toFixed(1)+" ")}
+ var lab="";
+ for(var j=0;j<5;j++){var a2=ang(j);var lx=cx+Math.cos(a2)*(R+26),ly=cy+Math.sin(a2)*(R+14);
+   lab+='<text x="'+lx+'" y="'+(ly+2)+'" text-anchor="middle" font-size="17" fill="#D9EDFF" font-weight="500">'+DIMS[j][0]+'</text>';
+   lab+='<text x="'+lx+'" y="'+(ly+20)+'" text-anchor="middle" font-size="16" fill="#7FEBC6" font-family="Bahnschrift">'+DIMS[j][1]+'</text>'}
+ svg.innerHTML=g1+g2+ring100+lab+'<polygon points="'+mat.trim()+'" fill="rgba(0,180,255,.18)" stroke="#33D6FF" stroke-width="1.8" id="radPoly" style="transform-origin:'+cx+'px '+cy+'px"/>';
+ box.innerHTML="";box.appendChild(svg);
+ var pp=$("radPoly");pp.style.transition="transform .6s";pp.style.transform="scale(.2)";requestAnimationFrame(function(){pp.style.transform="scale(1)"});
+}
+function buildSG(){
+ var h=$("sg");h.innerHTML="";
+ SG.forEach(function(s,i){var d=document.createElement("div");d.className="sn";
+  d.innerHTML='<div class="rk"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" class="bg"/><circle cx="22" cy="22" r="19" class="pr" stroke-dasharray="119.4" stroke-dashoffset="119.4"/></svg><b>'+(i+1)+'</b></div><div class="nm">'+s.t+'</div><div class="tm">'+s.d+'</div><div class="ln"></div>';h.appendChild(d)});
+}
+function apply(){
+ document.body.className="st"+cur;
+ var c=CFG[cur-1];
+ $("opTag").textContent=c.tag;$("fpTag").textContent=c.fp;$("signSt").textContent=c.sign;
+ var rows=document.querySelectorAll("#file .frow");var n=c.st[3]==="done"?5:(c.st[2]==="done"?3:(c.st[1]==="done"?1:0));
+ for(var i=0;i<rows.length;i++){var ch=rows[i].querySelectorAll(".cs");if(i<n){ch[0].textContent=ch[0].textContent.split("·")[0];var v=ch[0].textContent;ch[0].className="chip ok cs";ch[1].textContent="已签名";ch[1].className="chip ok cs"}else{ch[0].className="chip gray cs";ch[1].textContent="待生成";ch[1].className="chip gray cs"}}
+ var sg=$("sg").children;
+ for(var k=0;k<sg.length;k++){var st=c.st[k];sg[k].className="sn "+st;
+   var pr=sg[k].querySelector(".pr");pr.style.strokeDashoffset=String(119.4*(1-c.seg[k]/100));}
+ var rc=$("ringPr");rc.style.strokeDashoffset=String(188.5*(1-c.ring));$("ringTx").textContent=c.ringT;
+ var su=$("supG"),dm=$("dim"),st_=$("stress"),pd=$("pdir");
+ var supY=document.getElementById("supy");
+ su.style.opacity=(cur>=2?1:0);dm.style.opacity=(cur>=2?1:0);
+ pd.style.opacity=(cur>=2?1:0);
+ st_.style.opacity=(cur>=3?1:0);
+ document.getElementById("plateLine").style.opacity=(cur>=2?.65:.35);
+ var stp=document.querySelectorAll(".step");stp.forEach(function(s,j){s.className="step"+(j+1==cur?" on":"")});
+ $("curTxt").textContent=(cur===1?"① 模型检索":cur===2?"② 优化达标":"③ 下发完成");
+ drawRadar(cur);
+}
+function go(n){if(n<1||n>3)return;cur=n;apply()}
+document.querySelectorAll(".step").forEach(function(s){s.onclick=function(){go(+s.getAttribute("data-g"))}});
+$("bNext").onclick=function(){go(cur<3?cur+1:1)};$("bPrev").onclick=function(){go(cur>1?cur-1:3)};$("bReset").onclick=function(){go(1)};
+addEventListener("keydown",function(e){if(e.key==="ArrowRight"||e.key===" "){go(cur<3?cur+1:1);e.preventDefault()}if(e.key==="ArrowLeft"){go(cur>1?cur-1:3);e.preventDefault()}});
+function tick(){var d=new Date(),p=function(x){return x<10?"0"+x:x};$("tC").textContent=p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());$("tD").textContent=d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+" 北京时间"}
+function fit(){var s=Math.min(innerWidth/1920,innerHeight/1080);var el=$("stage");el.style.transformOrigin="0 0";el.style.transform="scale("+s+")";el.style.left=Math.round((innerWidth-1920*s)/2)+"px";el.style.top=Math.round((innerHeight-1080*s)/2)+"px";el.style.position="absolute"}
+function boot(){buildSG();go(1);tick();fit();setInterval(tick,1000);addEventListener("resize",fit)}
+addEventListener("load",function(){setTimeout(function(){drawRadar(1)},60)});
+boot();
+
+</script>
+</body>
+</html>

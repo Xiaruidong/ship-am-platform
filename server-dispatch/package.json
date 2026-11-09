@@ -1,0 +1,16 @@
+{
+  "name": "dispatch-app-server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "basic-ftp": "^6.2.6",
+    "express": "^4.19.2",
+    "mqtt": "^5.16.1",
+    "mysql2": "^3.11.0"
+  }
+}

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+.env
+.DS_Store
+tmp/
+# 内部资料与本地会话，暂不入库（需要公开时自行移除）
+docs/
+.zcode/

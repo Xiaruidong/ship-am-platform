@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>场景4 · 生产过程监控大屏</title>
+<style>
+:root{--navy0:#030A17;--navy1:#061226;--navy2:#0A1E3F;
+--blue:#00A8FF;--cyan:#33D6FF;
+--txt:#CBE6FF;--txt2:#7FA6CE;--txt3:#EAF7FF;--dim:#4E7499;
+--red:#FF4D5E;--org:#FF9F0A;--grn:#00D68F;--gold:#F5C542;
+--acc:#00D68F;--acc2:#7FEBC6;
+--mono:Bahnschrift,Consolas,'Courier New',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
+body{background:#01040B;color:var(--txt);font-family:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif;user-select:none}
+#env{position:fixed;inset:0;background:radial-gradient(1200px 700px at 18% 8%,rgba(0,180,120,.10),transparent 60%),radial-gradient(1000px 800px at 85% 92%,rgba(0,70,160,.10),transparent 55%),#01040B}
+#env:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(0,214,143,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,168,255,.04) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(circle at 50% 45%,#000 30%,transparent 95%)}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{width:1920px;height:1080px;flex:none;position:relative;transform-origin:center center;will-change:transform;background:radial-gradient(1400px 760px at 50% -6%,rgba(0,190,130,.10),transparent 58%),linear-gradient(160deg,#041229,#06172C 45%,#041026);box-shadow:0 0 90px rgba(0,90,70,.3);overflow:hidden}
+#stage:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,214,143,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,168,255,.045) 1px,transparent 1px);background-size:60px 60px;opacity:.5}
+#stage:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,30,20,.5),transparent 9%,transparent 91%,rgba(0,20,14,.55));z-index:2}
+#hd{position:absolute;top:0;left:0;right:0;height:112px;z-index:20;display:flex;align-items:center;padding:0 30px;background:linear-gradient(180deg,rgba(2,20,16,.92),rgba(4,16,20,.6) 70%,transparent);border-bottom:1px solid rgba(0,214,143,.25)}
+#hd:before{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,rgba(0,214,143,.65) 18%,rgba(127,235,198,.85) 50%,rgba(0,214,143,.65) 82%,transparent)}
+.brand{width:430px;display:flex;align-items:center;gap:14px}
+.brand .logo{width:54px;height:54px;flex:none}
+.brand b{display:block;font-size:24px;color:#EAF7FF;letter-spacing:2px;font-weight:600;white-space:nowrap}
+.brand span{display:block;font-size:13px;color:#5E8DB8;letter-spacing:2.2px;margin-top:3px}
+.brand small{display:block;font-size:15px;color:#4E8A72;letter-spacing:1px;margin-top:1px}
+.hdmid{flex:1;text-align:center}
+.hdmid h1{font-size:49px;letter-spacing:4px;color:#EDFFF7;font-weight:600}
+.hdmid h1 i{font-style:normal;color:var(--acc)}
+.hdmid .sub{display:inline-block;margin-top:7px;font-size:18px;letter-spacing:3px;color:#9EDCC4;background:linear-gradient(90deg,transparent,rgba(0,214,143,.14),transparent);padding:2px 26px;border-top:1px solid rgba(0,214,143,.4);border-bottom:1px solid rgba(0,214,143,.4)}
+.hdright{width:430px;display:flex;align-items:center;justify-content:flex-end;gap:16px}
+.steps{display:flex;gap:8px}
+.step{width:110px;height:38px;border:1px solid rgba(0,214,143,.4);background:rgba(0,50,34,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:19px;color:#9EDCC4;cursor:pointer;transition:.3s;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.step i{font-style:normal;font-family:var(--mono);color:var(--acc2)}
+.step.on{border-color:var(--acc2);color:#fff;background:linear-gradient(180deg,rgba(0,214,143,.32),rgba(0,60,40,.55));box-shadow:0 0 18px rgba(0,214,143,.5);text-shadow:0 0 8px rgba(200,255,235,.8)}
+.step.on i{color:var(--acc2)}
+#clock{text-align:right}
+#clock b{font-family:var(--mono);font-size:32px;color:#EDFFF7;letter-spacing:2px}
+#clock span{display:block;font-size:16px;color:#7FBFA8;letter-spacing:2px;margin-top:2px}
+.panel{position:relative;background:linear-gradient(180deg,rgba(8,30,24,.74),rgba(3,14,12,.82));border:1px solid rgba(0,214,143,.26);box-shadow:inset 0 0 26px rgba(0,180,120,.07),0 0 18px rgba(0,70,50,.3)}
+.panel:before{content:"";position:absolute;top:-1px;left:-1px;width:18px;height:18px;border-top:2px solid var(--acc2);border-left:2px solid var(--acc2);pointer-events:none;z-index:5}
+.panel:after{content:"";position:absolute;bottom:-1px;right:-1px;width:18px;height:18px;border-bottom:2px solid var(--acc2);border-right:2px solid var(--acc2);pointer-events:none;z-index:5}
+.phead{height:54px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid rgba(0,214,143,.22);flex:none}
+.phead .dot{width:7px;height:7px;background:var(--acc2);box-shadow:0 0 8px var(--acc2);transform:rotate(45deg)}
+.phead .tt{font-size:21px;color:#DDF1FF;letter-spacing:1.5px;font-weight:500;white-space:nowrap}
+.phead .en{display:none;font-size:15px}
+.phead .tag{margin-left:auto;font-size:15px;color:#7FA6CE;white-space:nowrap}
+#main{position:absolute;top:120px;left:22px;right:22px;bottom:168px;z-index:10;display:flex;gap:14px}
+.col-l{width:33.5%;display:flex;flex-direction:column;gap:8px}
+.col-m{width:36%;display:flex;flex-direction:column}
+.col-r{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+/* video */
+#vid{flex:1;display:flex;flex-direction:column;min-height:0}
+.vbox{flex:1;position:relative;overflow:hidden;background:#02060E}
+.vbox video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.live{position:absolute;left:12px;top:10px;z-index:5;display:flex;align-items:center;gap:7px;font-size:18px;color:#FF6B7A;letter-spacing:2px;background:rgba(0,0,0,.45);padding:3px 10px;border:1px solid rgba(255,77,94,.5)}
+.live:before{content:"";width:8px;height:8px;border-radius:50%;background:#FF4D5E;box-shadow:0 0 8px #FF4D5E;animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:.2}}
+.rec{position:absolute;right:12px;top:10px;z-index:5;font-size:16px;color:#BFE8D6;letter-spacing:1px;background:rgba(0,0,0,.45);padding:3px 10px;border:1px solid rgba(0,214,143,.35)}
+.ovr{position:absolute;left:0;right:0;bottom:0;z-index:5;display:flex;gap:10px;flex-wrap:wrap;padding:8px 12px;background:linear-gradient(0deg,rgba(0,6,12,.85),transparent);font-size:16px;color:#A5E8CE}
+.ovr i{font-style:normal;color:#EDFFF7;font-family:var(--mono)}
+.ovr em{font-style:normal;color:#5EA88C}
+.simtag{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;font-size:18px;letter-spacing:4px;color:rgba(160,220,200,.5);border:1px solid rgba(160,220,200,.4);padding:4px 18px;pointer-events:none;background:rgba(0,10,8,.35)}
+/* twin */
+#tw{flex:1;display:flex;flex-direction:column;min-height:0}
+.twBody{flex:1;position:relative;min-height:0}
+.twBody>svg{position:absolute;inset:0;width:100%;height:100%}
+.tabs{position:absolute;left:14px;top:10px;z-index:6;display:flex;gap:6px}
+.tabs b{font-weight:400;font-size:18px;padding:4px 14px;border:1px solid rgba(0,214,143,.45);background:rgba(0,40,26,.6);color:#9EDCC4;cursor:pointer;border-radius:3px;letter-spacing:1px}
+.tabs b.on{background:rgba(0,214,143,.3);color:#fff;border-color:var(--acc2)}
+.legH{position:absolute;right:12px;top:10px;z-index:6;font-size:15px;color:#9EDCC4;display:flex;align-items:center;gap:5px}
+.legH i{display:inline-block;width:12px;height:4px}
+.twStat{position:absolute;left:12px;bottom:10px;z-index:6;font-size:16px;color:#A5E8CE;background:rgba(0,20,14,.7);padding:5px 12px;border:1px solid rgba(0,214,143,.3)}
+.twStat b{color:#7FEBC6;font-weight:500}
+.twInfo{height:86px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(0,214,143,.12);border-top:1px solid rgba(0,214,143,.2)}
+.ti{background:rgba(4,18,16,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.ti b{font-family:var(--mono);font-size:27px;color:#EDFFF7}
+.ti b small{font-family:inherit;font-size:15px;color:#5EA88C}
+.ti span{font-size:15px;color:#7FBFA8;letter-spacing:1px}
+.ti.g b{color:#7FEBC6}
+/* param right */
+#par{flex:none;display:flex;flex-direction:column;min-height:0}
+.prBody{flex:none;padding:6px 12px;display:grid;grid-template-columns:1fr 1fr;gap:5px 8px;min-height:0}
+.prow{display:flex;align-items:center;gap:7px;border:1px solid rgba(0,214,143,.13);background:rgba(4,20,16,.5);padding:1px 8px;height:32px;flex-shrink:0;min-height:32px}
+.prow .lb{width:88px;flex:none;font-size:16px;color:#A5E8CE;letter-spacing:0;white-space:nowrap}
+.prow .pv{font-family:var(--mono);font-size:19px;color:#EDFFF7;width:86px;flex:none;white-space:nowrap}
+.prow .pv small{font-family:inherit;font-size:15px;color:#5EA88C;margin-left:2px}
+.prow .bar{flex:1;min-width:40px;height:8px;background:rgba(0,214,143,.22);border-radius:4px;position:relative;overflow:hidden}
+.prow .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#00B478,#33D6FF);width:0;transition:width .8s}
+.prow .bar i.c{background:linear-gradient(90deg,#E07900,var(--gold))}
+.prow .stt{display:none}
+.spRow{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px;height:52px;flex-shrink:0;min-height:52px}
+.sp{position:relative;border:1px solid rgba(0,214,143,.13);background:rgba(4,20,16,.45)}
+.sp .spT{position:absolute;left:8px;top:2px;font-size:15px;color:#7FBFA8;z-index:2;white-space:nowrap}
+.sp .spV{position:absolute;right:8px;top:2px;font-family:var(--mono);font-size:15px;color:#7FEBC6;z-index:2;white-space:nowrap}
+.sp canvas{position:absolute;left:0;right:0;bottom:0;top:22px;width:100%;height:calc(100% - 22px)}
+.pOk{grid-column:1/-1;display:flex;justify-content:space-between;font-size:15px;color:#7FEBC6;padding:0 2px}
+/* progress */
+#pg{flex:none;display:flex;flex-direction:column;min-height:0}
+.pgBody{flex:1;display:flex;align-items:center;gap:14px;padding:6px 12px;min-height:0}
+.ringBig{flex:none;width:118px;text-align:center;position:relative}
+.ringBig svg{margin:0 auto;display:block}
+.ringBig b{font-family:var(--mono);font-size:28px;color:#EDFFF7}
+.ringBig b small{font-size:16px;color:#5EA88C}
+.ringBig span{display:block;font-size:15px;color:#7FBFA8;letter-spacing:1px}
+.pgK{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:5px 8px;min-width:0}
+.kc{border-left:2px solid rgba(0,214,143,.55);padding:3px 8px;background:rgba(4,20,16,.5);min-width:0}
+.kc b{display:block;font-family:var(--mono);font-size:20px;color:#EDFFF7;line-height:1.15;white-space:nowrap}
+.kc b small{font-family:inherit;font-size:15px;color:#5EA88C}
+.kc span{display:block;font-size:13px;color:#7FBFA8;line-height:1.2;white-space:nowrap}
+.kc.g b{color:#7FEBC6}
+/* warn list */
+#wk{flex:1;display:flex;flex-direction:column;min-height:0}
+.wkBody{padding:8px 12px;flex:1;display:flex;flex-direction:column;gap:6px;min-height:0}
+.wkHead{display:flex;align-items:center;gap:10px;border:1px solid rgba(0,214,143,.35);background:rgba(0,60,40,.35);padding:4px 12px}
+.wkHead .dotL{width:10px;height:10px;border-radius:50%;background:var(--grn);box-shadow:0 0 10px var(--grn)}
+.wkHead b{font-size:20px;color:#7FEBC6;font-weight:500;white-space:nowrap;flex:none}
+.wkHead span{font-size:15px;color:#7FBFA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.his{font-size:16px;color:#9EDCC4;padding:2px 2px}
+.his b{color:#BFE8D6;font-weight:500}
+.his em{font-style:normal;color:#5EA88C}
+.hrow{display:flex;align-items:center;gap:8px;border:1px solid rgba(255,159,10,.22);background:rgba(60,30,0,.18);padding:3px 10px;font-size:16px;color:#E8D9B8}
+.hrow b{font-family:var(--mono);font-weight:500;color:#FFE3A0}
+.hrow span{flex:1;color:#D9C39A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hrow .okc{color:#7FEBC6;border:1px solid rgba(0,214,143,.5);padding:1px 8px;font-size:15px;flex:none;white-space:nowrap}
+.his2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:0}
+.his2 div{border:1px solid rgba(0,214,143,.14);background:rgba(4,20,16,.5);padding:4px 10px;font-size:14px;color:#9EDCC4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.his2 b{font-family:var(--mono);font-size:21px;color:#EDFFF7;font-weight:500;display:block}
+.his2 b i{font-style:normal;color:#FF6B7A}
+.his2 b i.ok{color:#7FEBC6}
+.modelLine{margin-top:auto;font-size:14px;color:#5EA88C;border-top:1px dashed rgba(0,214,143,.25);padding-top:4px;line-height:1.3}
+/* bottom */
+#ft{position:absolute;left:22px;right:22px;bottom:10px;height:94px;z-index:12;display:flex;align-items:center;border:1px solid rgba(0,214,143,.26);background:linear-gradient(180deg,rgba(6,22,18,.95),rgba(3,10,8,.97));padding:0 22px}
+#ft .ftT{flex:none;width:290px;font-size:24px;color:#DDF1FF;letter-spacing:2px}
+#ft .ftT b{font-size:24px;color:#E8FFF5;letter-spacing:3px;font-weight:500}
+#ft .ftT small{display:block;font-size:15px;color:#4E8A72;letter-spacing:2px;margin-top:3px}
+.tl{flex:1;display:flex;align-items:center;height:100%}
+.tn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
+.tn .c{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(0,214,143,.4);background:#04241A;color:#9EDCC4;font-size:15px;transition:.5s;position:relative;z-index:2}
+.tn .nm{font-size:16px;color:#8FCBB4;letter-spacing:.5px;transition:.4s;white-space:nowrap}
+.tn .tm{font-family:var(--mono);font-size:15px;color:#3E6A58;transition:.4s;white-space:nowrap}
+.tn .ln{position:absolute;left:calc(-50% + 14px);right:calc(50% + 14px);top:14px;height:2px;background:rgba(0,214,143,.14);z-index:1}
+.tn:first-child .ln{display:none}
+.tn.done .c{border-color:var(--cyan);background:rgba(0,168,255,.22);color:#E8FFF5}
+.tn.done .nm{color:#D9F5E8}.tn.done .tm{color:#6FBF9F}
+.tn.done .ln{background:linear-gradient(90deg,rgba(0,214,143,.7),rgba(0,168,255,.4))}
+.tn.run .c{border-color:var(--acc2);background:rgba(0,214,143,.28);color:#fff;box-shadow:0 0 14px rgba(0,214,143,.7);animation:rp 1.3s ease-in-out infinite}
+.tn.run .nm{color:#C9FFE6}.tn.run .tm{color:#7FEBC6}
+@keyframes rp{50%{box-shadow:0 0 26px rgba(0,214,143,1)}}
+.ftLeg{flex:none;display:flex;flex-direction:column;gap:4px;margin-left:12px;font-size:15px;color:#5EA88C}
+.ftLeg i{display:inline-block;width:9px;height:9px;margin-right:4px}
+#ctrl{position:absolute;right:20px;bottom:96px;z-index:40;display:flex;gap:8px;align-items:center;opacity:.94;bottom:130px}
+#ctrl button{width:96px;height:44px;border:1px solid rgba(0,214,143,.5);background:linear-gradient(180deg,rgba(0,50,32,.92),rgba(2,16,10,.95));color:#C9FFE6;font-size:21px;cursor:pointer;border-radius:4px;font-family:inherit;transition:.25s}
+#ctrl button:hover{background:rgba(0,214,143,.3);box-shadow:0 0 14px rgba(0,214,143,.6)}
+#ctrl .cur{margin:0 6px;font-family:var(--mono);font-size:21px;color:#C9FFE6}
+#ctrl .hint{font-size:15px;color:#4E8A72;letter-spacing:1px}
+#backHome{display:flex;align-items:center;gap:6px;height:44px;padding:0 12px;margin-right:18px;border:1px solid rgba(51,214,255,.45);border-radius:4px;color:#C9EBFF;letter-spacing:1.5px;text-decoration:none;background:rgba(0,60,140,.35);transition:.25s;flex:none;font-size:21px}
+#backHome:hover{background:rgba(0,130,235,.45);color:#fff;box-shadow:0 0 14px rgba(51,214,255,.45)}
+
+/* ============================================================
+   场景页视觉打磨 · 与首页统一设计语言
+   ============================================================ */
+:root{
+  --t1:#EAF7FF; --t2:#A9CBE8; --t3:#6E97BE; --t4:#4E7BA6;
+  --c1:#33D6FF; --c2:#7FE8FF; --c3:#BFE9FF;
+  --line:rgba(0,168,255,.20);
+  --anim:180ms cubic-bezier(.2,.9,.3,1);
+}
+
+/* 舞台暗角 */
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,4,12,.45) 100%)}
+
+/* 面板：统一描边/内发光 */
+.panel{border-color:var(--line);box-shadow:inset 0 1px 0 rgba(120,210,255,.10),inset 0 0 36px rgba(0,60,130,.10)}
+
+/* 顶栏按钮统一高度 */
+#backHome{height:42px;line-height:40px;font-size:18px;border-radius:2px;transition:all var(--anim)}
+#backHome:hover{transform:translateY(-1px)}
+
+/* 数字等宽 */
+*{font-variant-numeric:tabular-nums}
+
+/* 面板入场动效 */
+@keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.panel{animation:riseIn .5s var(--anim) both}
+.panel:nth-child(2){animation-delay:.08s}
+.panel:nth-child(3){animation-delay:.14s}
+
+/* 滚动条细化 */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:rgba(51,214,255,.18);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(51,214,255,.32)}
+
+/* 文字标签描边（叠加在深色底上更清晰） */
+svg text{paint-order:stroke;stroke:rgba(1,6,14,.7);stroke-width:2px;stroke-linejoin:round}
+
+</style>
+</head>
+<body class="st1">
+<div id="env"></div>
+<div id="wrap"><div id="stage">
+<header id="hd">
+ <div class="brand">
+   <svg class="logo" viewBox="0 0 60 60"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FEBC6"/><stop offset="1" stop-color="#00A87A"/></linearGradient></defs>
+   <polygon points="30,3 53,16.5 53,43.5 30,57 7,43.5 7,16.5" fill="none" stroke="url(#lg)" stroke-width="2"/><polygon points="30,14 44,22 44,38 30,46 16,38 16,22" fill="rgba(0,214,143,.15)" stroke="#7FEBC6" stroke-width="1"/><circle cx="30" cy="30" r="6.5" fill="none" stroke="#7FEBC6" stroke-width="2"/><circle cx="30" cy="30" r="1.8" fill="#7FEBC6"/></svg>
+   <div><b>去中心化增材制造交付平台</b><span>DECENTRALIZED&nbsp;AM&nbsp;DELIVERY&nbsp;PLATFORM</span></div>
+ </div>
+ <div class="hdmid">
+   <h1>生产过程监控<i>大屏</i></h1>
+   <div class="sub">阶段4 · 生产过程监控：实时打印画面 + 数字孪生质检（00:08:00 - 00:10:00）</div>
+ </div>
+ <div class="hdright">
+   <a id="backHome" href="index.html">◀ 态势图</a><a target="_top" href="/workbench" style="margin-left:14px;height:42px !important;display:inline-flex !important;align-items:center;white-space:nowrap;padding:0 18px;color:#BFE9FF;text-decoration:none;border:1px solid rgba(51,214,255,.5);border-radius:2px;font-size:18px;letter-spacing:1px;transition:.18s;background:rgba(0,120,220,.14);" onmouseover="this.style.background='rgba(0,168,255,.28)'" onmouseout="this.style.background='rgba(0,120,220,.14)'">管理入口</a>
+   <div class="steps">
+     <div class="step" data-g="1"><i>①</i>打印启动</div>
+     <div class="step" data-g="2"><i>②</i>过程监控</div>
+     <div class="step" data-g="3"><i>③</i>孪生质检</div>
+   </div>
+   <div id="clock"><b id="tC">--:--:--</b><span id="tD">----</span></div>
+ </div>
+</header>
+
+<main id="main">
+ <div class="col-l">
+  <div class="panel" id="vid">
+    <div class="phead"><span class="dot"></span><span class="tt">实时打印过程监控</span><span class="en">· LIVE PRINTING</span><span class="tag">SLM-500 金属 3D 打印机 · 舱内实时画面</span></div>
+    <div class="vbox">
+      <video id="vdc" autoplay loop muted playsinline preload="auto" src="第四屏视频.mp4"></video>
+      <span class="simtag">模拟视频画面</span>
+      <span class="live">LIVE</span>
+      <span class="rec">● 录制中 · 延迟 &lt; 2s</span>
+      <div class="ovr">
+        <span>设备 <i>SLM-500</i></span><span>舱内温度 <i>120℃</i></span><span>氧含量 <i>50 ppm</i></span>
+        <span>激光功率 <i>280W · 稳定</i></span><span>当前层 <i id="vL">156 / 2167</i></span><span>打印进度 <i id="vP">7.2%</i></span>
+      </div>
+    </div>
+  </div>
+ </div>
+
+ <div class="col-m">
+  <div class="panel" id="tw">
+    <div class="phead"><span class="dot"></span><span class="tt">数字孪生质检 · 三维模型</span><span class="en">· DIGITAL TWIN QC</span><span class="tag" id="twTag">孪生同步中 · 与实物偏差 &lt; 0.1mm</span></div>
+    <div class="twBody">
+      <div class="tabs"><b class="on" data-t="h">尺寸偏差热力图</b><b data-t="s">应力分布云图</b></div>
+      <div class="legH" id="legH"><i style="background:#2E7BE0"></i>-0.05<i style="background:#00D68F"></i>0<i style="background:#FFD54A"></i>+0.03<i style="background:#FF4D5E"></i>超差</div>
+      <svg id="twinSvg" viewBox="0 0 640 430" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A2430"/><stop offset="1" stop-color="#04101A"/></linearGradient>
+          <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9DB8D4"/><stop offset="1" stop-color="#55708E"/></linearGradient>
+          <linearGradient id="tg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A9C2DE"/><stop offset="1" stop-color="#55708E"/></linearGradient>
+          <radialGradient id="h1" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="rgba(255,120,60,.8)"/><stop offset=".6" stop-color="rgba(255,213,74,.55)"/><stop offset="1" stop-color="rgba(46,123,224,.4)"/></radialGradient>
+          <radialGradient id="h2" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="rgba(255,77,94,.8)"/><stop offset=".55" stop-color="rgba(255,213,74,.5)"/><stop offset="1" stop-color="rgba(0,214,143,.35)"/></radialGradient>
+        </defs>
+        <rect x="0" y="0" width="640" height="430" fill="url(#hg)"/>
+        <g id="twinB">
+          <rect x="200" y="76" width="26" height="58" rx="4" fill="url(#tg2)" stroke="#3C4F68"/>
+          <rect x="144" y="130" width="70" height="34" rx="6" fill="url(#tg2)" stroke="#3C4F68"/>
+          <rect x="202" y="164" width="16" height="26" fill="url(#tg2)" stroke="#3C4F68"/>
+          <ellipse cx="243" cy="212" rx="76" ry="58" fill="url(#tg2)" stroke="#3C4F68"/>
+          <rect x="182" y="258" width="26" height="34" fill="url(#tg2)"/>
+          <rect x="120" y="180" width="52" height="66" rx="5" fill="url(#tg)" stroke="#3C4F68"/>
+          <rect x="314" y="180" width="52" height="66" rx="5" fill="url(#tg)" stroke="#3C4F68"/>
+          <rect x="120" y="178" width="52" height="12" fill="#33D6FF" opacity=".25"/>
+          <rect x="314" y="178" width="52" height="12" fill="#33D6FF" opacity=".25"/>
+          <line x1="120" y1="212" x2="366" y2="212" stroke="rgba(0,214,143,.25)" stroke-width="1" stroke-dasharray="4 5"/>
+          <ellipse cx="243" cy="212" rx="24" ry="8" fill="#142C4E" stroke="#2E3F55" stroke-width="2"/>
+        </g>
+        <g id="heatH" opacity="1">
+          <ellipse cx="336" cy="206" rx="30" ry="20" fill="url(#h2)"/>
+          <ellipse cx="238" cy="246" rx="34" ry="24" fill="url(#h2)" opacity=".75"/>
+          <ellipse cx="330" cy="180" rx="16" ry="10" fill="url(#h1)"/>
+          <path d="M243 130 v28" stroke="#FFD54A" stroke-width="3" opacity=".7"/>
+          <path d="M96 212 h48 M392 212 h-32" stroke="rgba(255,213,74,.5)" stroke-width="2" stroke-dasharray="3 4"/>
+        </g>
+        <g id="heatS" opacity="0">
+          <ellipse cx="252" cy="232" rx="56" ry="44" fill="url(#h1)"/>
+          <ellipse cx="220" cy="196" rx="20" ry="12" fill="url(#h2)" opacity=".5"/>
+          <text x="238" y="60" text-anchor="middle" font-size="18" fill="#BFE8D6" opacity="0">stress label</text>
+        </g>
+        <g font-size="16" fill="#8FCBB4">
+          <text x="30" y="360">剖面A-A</text><text x="560" y="40" opacity="0" id="legT">mm</text>
+        </g>
+      </svg>
+      <div class="twStat"><b id="twState">孪生同步中</b> · 边打印 边检测 边调整 · 偏差超阈值自动预警</div>
+    </div>
+    <div class="twInfo">
+      <div class="ti"><b>+0.03<small>mm</small></b><span>最大偏差 · 法兰端面</span></div>
+      <div class="ti g"><b>±0.03<small>mm</small></b><span>整体偏差范围 · 合格</span></div>
+      <div class="ti g"><b>无</b><span>危险区域 · 全部绿色</span></div>
+    </div>
+  </div>
+ </div>
+
+ <div class="col-r">
+  <div class="panel" id="par">
+    <div class="phead"><span class="dot"></span><span class="tt">工艺参数实时监控</span><span class="en">· PARAM MONITOR</span><span class="tag">数据实时采集 · 全程上链存证</span></div>
+    <div class="prBody">
+      <div class="prow"><span class="lb">激光功率</span><span class="pv" id="pv1">280<small>W</small></span><div class="bar"><i style="width:93%"></i></div><span class="stt" id="ps1">±2W · 稳定</span></div>
+      <div class="prow"><span class="lb">扫描速度</span><span class="pv" id="pv2">800<small>mm/s</small></span><div class="bar"><i style="width:80%"></i></div><span class="stt" id="ps2">±5mm/s</span></div>
+      <div class="prow"><span class="lb">层厚</span><span class="pv">30<small>μm</small></span><div class="bar"><i style="width:30%"></i></div><span class="stt">设定30</span></div>
+      <div class="prow"><span class="lb">舱内氧含量</span><span class="pv">50<small>ppm</small></span><div class="bar"><i style="width:50%"></i></div><span class="stt">&lt;100 安全</span></div>
+      <div class="prow"><span class="lb">舱内温度</span><span class="pv">120<small>℃</small></span><div class="bar"><i style="width:60%"></i></div><span class="stt">设定120</span></div>
+      <div class="prow"><span class="lb">基板温度</span><span class="pv">80<small>℃</small></span><div class="bar"><i style="width:40%"></i></div><span class="stt">正常</span></div>
+      <div class="spRow">
+        <div class="sp"><span class="spT">激光功率波动 280W</span><span class="spV" id="spV1">280W</span><canvas id="sp1"></canvas></div>
+        <div class="sp"><span class="spT">氧含量 阈值&lt;100ppm</span><span class="spV" id="spV2">50ppm</span><canvas id="sp2"></canvas></div>
+      </div>
+      <div class="pOk"><span>保护气流量 15 L/min · 正常</span><span>参数合格率 100% · 无超限</span><span style="color:#9EDCC4">实时上链存证中</span></div>
+    </div>
+  </div>
+
+  <div class="panel" id="pg">
+    <div class="phead"><span class="dot"></span><span class="tt">打印进度与预计</span><span class="en">· PROGRESS</span><span class="tag">任务 AM-2026-0907-001</span></div>
+    <div class="pgBody">
+      <div class="ringBig">
+        <svg width="118" height="118" viewBox="0 0 132 132"><circle cx="66" cy="66" r="54" fill="none" stroke="rgba(0,214,143,.15)" stroke-width="11"/><circle id="ringP" cx="66" cy="66" r="54" fill="none" stroke="#33D6FF" stroke-width="11" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3" transform="rotate(-90 66 66)"/></svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><b id="ringTx">7.2%</b><span>打印进度</span></div>
+      </div>
+      <div class="pgK">
+        <div class="kc"><b id="layers">156 层</b><span>当前打印层数 · 共2167层</span></div>
+        <div class="kc"><b id="remain">6时02分</b><span>预计剩余时间</span></div>
+        <div class="kc g"><b id="doneT">预计 15:20</b><span>预计完成时间</span></div>
+        <div class="kc g"><b>12.5<small>kg</small></b><span>材料消耗 · 316L粉末</span></div>
+        <div class="kc g"><b>96.8<small>%</small></b><span>粉末利用率</span></div>
+        <div class="kc g"><b>100<small>%</small></b><span>打印层合格率</span></div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="wk">
+    <div class="phead"><span class="dot"></span><span class="tt">孪生质检预警</span><span class="en">· QC ALERTS</span><span class="tag">AI 深度学习缺陷预测模型</span></div>
+    <div class="wkBody">
+      <div class="wkHead"><span class="dotL"></span><b id="wkCur">当前预警 0 条 · 全部正常</b><span>边打印边质检 · 超阈值自动预警并调整</span></div>
+      <div class="his">历史预警 <b>2 条（已处理）</b> · <em>均由系统自动处置恢复</em></div>
+      <div class="hrow"><b>#320</b><span>局部温度偏高 → 已调功率</span><span class="okc">已恢复</span></div>
+      <div class="hrow"><b>#890</b><span>扫描速度波动 → 已回设</span><span class="okc">已恢复</span></div>
+      <div class="his2">
+        <div><b><i>0.3%</i><small style="color:#5EA88C;font-size:12px;font-family:inherit"> 阈值2%</small></b>内部气孔概率</div>
+        <div><b><i class="ok">0.1%</i></b>变形超差概率</div>
+      </div>
+      <div class="modelLine">质检模型：AI 深度学习缺陷预测模型 · 预测准确率 98.5% · 数据全程上链</div>
+    </div>
+  </div>
+ </div>
+</main>
+
+<footer id="ft">
+ <div class="ftT"><b>生产过程监控节点</b><small>PRODUCTION FLOW</small></div>
+ <div class="tl" id="tl"></div>
+ <div class="ftLeg"><span><i style="background:#33D6FF"></i>已完成</span><span><i style="background:#00D68F;border-radius:50%"></i>进行中</span><span><i style="border:1px solid #3E6A58;background:none"></i>待开始</span></div>
+</footer>
+
+<div id="ctrl">
+  <button id="bReset">⟲ 重置</button>
+  <button id="bPrev">‹ 上一步</button>
+  <span class="cur" id="curTxt">① 打印启动</span>
+  <button id="bNext">下一步 ›</button>
+  <span class="hint">←/→ 或 空格 推进</span>
+</div>
+</div></div>
+
+<script>
+var TL=[{t:"铺粉预热",d:"08:50"},{t:"激光扫描",d:"09:05"},{t:"层间质检",d:"10:40"},{t:"熔池监控",d:"12:10"},{t:"孪生比对",d:"14:05"},{t:"打印完成",d:"预计 15:20"},{t:"随炉冷却",d:"4h"},{t:"取件送检",d:"待开始"}];
+var CFG=[
+ {st:["run","todo","todo","todo","todo","todo","todo","todo"],v:7.2,l:"156 / 2167",el:"0时28分",rm:"6时02分",tx:"7.2%",tag:"打印启动 · 首层铺粉完成 · 激光扫描中",lw:1},
+ {st:["done","run","todo","todo","todo","todo","todo","todo"],v:67,l:"1452 / 2167",el:"4时22分",rm:"2时08分",tx:"67%",tag:"过程监控中 · 层间质检/熔池监测正常 · 孪生偏差 ±0.03mm",lw:3},
+ {st:["done","done","done","done","done","done","run","todo"],v:100,l:"2167 / 2167",el:"6时30分",rm:"完成",tx:"100%",tag:"打印完成 · 全层孪生复核通过 · 随炉冷却中",lw:5}
+];
+var cur=1,sp1=[],sp2=[];
+function $(i){return document.getElementById(i)}
+function buildTL(){var h=$("tl");h.innerHTML="";TL.forEach(function(t,i){var d=document.createElement("div");d.className="tn";d.innerHTML='<div class="c">'+(i+1)+'</div><div class="nm">'+t.t+'</div><div class="tm">'+t.d+'</div><div class="ln"></div>';h.appendChild(d)})}
+function apply(){
+ document.body.className="st"+cur;
+ var c=CFG[cur-1];
+ var ns=$("tl").children;for(var i=0;i<ns.length;i++){ns[i].className="tn "+c.st[i];
+   if(i===0){var tm=c.st[0]==="done"?"08:50 完成":(c.v+"% · 打印中");ns[i].querySelector(".tm").textContent=tm}
+   if(i===1&&c.st[1]==="run"){ns[i].querySelector(".tm").textContent="进行中 · 已打印 "+c.l.split("/")[0].trim()+" 层"}
+   if(i===5){ns[i].querySelector(".tm").textContent=c.st[5]==="done"?"15:20 完成":"预计 15:20"}
+ }
+ $("ringP").style.strokeDashoffset=String(339.3*(1-c.v/100));
+ $("ringTx").textContent=c.tx;
+ $("vL").textContent=c.l;$("vP").textContent=c.tx;$("layers").textContent=c.l.split("/")[0]+" 层";
+ var _el=$("elapsed");if(_el)_el.textContent=c.el;$("remain").textContent=c.rm;
+ if(c.v>=100){$("ringP").style.stroke="#00D68F";$("doneT").textContent="15:20 完成"}
+ else{$("ringP").style.stroke="#33D6FF";$("doneT").textContent="预计 15:20"}
+ $("twTag").textContent=c.tag;
+ var stp=document.querySelectorAll(".step");stp.forEach(function(s,j){s.className="step"+(j+1==cur?" on":"")});
+ $("curTxt").textContent=cur===1?"① 打印启动":cur===2?"② 过程监控":"③ 孪生质检";
+}
+function go(n){if(n<1||n>3)return;cur=n;apply()}
+document.querySelectorAll(".step").forEach(function(s){s.onclick=function(){go(+s.getAttribute("data-g"))}});
+$("bNext").onclick=function(){go(cur<3?cur+1:1)};$("bPrev").onclick=function(){go(cur>1?cur-1:3)};$("bReset").onclick=function(){go(1)};
+addEventListener("keydown",function(e){if(e.key==="ArrowRight"||e.key===" "){go(cur<3?cur+1:1);e.preventDefault()}if(e.key==="ArrowLeft"){go(cur>1?cur-1:3);e.preventDefault()}});
+/* tabs heat/stress */
+document.querySelectorAll(".tabs b").forEach(function(b){b.onclick=function(){
+ document.querySelectorAll(".tabs b").forEach(function(x){x.className=""});b.className="on";
+ var t=b.getAttribute("data-t");
+ $("heatH").style.opacity=t==="h"?1:0;$("heatS").style.opacity=t==="s"?1:0;
+ $("legH").innerHTML=t==="h"?'<i style="background:#2E7BE0"></i>-0.05<i style="background:#00D68F"></i>0<i style="background:#FFD54A"></i>+0.03<i style="background:#FF4D5E"></i>超差':'<i style="background:#2E7BE0"></i>低应力<i style="background:#00D68F"></i>100MPa<i style="background:#FFD54A"></i>180<i style="background:#FF7A45"></i>210MPa';
+}});
+/* video source: AI 生成的 SLM-500 舱内打印画面，自动循环播放 */
+var vdc=$("vdc");
+vdc.play().catch(function(){});
+document.addEventListener("click",function once(){vdc.play().catch(function(){});document.removeEventListener("click",once)});
+function liveSpark(cid,arr,base,noise){
+ var c=$(cid);if(!c)return;var g=c.getContext("2d");var w=c.clientWidth||300,h=c.clientHeight||90;
+ var dpr=Math.min(window.devicePixelRatio||1,2);
+ if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){c.width=w*dpr;c.height=h*dpr;g.setTransform(dpr,0,0,dpr,0,0)}
+ if(!document.hidden){
+  arr.push(base+(Math.random()*2-1)*noise);if(arr.length>40)arr.shift();
+  g.clearRect(0,0,w,h);
+  g.strokeStyle="rgba(0,214,143,.16)";g.lineWidth=1;g.beginPath();g.moveTo(0,h*.5);g.lineTo(w,h*.5);g.stroke();
+  g.strokeStyle="rgba(0,214,143,.7)";g.lineWidth=1.4;g.beginPath();
+  arr.forEach(function(v,i){var x=i/(40-1)*w,y=h-3-((v-(base-noise))/ (noise*2.2))* (h-10);i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke();
+  var lx2=(arr.length-1)/(40-1)*w,ly2=h-3-((arr[arr.length-1]-(base-noise))/(noise*2.2))*(h-10);
+  g.fillStyle="rgba(127,235,198,.9)";g.beginPath();g.arc(lx2,ly2,2,0,7);g.fill();
+  var cv=arr[arr.length-1];$(cid==="sp1"?"spV1":"spV2").textContent=(cid==="sp1"?cv.toFixed(1)+"W":cv.toFixed(0)+"ppm");
+ }
+ requestAnimationFrame(function(){liveSpark(cid,arr,base,noise)});
+}
+function boot(){buildTL();go(1);liveSpark("sp1",sp1,280,2);liveSpark("sp2",sp2,50,4);tick();fit();setInterval(tick,1000);addEventListener("resize",fit)}
+function tick(){var d=new Date(),p=function(x){return x<10?"0"+x:x};$("tC").textContent=p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());$("tD").textContent=d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+" 北京时间"}
+function fit(){var s=Math.min(innerWidth/1920,innerHeight/1080);var el=$("stage");el.style.transformOrigin="0 0";el.style.transform="scale("+s+")";el.style.left=Math.round((innerWidth-1920*s)/2)+"px";el.style.top=Math.round((innerHeight-1080*s)/2)+"px";el.style.position="absolute"}
+boot();
+
+</script>
+</body>
+</html>

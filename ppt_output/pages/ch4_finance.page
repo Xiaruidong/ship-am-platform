@@ -1,0 +1,59 @@
+pageType: chapter
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: bg-img
+    elementType: image
+    bounds: [0, 0, 1280, 720]
+    src: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920"
+    fit:
+      mode: cover
+  - elementId: bg-mask
+    elementType: shape
+    bounds: [0, 0, 1280, 720]
+    shapeName: rect
+    fill:
+      type: gradient
+      gradientType: linear
+      angle: 0
+      stops:
+        - {position: 0, color: "#0A0A0A"}
+        - {position: 0.5, color: "#0A0A0ACC"}
+        - {position: 1, color: "#0A0A0A66"}
+  - elementId: ch-num
+    elementType: text
+    bounds: [80, 200, 300, 100]
+    content:
+      style: "$chapterNum"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>04</p>
+  - elementId: ch-line
+    elementType: shape
+    bounds: [80, 310, 60, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 3, color: "$primary"}
+  - elementId: ch-title
+    elementType: text
+    bounds: [80, 330, 600, 50]
+    content:
+      fontSize: 40
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>财务与规划</p>
+  - elementId: ch-sub
+    elementType: text
+    bounds: [80, 390, 600, 30]
+    content:
+      fontSize: 20
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>三年预测 · A+B轮融资 · 三阶段落地</p>

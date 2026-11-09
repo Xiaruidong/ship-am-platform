@@ -1,0 +1,28 @@
+# 大屏静态演示版发布到 GitHub Pages
+# 推送 main 分支后自动构建，访问 https://<用户名>.github.io/<仓库名>/
+name: Deploy dashboard to Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public/screen
+      - id: deployment
+        uses: actions/deploy-pages@v4

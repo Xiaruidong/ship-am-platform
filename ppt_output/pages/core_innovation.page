@@ -1,0 +1,201 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>三大核心技术创新：从"能用"到"敢用"到"好用"</p>
+  - elementId: card1-bg
+    elementType: shape
+    bounds: [80, 130, 360, 490]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: card1-icon
+    elementType: icon
+    bounds: [110, 160, 36, 36]
+    iconName: "fas:file-contract"
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: card1-title
+    elementType: text
+    bounds: [160, 160, 260, 36]
+    content:
+      fontSize: 20
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>合约空间</p>
+  - elementId: card1-line
+    elementType: shape
+    bounds: [110, 210, 40, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: card1-sub
+    elementType: text
+    bounds: [110, 226, 300, 24]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "Liter, MiSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>订单协同机制</p>
+  - elementId: card1-body
+    elementType: text
+    bounds: [110, 260, 300, 340]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>以订单为基本单元，将数字合约、数据空间、访问控制、区块链存证深度融合</p>
+        <p style="margin-top:8px"><strong style="color:#FFFFFF">核心突破：</strong>首次将合约逻辑从"纸面约定"转化为"代码执行"</p>
+        <p style="margin-top:8px">数据权限自动分配、履约过程自动存证、权限到期自动回收</p>
+        <p style="margin-top:8px">全程无需人工干预，降低数据泄露风险，提升跨主体协作效率</p>
+  - elementId: card2-bg
+    elementType: shape
+    bounds: [460, 130, 360, 490]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: card2-icon
+    elementType: icon
+    bounds: [490, 160, 36, 36]
+    iconName: "fas:clone"
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: card2-title
+    elementType: text
+    bounds: [540, 160, 260, 36]
+    content:
+      fontSize: 20
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>孪生质检</p>
+  - elementId: card2-line
+    elementType: shape
+    bounds: [490, 210, 40, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: card2-sub
+    elementType: text
+    bounds: [490, 226, 300, 24]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "Liter, MiSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>远程质量验证</p>
+  - elementId: card2-body
+    elementType: text
+    bounds: [490, 260, 300, 340]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>构建"一虚两实"三角验证架构：标准数据包为统一基准，同步制造保证一致性</p>
+        <p style="margin-top:8px"><strong style="color:#FFFFFF">核心突破：</strong>突破传统质检必须"实物到场"的限制</p>
+        <p style="margin-top:8px">将质量验证从"物流依赖"转化为"数据驱动"</p>
+        <p style="margin-top:8px">实现制造质量的远程可信验证，让分布式零件从"能做"升级为"敢用"</p>
+  - elementId: card3-bg
+    elementType: shape
+    bounds: [840, 130, 360, 490]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: card3-icon
+    elementType: icon
+    bounds: [870, 160, 36, 36]
+    iconName: "fas:brain"
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: card3-title
+    elementType: text
+    bounds: [920, 160, 260, 36]
+    content:
+      fontSize: 20
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>分布式AI</p>
+  - elementId: card3-line
+    elementType: shape
+    bounds: [870, 210, 40, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: card3-sub
+    elementType: text
+    bounds: [870, 226, 300, 24]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "Liter, MiSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>智能调度与工艺优化</p>
+  - elementId: card3-body
+    elementType: text
+    bounds: [870, 260, 300, 340]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>构建"大模型+小模型"协同的分布式AI体系</p>
+        <p style="margin-top:8px"><strong style="color:#FFFFFF">核心突破：</strong>"参数/知识共享替代原始数据共享"</p>
+        <p style="margin-top:8px">中心提供标准化AI建模工具，各节点本地训练小模型</p>
+        <p style="margin-top:8px">实现"数据不动、模型动"的智能协同范式</p>
+        <p style="margin-top:8px">支撑全局智能派单、交付周期预判、异常风险预警</p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>10</p>

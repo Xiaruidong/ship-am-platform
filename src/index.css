@@ -1,0 +1,89 @@
+@import './design-tokens.css';
+
+/* ===== 全局设计基座（新材道设计规范） ===== */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-base);
+  background-color: var(--neutral-50);
+  color: var(--text-body);
+  font-size: 14px;
+  line-height: 22px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 内容限宽：桌面最大 1280px，居中 */
+.page-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 24px 48px;
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 16px 16px 32px;
+  }
+}
+
+/* 卡片：radius-md 4px + shadow-xs */
+.ant-card {
+  box-shadow: var(--shadow-xs);
+}
+
+/* 表格密度与可读性 */
+.ant-table-cell {
+  font-size: 13px;
+}
+
+.ant-table-thead > tr > th {
+  font-weight: 600 !important;
+}
+
+.ant-descriptions-item-label {
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+/* 页面标题层级：H4 20/28/500 */
+.page-title {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-tertiary);
+  margin: 4px 0 0;
+}
+
+/* 细滚动条，避免突兀 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neutral-300);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 手机端触控区域微调 */
+@media (max-width: 768px) {
+  .ant-btn {
+    padding-inline: 12px;
+  }
+}

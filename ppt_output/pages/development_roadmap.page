@@ -1,0 +1,196 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>三阶段发展规划：从标杆打造到生态构建</p>
+  - elementId: timeline-line
+    elementType: shape
+    bounds: [80, 200, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: dot1
+    elementType: shape
+    bounds: [240, 190, 20, 20]
+    shapeName: ellipse
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: dot2
+    elementType: shape
+    bounds: [620, 190, 20, 20]
+    shapeName: ellipse
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: dot3
+    elementType: shape
+    bounds: [1000, 190, 20, 20]
+    shapeName: ellipse
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: phase1-label
+    elementType: text
+    bounds: [80, 140, 360, 30]
+    content:
+      fontSize: 18
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>第一阶段 · 第1年</p>
+  - elementId: phase1-card
+    elementType: shape
+    bounds: [80, 240, 360, 380]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: phase1-title
+    elementType: text
+    bounds: [110, 260, 300, 30]
+    content:
+      fontSize: 20
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>平台上线与标杆打造</p>
+  - elementId: phase1-body
+    elementType: text
+    bounds: [110, 300, 300, 300]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>完成智能化协同平台1.0上线</p>
+        <p style="margin-top:6px">搭建标准化质量体系与加盟准入规则</p>
+        <p style="margin-top:6px">签约首批 <span style="color:$primary;"><strong>30</strong></span> 家优质加盟节点</p>
+        <p style="margin-top:6px">拓展 <span style="color:$primary;"><strong>20</strong></span> 家以上特种装备用户</p>
+        <p style="margin-top:6px">打造 3-5 个标杆服务案例</p>
+        <p style="margin-top:6px">验证商业模式，实现盈亏平衡</p>
+  - elementId: phase2-label
+    elementType: text
+    bounds: [460, 140, 360, 30]
+    content:
+      fontSize: 18
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>第二阶段 · 第2-3年</p>
+  - elementId: phase2-card
+    elementType: shape
+    bounds: [460, 240, 360, 380]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: phase2-title
+    elementType: text
+    bounds: [490, 260, 300, 30]
+    content:
+      fontSize: 20
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>规模扩张与区域布局</p>
+  - elementId: phase2-body
+    elementType: text
+    bounds: [490, 300, 300, 300]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>加盟节点突破 <span style="color:$primary;"><strong>200</strong></span> 家</p>
+        <p style="margin-top:6px">覆盖主要装备制造产业集群</p>
+        <p style="margin-top:6px">客户突破 <span style="color:$primary;"><strong>200</strong></span> 家，进入行业前列</p>
+        <p style="margin-top:6px">设立华东、华南、西南三大运营中心</p>
+        <p style="margin-top:6px">拓展航空、航天等周边领域</p>
+        <p style="margin-top:6px">年交易额突破 <span style="color:$primary;"><strong>5</strong></span> 亿元</p>
+  - elementId: phase3-label
+    elementType: text
+    bounds: [840, 140, 360, 30]
+    content:
+      fontSize: 18
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>第三阶段 · 第4-5年</p>
+  - elementId: phase3-card
+    elementType: shape
+    bounds: [840, 240, 360, 380]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: phase3-title
+    elementType: text
+    bounds: [870, 260, 300, 30]
+    content:
+      fontSize: 20
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>生态构建与全领域拓展</p>
+  - elementId: phase3-body
+    elementType: text
+    bounds: [870, 300, 300, 300]
+    content:
+      fontSize: 15
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>加盟节点突破 <span style="color:$primary;"><strong>500</strong></span> 家</p>
+        <p style="margin-top:6px">构建全国性协同服务网络</p>
+        <p style="margin-top:6px">拓展至核电、海工、轨道交通等全高端装备领域</p>
+        <p style="margin-top:6px">叠加材料、检测、设计、金融等增值服务</p>
+        <p style="margin-top:6px">打造行业公认的增材制造协同服务标准</p>
+        <p style="margin-top:6px">成为特种装备增材协同服务 <span style="color:$primary;"><strong>头部平台</strong></span></p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>18</p>

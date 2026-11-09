@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>订单派发应用 - 派单决策</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #F7F8FA; color: #1D2129; font-size: 14px; line-height: 1.6; }
+  .num { font-family: 'JetBrains Mono', Consolas, monospace; font-variant-numeric: tabular-nums; }
+  .topbar { height: 52px; background: #fff; border-bottom: 1px solid #E5E6EB; display: flex; align-items: center; padding: 0 20px; position: sticky; top: 0; z-index: 10; gap: 12px; }
+  .back { color: #165DFF; font-size: 13px; cursor: pointer; text-decoration: none; }
+  .tb-title { font-size: 15px; font-weight: 600; }
+  .tb-sub { font-size: 12px; color: #86909C; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 16px 20px 32px; display: grid; grid-template-columns: 4fr 8fr; gap: 12px; align-items: start; }
+  .card { background: #fff; border: 1px solid #E5E6EB; border-radius: 8px; padding: 16px; }
+  .ct { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .ct::before { content: ''; display: inline-block; width: 3px; height: 12px; border-radius: 1.5px; background: #165DFF; margin-right: 8px; vertical-align: -1px; }
+  .ct small { font-weight: 400; color: #86909C; font-size: 12px; margin-left: 6px; }
+  /* 左：待派订单列表 */
+  .plist { max-height: 640px; overflow-y: auto; }
+  .pitem { border: 1px solid #E5E6EB; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; position: relative; }
+  .pitem:hover { border-color: #94BFFF; background: #FAFCFF; }
+  .pitem.on { border-color: #165DFF; background: #F0F6FF; }
+  .pitem.urgent::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 1.5px; background: #F53F3F; }
+  .pid { font-size: 12px; color: #165DFF; font-weight: 600; }
+  .pname { font-size: 13px; font-weight: 500; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pmeta { font-size: 11px; color: #86909C; display: flex; gap: 8px; margin-top: 3px; flex-wrap: wrap; }
+  .tag { padding: 0 6px; border-radius: 4px; font-size: 11px; line-height: 18px; }
+  .t-emerg { background: #FFECE8; color: #F53F3F; }
+  .t-grey { background: #F2F3F5; color: #4E5969; }
+  .t-blue { background: #E8F3FF; color: #165DFF; }
+  .t-orange { background: #FFF7E8; color: #FF7D00; }
+  /* 右：决策面板 */
+  .sum { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+  .sum-box { background: #F7F8FA; border-radius: 6px; padding: 8px 12px; }
+  .sum-box b { display: block; font-size: 14px; font-weight: 600; }
+  .sum-box span { font-size: 11px; color: #86909C; }
+  .cands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .cand { border: 1.5px solid #E5E6EB; border-radius: 10px; padding: 14px; cursor: pointer; position: relative; transition: border-color .15s; }
+  .cand:hover { border-color: #94BFFF; }
+  .cand.on { border-color: #165DFF; box-shadow: 0 0 0 3px rgba(22,93,255,.1); }
+  .cand.best::after { content: '推荐'; position: absolute; top: -9px; right: 10px; background: #165DFF; color: #fff; font-size: 11px; padding: 0 8px; border-radius: 8px; }
+  .cand-head { display: flex; justify-content: space-between; align-items: flex-start; }
+  .cand-name { font-size: 14px; font-weight: 600; }
+  .cand-loc { font-size: 11px; color: #86909C; }
+  .score-big { font-size: 30px; font-weight: 700; color: #165DFF; line-height: 1; }
+  .score-big small { font-size: 11px; color: #86909C; font-weight: 400; }
+  .dims { margin-top: 12px; }
+  .dim { display: grid; grid-template-columns: 64px 1fr 26px; gap: 8px; align-items: center; font-size: 11px; color: #4E5969; margin-bottom: 5px; }
+  .dtrack { height: 5px; border-radius: 3px; background: #F2F3F5; overflow: hidden; }
+  .dtrack > i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #94BFFF, #165DFF); }
+  .risk { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .risk-item { font-size: 11px; color: #FF7D00; background: #FFF7E8; border-radius: 4px; padding: 2px 8px; }
+  .risk-item.bad { color: #F53F3F; background: #FFECE8; }
+  .risk-item.ok { color: #00B42A; background: #E8FFEA; }
+  /* 底部操作条 */
+  .actbar { margin-top: 14px; background: #fff; border: 1px solid #E5E6EB; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .act-note { flex: 1; font-size: 12px; color: #86909C; min-width: 220px; }
+  .btn { height: 36px; padding: 0 22px; border-radius: 7px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .btn-p { background: #165DFF; color: #fff; }
+  .btn-p:hover { background: #3C7EFF; }
+  .btn-p:disabled { background: #94BFFF; cursor: not-allowed; }
+  .btn-g { background: #fff; border: 1px solid #E5E6EB; color: #4E5969; }
+  /* 结果反馈 */
+  .toast { position: fixed; top: 66px; left: 50%; transform: translateX(-50%); background: #fff; border: 1px solid #E8FFEA; box-shadow: 0 8px 24px rgba(29,33,41,.12); border-radius: 8px; padding: 12px 20px; font-size: 13px; display: none; z-index: 40; }
+  .toast b { color: #00B42A; }
+  .empty { color: #86909C; text-align: center; padding: 60px 0; font-size: 13px; }
+  .plist::-webkit-scrollbar { width: 6px; } .plist::-webkit-scrollbar-thumb { background: #E5E6EB; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="back" href="/dispatch-home.html">← 返回总览</a>
+  <span class="tb-title">派单决策</span>
+  <span class="tb-sub" id="tb-sub">加载中…</span>
+</div>
+<div class="wrap">
+  <div class="card">
+    <div class="ct">待派单订单 <small id="pcount"></small></div>
+    <div class="plist" id="plist"></div>
+  </div>
+  <div>
+    <div class="card" id="panel">
+      <div class="empty">← 请选择左侧待派单订单</div>
+    </div>
+    <div class="actbar" id="actbar" style="display:none;">
+      <div class="act-note" id="act-note"></div>
+      <div class="btn btn-g" id="btn-skip">暂缓</div>
+      <div class="btn btn-p" id="btn-confirm">确认派单 →</div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const esc = (s) => String(s ?? '-').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let orders = [], curOrder = null, cands = [], selected = null;
+
+async function loadOrders() {
+  orders = await (await fetch('/api/orders?status=待派单&limit=30')).json();
+  document.getElementById('pcount').textContent = `共 ${orders.length} 单`;
+  document.getElementById('tb-sub').textContent = `当前待派单 ${orders.length} 单 · 每单响应窗口 10 分钟`;
+  document.getElementById('plist').innerHTML = orders.length ? orders.map((o, i) => `
+    <div class="pitem${o.priority === '紧急' ? ' urgent' : ''}" data-i="${i}">
+      <span class="pid num">${esc(o.order_id)}</span>
+      <div class="pname">${esc(o.order_name)}</div>
+      <div class="pmeta">
+        <span class="tag ${o.priority === '紧急' ? 't-emerg' : 't-grey'}">${esc(o.priority)}</span>
+        <span class="tag t-blue">${esc(o.scene)}</span>
+        <span>${esc(o.material || '')} · ×${o.quantity}</span>
+        <span>交付 ${esc(String(o.required_delivery).slice(0, 10))}</span>
+      </div>
+    </div>`).join('') : '<div class="empty">暂无待派单订单 🎉</div>';
+  document.querySelectorAll('.pitem').forEach((el) => el.addEventListener('click', () => selectOrder(Number(el.dataset.i))));
+}
+
+async function selectOrder(i) {
+  curOrder = orders[i]; selected = null;
+  document.querySelectorAll('.pitem').forEach((el, k) => el.classList.toggle('on', k === i));
+  cands = await (await fetch(`/api/candidates?order_id=${curOrder.order_id}`)).json();
+  const o = curOrder;
+  document.getElementById('panel').innerHTML = `
+    <div class="ct">${esc(o.order_name)} <small class="num">${esc(o.order_id)}</small></div>
+    <div class="sum">
+      <div class="sum-box"><b>${esc(o.material || '-')}</b><span>材料 · ×${o.quantity}</span></div>
+      <div class="sum-box"><b>${esc(String(o.required_delivery).slice(0, 10))}</b><span>要求交付</span></div>
+      <div class="sum-box"><b>${esc(o.scene)}</b><span>场景</span></div>
+      <div class="sum-box"><b style="color:${o.priority === '紧急' ? '#F53F3F' : '#1D2129'}">${esc(o.priority)}</b><span>优先级</span></div>
+    </div>
+    <div style="font-size:13px;color:#4E5969;margin-bottom:10px;">候选节点（评分引擎生成，点击选择）：</div>
+    <div class="cands">
+      ${cands.map((c, k) => candCard(c, k)).join('') || '<div class="empty">该订单无候选记录</div>'}
+    </div>`;
+  document.querySelectorAll('.cand').forEach((el) => el.addEventListener('click', () => selectCand(Number(el.dataset.k))));
+  const bar = document.getElementById('actbar'); bar.style.display = 'flex';
+  updateBar();
+}
+
+function candCard(c, k) {
+  const reason = typeof c.reason === 'string' ? JSON.parse(c.reason || '{}') : (c.reason || {});
+  const dims = [['材料适配', reason.material || 0, 30], ['负荷余量', reason.load || 0, 20], ['地理就近', reason.proximity || 0, 15], ['资质历史', reason.qualification || 0, 20]];
+  const load = Number((c.reason && reason.loadNote) || 0);
+  const risks = [];
+  if (c.score >= 85) risks.push(['ok', '✓ 综合评分优秀']);
+  if ((reason.load || 20) < 15) risks.push(['bad', '✗ 节点负荷偏高，排产可能延迟']);
+  if (String(c.node_name).includes('舰')) risks.push(['', '⚠ 弱网节点，数据同步存在延迟风险']);
+  if ((reason.qualification || 0) < 18) risks.push(['', '⚠ 该节点此类材料历史成交较少']);
+  return `<div class="cand${k === 0 ? ' best' : ''}" data-k="${k}">
+    <div class="cand-head">
+      <div><div class="cand-name">${esc(String(c.node_name).split(' · ')[0])}</div><div class="cand-loc">${esc(c.node_name)}</div></div>
+      <div class="score-big num">${c.score}<small>/100</small></div>
+    </div>
+    <div class="dims">
+      ${dims.map(([n, v, m]) => `<div class="dim"><span>${n}</span><div class="dtrack"><i style="width:${Math.round(v / m * 100)}%"></i></div><span class="num">${v}</span></div>`).join('')}
+    </div>
+    <div class="risk">${risks.map(([cls, t]) => `<div class="risk-item ${cls}">${t}</div>`).join('') || '<div class="risk-item ok">✓ 无显著风险</div>'}</div>
+  </div>`;
+}
+
+function selectCand(k) {
+  selected = cands[k];
+  document.querySelectorAll('.cand').forEach((el, i) => el.classList.toggle('on', i === k));
+  updateBar();
+}
+
+function updateBar() {
+  const btn = document.getElementById('btn-confirm');
+  btn.disabled = !selected;
+  document.getElementById('act-note').innerHTML = selected
+    ? `将派单至 <b>${esc(selected.node_name)}</b>（推荐分 ${selected.score}）· 确认后自动创建合约空间、生成节点任务并上链存证`
+    : '请先在上方选择一个候选节点';
+}
+
+document.getElementById('btn-confirm').addEventListener('click', async () => {
+  if (!selected || !curOrder) return;
+  const btn = document.getElementById('btn-confirm');
+  btn.disabled = true; btn.textContent = '派单中…';
+  try {
+    const r = await fetch(`/api/orders/${curOrder.order_id}/dispatch`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ node_id: selected.node_id }),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || '派单失败');
+    const t = document.getElementById('toast');
+    t.innerHTML = `✅ 派单成功：订单已派至 <b>${esc(d.node)}</b> · 合约空间 <b class="num">${esc(d.contract_space_id)}</b> 已创建并上链存证`;
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 5000);
+    document.getElementById('panel').innerHTML = '<div class="empty">✅ 该订单已完成派单，请选择下一单</div>';
+    document.getElementById('actbar').style.display = 'none';
+    await loadOrders();
+  } catch (e) {
+    alert('派单失败：' + e.message);
+    updateBar();
+  } finally {
+    btn.textContent = '确认派单 →';
+  }
+});
+document.getElementById('btn-skip').addEventListener('click', () => {
+  document.getElementById('panel').innerHTML = '<div class="empty">← 请选择左侧待派单订单</div>';
+  document.getElementById('actbar').style.display = 'none';
+});
+
+loadOrders();
+</script>
+</body>
+</html>

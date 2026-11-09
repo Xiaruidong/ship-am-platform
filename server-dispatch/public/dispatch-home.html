@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>订单派发应用 - 协同总览（真数据版）</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Inter, 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #F7F8FA; color: #1D2129; font-size: 14px; line-height: 1.6; }
+  .num { font-family: 'JetBrains Mono', Consolas, monospace; font-variant-numeric: tabular-nums; }
+  .app { display: flex; min-height: 100vh; }
+  .sider { width: 220px; background: #fff; border-right: 1px solid #E5E6EB; flex-shrink: 0; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; }
+  .logo { height: 56px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid #E5E6EB; }
+  .logo-badge { width: 30px; height: 30px; border-radius: 7px; background: #165DFF; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .menu { padding: 10px 8px; flex: 1; }
+  .mi { position: relative; display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px; color: #4E5969; font-size: 14px; cursor: pointer; margin-bottom: 2px; }
+  .mi:hover { background: #F2F3F5; }
+  .mi.on { background: #E8F3FF; color: #165DFF; font-weight: 600; }
+  .mi.on::before { content: ''; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px; border-radius: 2px; background: #165DFF; }
+  .mi-ico { width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid #C9CDD4; }
+  .mi.on .mi-ico { border-color: #165DFF; background: rgba(22,93,255,.12); }
+  .mi-dot { margin-left: auto; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #F53F3F; color: #fff; font-size: 10px; line-height: 16px; text-align: center; }
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .topbar { height: 56px; background: #fff; border-bottom: 1px solid #E5E6EB; display: flex; align-items: center; gap: 14px; padding: 0 20px; position: sticky; top: 0; z-index: 10; }
+  .search { flex: 0 1 340px; height: 32px; background: #F7F8FA; border: 1px solid #E5E6EB; border-radius: 6px; display: flex; align-items: center; padding: 0 12px; color: #86909C; font-size: 13px; }
+  .topbar-center { flex: 1; text-align: center; min-width: 0; }
+  .tb-title { font-size: 15px; font-weight: 600; }
+  .tb-stat { font-size: 11px; color: #86909C; }
+  .tb-stat b { color: #4E5969; font-weight: 500; }
+  .tb-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .sel { height: 32px; background: #fff; border: 1px solid #E5E6EB; border-radius: 6px; padding: 0 10px; font-size: 13px; color: #4E5969; display: flex; align-items: center; cursor: pointer; }
+  .icon-btn { width: 32px; height: 32px; border-radius: 6px; border: 1px solid #E5E6EB; background: #fff; display: flex; align-items: center; justify-content: center; color: #4E5969; cursor: pointer; position: relative; }
+  .bell-dot { position: absolute; top: 5px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: #F53F3F; }
+  .btn-p { height: 32px; padding: 0 14px; border-radius: 6px; background: #165DFF; color: #fff; font-size: 13px; display: flex; align-items: center; cursor: pointer; }
+  .user { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+  .avatar { width: 28px; height: 28px; border-radius: 50%; background: #E8F3FF; color: #165DFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .content { flex: 1; width: 100%; max-width: 1320px; margin: 0 auto; padding: 16px 20px 24px; }
+  .card { background: #fff; border: 1px solid #E5E6EB; border-radius: 8px; padding: 16px; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 8px; flex-wrap: wrap; }
+  .ct { font-size: 14px; font-weight: 600; }
+  .ct::before { content: ''; display: inline-block; width: 3px; height: 12px; border-radius: 1.5px; background: #165DFF; margin-right: 8px; vertical-align: -1px; }
+  .cl { font-size: 12px; color: #86909C; cursor: pointer; }
+  .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .kpi { position: relative; padding: 14px 16px; min-height: 104px; display: flex; flex-direction: column; justify-content: space-between; }
+  .kpi-q { position: absolute; top: 10px; right: 10px; width: 16px; height: 16px; border-radius: 50%; border: 1px solid #C9CDD4; color: #86909C; font-size: 10px; line-height: 14px; text-align: center; cursor: help; }
+  .kpi-tip { display: none; position: absolute; top: 30px; right: 6px; width: 190px; background: #333; color: #fff; font-size: 11px; line-height: 1.5; padding: 8px 10px; border-radius: 6px; z-index: 30; }
+  .kpi-q:hover + .kpi-tip { display: block; }
+  .kpi-h { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #86909C; }
+  .kpi-ico { width: 26px; height: 26px; border-radius: 6px; background: #E8F3FF; color: #165DFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .kpi-v { font-size: 30px; font-weight: 700; line-height: 1.1; }
+  .kpi-v small { font-size: 12px; color: #86909C; font-weight: 400; }
+  .kpi-d { font-size: 11px; color: #00B42A; }
+  .kpi.alert .kpi-ico { background: #FFECE8; color: #F53F3F; }
+  .kpi.alert .kpi-v { color: #F53F3F; }
+  .row2 { display: grid; grid-template-columns: 2fr 3fr; gap: 12px; margin-top: 12px; }
+  .row3 { display: grid; grid-template-columns: 3fr 5fr 4fr; gap: 12px; margin-top: 12px; }
+  .filters { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .f-row { display: flex; gap: 6px; align-items: center; font-size: 12px; color: #86909C; }
+  .f-label { width: 52px; flex-shrink: 0; }
+  .fchip { padding: 2px 10px; border-radius: 5px; background: #F2F3F5; color: #4E5969; cursor: pointer; font-size: 12px; }
+  .fchip.on { background: #165DFF; color: #fff; }
+  .ohead, .oitem { display: grid; grid-template-columns: 110px 1fr 150px 110px 84px; gap: 8px; align-items: center; padding: 7px 10px; }
+  .ohead { font-size: 11px; color: #86909C; border-bottom: 1px solid #E5E6EB; }
+  .oitem { font-size: 13px; border-bottom: 1px solid #F2F3F5; cursor: pointer; position: relative; }
+  .oitem:hover { background: #F7F9FF; }
+  .oitem.urgent::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 1.5px; background: #F53F3F; }
+  .oid { font-weight: 600; color: #165DFF; font-size: 12px; }
+  .oname b { font-weight: 500; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .oname small { color: #86909C; font-size: 11px; }
+  .pbar { height: 5px; border-radius: 3px; background: #F2F3F5; overflow: hidden; }
+  .pbar > i { display: block; height: 100%; border-radius: 3px; background: #165DFF; }
+  .pval { font-size: 11px; color: #4E5969; margin-top: 2px; }
+  .onode { font-size: 12px; color: #4E5969; }
+  .st { padding: 1px 8px; border-radius: 4px; font-size: 11px; white-space: nowrap; justify-self: end; }
+  .st-wait { background: #F2F3F5; color: #4E5969; }
+  .st-disp { background: #E8F3FF; color: #165DFF; }
+  .st-prod { background: #E8FFEA; color: #00B42A; }
+  .st-qc { background: #FFF7E8; color: #FF7D00; }
+  .st-emerg { background: #FFECE8; color: #F53F3F; }
+  .st-done { background: #F2F3F5; color: #86909C; }
+  .nl-row { display: grid; grid-template-columns: 1fr 44px 90px; gap: 8px; align-items: center; padding: 8px 4px; border-bottom: 1px solid #F2F3F5; }
+  .nl-row:last-child { border-bottom: none; }
+  .nl-name { font-size: 13px; }
+  .nl-name small { display: block; color: #86909C; font-size: 11px; }
+  .nl-val { font-weight: 700; font-size: 13px; text-align: right; }
+  .ntrack { height: 5px; border-radius: 3px; background: #F2F3F5; overflow: hidden; }
+  .ntrack > i { display: block; height: 100%; border-radius: 3px; }
+  .ok { background: #00B42A; } .warn { background: #FF7D00; }
+  .todo { display: flex; gap: 10px; padding: 10px 4px; border-bottom: 1px solid #F2F3F5; align-items: flex-start; }
+  .td-time { font-size: 11px; color: #86909C; width: 44px; flex-shrink: 0; padding-top: 2px; }
+  .td-tag { flex-shrink: 0; font-size: 11px; padding: 1px 7px; border-radius: 4px; background: #E8F3FF; color: #165DFF; white-space: nowrap; margin-top: 2px; }
+  .td-body { flex: 1; min-width: 0; font-size: 13px; }
+  .td-meta { display: flex; gap: 8px; margin-top: 3px; flex-wrap: wrap; }
+  .score { font-size: 11px; color: #165DFF; }
+  .cd { font-size: 11px; padding: 0 6px; border-radius: 4px; background: #FFF7E8; color: #FF7D00; }
+  .td-acts { display: flex; gap: 6px; flex-shrink: 0; }
+  .mini { height: 24px; padding: 0 10px; border-radius: 5px; font-size: 12px; cursor: pointer; display: flex; align-items: center; }
+  .mini-ok { background: #165DFF; color: #fff; }
+  .mini-no { background: #fff; border: 1px solid #E5E6EB; color: #4E5969; }
+  .cs-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+  .cs-box { background: #F7F8FA; border-radius: 6px; padding: 8px 10px; }
+  .cs-box b { font-size: 18px; font-weight: 700; display: block; }
+  .cs-box span { font-size: 11px; color: #86909C; }
+  .cs-row { display: flex; align-items: center; gap: 8px; padding: 8px 4px; border-bottom: 1px solid #F2F3F5; font-size: 12px; }
+  .cs-row:last-child { border-bottom: none; }
+  .cs-id { color: #165DFF; width: 110px; flex-shrink: 0; }
+  .cs-name { flex: 1; color: #4E5969; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .feed { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 24px; }
+  .fi { display: flex; gap: 10px; padding: 8px 0; font-size: 13px; border-bottom: 1px dashed #F2F3F5; }
+  .fi-t { font-size: 11px; color: #C0C6CC; width: 78px; flex-shrink: 0; padding-top: 2px; }
+  .fi-tag { font-size: 11px; padding: 1px 7px; border-radius: 4px; background: #F2F3F5; color: #4E5969; white-space: nowrap; margin-top: 2px; }
+  .fi-tag.ok { background: #E8FFEA; color: #00B42A; }
+  .fi-tag.info { background: #E8F3FF; color: #165DFF; }
+  .fi-x { color: #4E5969; }
+  .fi-x b { color: #1D2129; font-weight: 500; }
+  .mask { position: fixed; inset: 0; background: rgba(29,33,41,.35); display: none; z-index: 50; }
+  .drawer { position: fixed; top: 0; right: -460px; width: 440px; height: 100vh; background: #fff; z-index: 60; box-shadow: -8px 0 24px rgba(29,33,41,.14); transition: right .22s ease; display: flex; flex-direction: column; }
+  .drawer.open { right: 0; }
+  .dr-head { padding: 16px 20px; border-bottom: 1px solid #E5E6EB; display: flex; justify-content: space-between; align-items: center; }
+  .dr-body { padding: 20px; overflow-y: auto; flex: 1; }
+  .dr-sec { margin-bottom: 16px; }
+  .dr-sec h4 { font-size: 13px; color: #4E5969; margin-bottom: 8px; }
+  .kv { display: grid; grid-template-columns: 96px 1fr; gap: 6px 10px; font-size: 13px; }
+  .kv span { color: #86909C; }
+  .foot { border-top: 1px solid #E5E6EB; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; font-size: 12px; color: #C0C6CC; flex-wrap: wrap; gap: 8px; }
+  /* ===== 面板固定高度 + 内部滚动 ===== */
+  .olist { max-height: 388px; overflow-y: auto; }
+  #nodelist { max-height: 272px; overflow-y: auto; }
+  .todo-wrap { max-height: 272px; overflow-y: auto; }
+  #cs-list { max-height: 132px; overflow-y: auto; }
+  #feed { max-height: 216px; overflow-y: auto; }
+  .olist::-webkit-scrollbar, #nodelist::-webkit-scrollbar, .todo-wrap::-webkit-scrollbar, #cs-list::-webkit-scrollbar, #feed::-webkit-scrollbar, .dr-body::-webkit-scrollbar { width: 6px; }
+  .olist::-webkit-scrollbar-thumb, #nodelist::-webkit-scrollbar-thumb, .todo-wrap::-webkit-scrollbar-thumb, #cs-list::-webkit-scrollbar-thumb, #feed::-webkit-scrollbar-thumb, .dr-body::-webkit-scrollbar-thumb { background: #E5E6EB; border-radius: 3px; }
+  .olist::-webkit-scrollbar-thumb:hover, #nodelist::-webkit-scrollbar-thumb:hover { background: #C9CDD4; }
+  .ohead { position: sticky; top: 0; background: #fff; z-index: 1; }
+  .cand { display: grid; grid-template-columns: 1fr 60px; gap: 4px 10px; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed #F2F3F5; }
+  .cand:last-child { border-bottom: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sider">
+    <div class="logo"><div class="logo-badge">AM</div><div class="logo-name">订单派发应用</div></div>
+    <div class="menu">
+      <div class="mi on"><span class="mi-ico"></span>首页 · 协同总览</div>
+      <div class="mi"><span class="mi-ico"></span>需求单管理<span class="mi-dot">3</span></div>
+      <div class="mi"><span class="mi-ico"></span>订单管理</div>
+      <div class="mi"><span class="mi-ico"></span>制造节点</div>
+      <div class="mi"><span class="mi-ico"></span>合约空间</div>
+      <div class="mi"><span class="mi-ico"></span>数据资源库</div>
+      <div class="mi"><span class="mi-ico"></span>系统设置</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div class="search">🔍 订单号 / 零部件 / 节点（回车检索）</div>
+      <div class="topbar-center">
+        <div class="tb-title">协同总览</div>
+        <div class="tb-stat" id="tb-stat">加载中…</div>
+      </div>
+      <div class="tb-right">
+        <div class="sel">今日 ▾</div>
+        <div class="icon-btn" title="刷新" id="btn-refresh">⟳</div>
+        <div class="btn-p">＋ 新建需求单</div>
+        <div class="icon-btn">🔔<span class="bell-dot"></span></div>
+        <div class="user"><div class="avatar">王</div><div class="user-name">王工程师 ▾</div></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="kpis" id="kpis"></div>
+
+      <div class="row2">
+        <div class="card">
+          <div class="card-head"><div class="ct">协同网络拓扑</div><div class="cl">节点详情 →</div></div>
+          <svg class="net-svg" viewBox="0 0 400 300" id="netsvg"></svg>
+          <div style="font-size:11px;color:#C0C6CC;display:flex;gap:12px;margin-top:6px;flex-wrap:wrap;" id="net-legend"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="ct">订单看板</div><div class="cl">订单管理 →</div></div>
+          <div class="filters">
+            <div class="f-row"><span class="f-label">优先级</span><div class="fchip on" data-k="priority" data-v="全部">全部</div><div class="fchip" data-k="priority" data-v="紧急">紧急</div></div>
+            <div class="f-row"><span class="f-label">站点</span><div class="fchip on" data-k="scene" data-v="全部">全部</div><div class="fchip" data-k="scene" data-v="舰">舰</div><div class="fchip" data-k="scene" data-v="岛">岛</div><div class="fchip" data-k="scene" data-v="岸">岸</div></div>
+          </div>
+          <div class="olist" id="olist">
+            <div class="ohead"><span>订单</span><span>名称 / 规格</span><span>进度</span><span>节点</span><span style="justify-self:end;">状态</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row3">
+        <div class="card">
+          <div class="card-head"><div class="ct">节点负荷</div><div class="cl">查看全部 →</div></div>
+          <div id="nodelist"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="ct">待我处理（演示）</div><div class="cl">全部待办 →</div></div>
+          <div class="todo-wrap">
+          <div class="todo"><span class="td-time num">14:20</span><span class="td-tag">确认派单</span>
+            <div class="td-body" id="todo-dispatch">加载中…</div></div>
+          <div class="todo"><span class="td-time num">13:05</span><span class="td-tag">异常处理</span>
+            <div class="td-body">南通 #3 温度超限停机（演示数据）<div class="td-meta"><span class="cd" style="background:#FFECE8;color:#F53F3F;">已超时 00:42</span></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="ct">合约空间</div><div class="cl">全部合约 →</div></div>
+          <div class="cs-mini" id="cs-mini"></div>
+          <div id="cs-list"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <div class="card-head"><div class="ct">协同动态</div><div class="cl">全部动态 →</div></div>
+        <div class="feed" id="feed"></div>
+      </div>
+    </div>
+    <div class="foot"><span>船舶增材制造数据共享平台 · 订单派发应用（真数据演示）</span><span id="foot-stat">服务正常</span></div>
+  </div>
+</div>
+
+<div class="mask" id="mask"></div>
+<div class="drawer" id="drawer">
+  <div class="dr-head"><b id="dr-title">订单详情</b><span style="cursor:pointer;color:#86909C;font-size:18px;" id="dr-close">✕</span></div>
+  <div class="dr-body">
+    <div class="dr-sec"><h4>基本信息</h4><div class="kv">
+      <span>订单编号</span><b class="num" id="dr-id">-</b><span>订单名称</span><b id="dr-name">-</b>
+      <span>材料 / 数量</span><b id="dr-spec">-</b><span>状态</span><b id="dr-st">-</b>
+      <span>执行节点</span><b id="dr-node">-</b><span>要求交付</span><b class="num" id="dr-dl">-</b>
+    </div></div>
+    <div class="dr-sec"><h4>派单候选（来自评分引擎）</h4><div id="dr-cands">-</div></div>
+    <div class="dr-sec"><h4>链上存证</h4><div class="kv"><span>合约空间</span><b class="num" id="dr-cs" style="color:#165DFF;">-</b></div></div>
+  </div>
+</div>
+
+<script>
+const API = '';
+const esc = (s) => String(s ?? '-').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtTime = (s) => String(s || '').slice(11, 16);
+
+// ---- KPI ----
+async function loadKpi() {
+  const k = await (await fetch(API + '/api/overview/kpi')).json();
+  const delta = k.demandDelta > 0 ? `↑ ${k.demandDelta} 较昨日` : k.demandDelta < 0 ? `↓ ${-k.demandDelta} 较昨日` : '— 持平';
+  const items = [
+    ['需', '今日新增需求', k.todayNewDemands, delta, '口径：当日 0 点以来新增需求单（三渠道合计）。'],
+    ['派', '待派单', k.pendingDispatch, '', '口径：已受理且尚未确认派单的订单。'],
+    ['产', '生产中', k.inProduction, '', '口径：节点已开工、未完工的订单。'],
+    ['检', '质检中', k.inInspection, '', '口径：完工转入检测/比对的订单。'],
+    ['交', '按期交付率', `${k.onTimeRate}<small>%</small>`, '↑ 30 天口径', '口径：近 30 天已交付订单中按期交付占比。'],
+    ['!', '待处理异常', k.abnormal, '', '口径：未关闭且需处理的异常订单。', true],
+  ];
+  document.getElementById('kpis').innerHTML = items.map(([ico, label, val, d, tip, alert]) => `
+    <div class="card kpi${alert ? ' alert' : ''}"><span class="kpi-q">?</span><div class="kpi-tip">${tip}</div>
+      <div class="kpi-h"><span class="kpi-ico">${ico}</span>${label}</div>
+      <div><div class="kpi-v num">${val}</div>${d ? `<div class="kpi-d${ico === '!' ? '' : ''}" ${ico === '!' ? 'style="color:#F53F3F"' : ''}>${d}</div>` : ''}</div>
+    </div>`).join('');
+}
+
+// ---- 顶部元信息 ----
+async function loadMeta() {
+  const m = await (await fetch(API + '/api/overview/meta')).json();
+  document.getElementById('tb-stat').innerHTML =
+    `数据截止 <b class="num">${esc(m.asOf)}</b>｜共 <b>${m.onlineNodes}</b> 个在线节点｜链上区块 <b class="num">#${m.blockHeight.toLocaleString()}</b>`;
+}
+
+// ---- 订单列表 ----
+const stCls = { '待派单': 'st-wait', '已派单': 'st-disp', '生产中': 'st-prod', '质检中': 'st-qc', '已交付': 'st-done', '已归档': 'st-done' };
+const state = { priority: '全部', scene: '全部' };
+async function loadOrders() {
+  const p = new URLSearchParams({ priority: state.priority, scene: state.scene, limit: 10 });
+  const rows = await (await fetch(API + '/api/orders?' + p)).json();
+  const list = document.getElementById('olist');
+  list.querySelectorAll('.oitem').forEach((e) => e.remove());
+  for (const o of rows) {
+    const div = document.createElement('div');
+    div.className = 'oitem' + (o.priority === '紧急' ? ' urgent' : '');
+    div.dataset.oid = o.order_id;
+    const prog = o.status === '待派单'
+      ? '<div class="pval">待派</div>'
+      : `<div class="pbar"><i style="width:${o.progress}%"></i></div><div class="pval num">${o.progress}%</div>`;
+    div.innerHTML = `<span class="oid num">${esc(o.order_id)}</span>
+      <div class="oname"><b>${esc(o.order_name)}</b><small>${esc(o.material || '')} · ×${o.quantity} · ${esc(o.scene)}${o.priority === '紧急' ? ' · 紧急' : ''}</small></div>
+      <div>${prog}</div><span class="onode">${esc(o.node_name || '—')}</span>
+      <span class="st ${stCls[o.status] || 'st-wait'}">${esc(o.status)}</span>`;
+    div.addEventListener('click', () => openDrawer(o, div));
+    list.appendChild(div);
+  }
+}
+document.querySelectorAll('.fchip').forEach((c) => c.addEventListener('click', () => {
+  c.parentElement.querySelectorAll('.fchip').forEach((x) => x.classList.remove('on'));
+  c.classList.add('on');
+  state[c.dataset.k] = c.dataset.v;
+  loadOrders();
+}));
+
+// ---- 订单抽屉（含真实候选） ----
+async function openDrawer(o, el) {
+  document.getElementById('dr-id').textContent = o.order_id;
+  document.getElementById('dr-name').textContent = o.order_name;
+  document.getElementById('dr-spec').textContent = `${o.material || '-'} · ×${o.quantity}`;
+  document.getElementById('dr-st').textContent = o.status;
+  document.getElementById('dr-node').textContent = o.node_name || '未派单';
+  document.getElementById('dr-dl').textContent = String(o.required_delivery || '-').slice(0, 10);
+  document.getElementById('dr-cs').textContent = o.status === '待派单' ? '未创建（派单后自动生成）' : '见合约空间';
+  const cands = await (await fetch(`${API}/api/candidates?order_id=${o.order_id}`)).json();
+  document.getElementById('dr-cands').innerHTML = cands.length
+    ? cands.map((c) => { const rr = typeof c.reason === 'string' ? JSON.parse(c.reason || '{}') : (c.reason || {}); return `<div class="cand"><span>${esc(c.node_name)}</span><b class="num" style="color:#165DFF;text-align:right;">${c.score}</b><small style="grid-column:1/3;color:#86909C;">推荐分 · 排名 ${c.rank_no} · ${esc(Object.entries(rr).map(([k, v]) => `${k}:${v}`).join(' / '))}</small></div>`; }).join('')
+    : '<div style="color:#86909C;font-size:13px;">该订单暂无候选记录。</div>';
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('mask').style.display = 'block';
+}
+document.getElementById('dr-close').onclick = () => { document.getElementById('drawer').classList.remove('open'); document.getElementById('mask').style.display = 'none'; };
+document.getElementById('mask').onclick = () => { document.getElementById('drawer').classList.remove('open'); document.getElementById('mask').style.display = 'none'; };
+
+// ---- 节点 + 拓扑 ----
+async function loadNodes() {
+  const nodes = await (await fetch(API + '/api/nodes')).json();
+  document.getElementById('nodelist').innerHTML = nodes.map((n) => `
+    <div class="nl-row">
+      <div class="nl-name">${esc(n.node_name)}<small>${esc(n.location)} · ${n.device_count} 台 · 心跳 ${esc(String(n.last_heartbeat || '').slice(11))}</small></div>
+      <div class="nl-val num" style="color:${n.load_rate >= 80 ? '#FF7D00' : '#00B42A'}">${n.load_rate}%</div>
+      <div class="ntrack"><i class="${n.load_rate >= 80 ? 'warn' : 'ok'}" style="width:${n.load_rate}%"></i></div>
+    </div>`).join('');
+  // 拓扑：中心 + 前 5 个节点环绕（按真实数据画）
+  const top = nodes.slice(0, 5);
+  const cx = 200, cy = 150, R = 95;
+  const pos = top.map((n, i) => {
+    const a = (Math.PI * 2 * i) / top.length - Math.PI / 2;
+    return { n, x: cx + R * Math.cos(a) * 1.35, y: cy + R * Math.sin(a) * 0.92 };
+  });
+  const color = (n) => (n.load_rate >= 80 ? '#FF7D00' : n.status === '在线' ? '#00B42A' : '#C9CDD4');
+  let svg = `<g fill="none" stroke="#C9CDD4" stroke-width="1.3">` +
+    pos.map((p) => `<path d="M${cx},${cy} L${p.x.toFixed(0)},${p.y.toFixed(0)}"${p.n.scene === '舰' ? ' stroke-dasharray="5 5"' : ''}/>`).join('') + `</g>`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="18" fill="none" stroke="#E5E6EB"/><circle cx="${cx}" cy="${cy}" r="10" fill="#165DFF"/><circle cx="${cx}" cy="${cy}" r="3.2" fill="#fff"/><text x="${cx}" y="${cy + 34}" text-anchor="middle" font-size="10" fill="#4E5969" font-weight="600">调度中心</text>`;
+  svg += pos.map((p) => `<circle cx="${p.x.toFixed(0)}" cy="${p.y.toFixed(0)}" r="7" fill="${color(p.n)}"/><text x="${p.x.toFixed(0)}" y="${(p.y + (p.y > cy ? 20 : -14)).toFixed(0)}" text-anchor="middle" font-size="10" fill="#86909C">${esc(String(p.n.node_name).split(' · ')[0])}</text>`).join('');
+  document.getElementById('netsvg').innerHTML = svg;
+  document.getElementById('net-legend').innerHTML = `<span>● 绿 运行</span><span style="color:#FF7D00">● 橙 高负荷</span><span>— 稳定链路</span><span style="color:#C9CDD4">-- 弱链路（舰）</span><span style="margin-left:auto;">共 ${nodes.length} 个节点 · ${nodes.reduce((s, n) => s + n.device_count, 0)} 台设备</span>`;
+  // 待我处理（取最新待派单的紧急订单 + 其最高候选）
+  const orders = await (await fetch(API + '/api/orders?priority=紧急&status=待派单&limit=1')).json();
+  if (orders[0]) {
+    const cands = await (await fetch(`${API}/api/candidates?order_id=${orders[0].order_id}`)).json();
+    const best = cands[0];
+    document.getElementById('todo-dispatch').innerHTML =
+      `${esc(orders[0].order_name)} —— 推荐 <b>${best ? esc(best.node_name) : '-'}</b>
+       <div class="td-meta"><span class="score num">推荐分 ${best ? best.score : '-'} · 候选 ${cands.length} 节点</span><span class="cd num">响应窗口剩 06:00</span></div>`;
+  }
+}
+
+// ---- 合约 ----
+async function loadContracts() {
+  const c = await (await fetch(API + '/api/contracts')).json();
+  document.getElementById('cs-mini').innerHTML = `
+    <div class="cs-box"><b class="num" style="color:#165DFF">${c.active}</b><span>履约中</span></div>
+    <div class="cs-box"><b class="num">${c.pendingArchive}</b><span>待归档</span></div>
+    <div class="cs-box"><b class="num">${c.onchainTotal}</b><span>累计上链存证</span></div>`;
+  document.getElementById('cs-list').innerHTML = c.list.map((r) => `
+    <div class="cs-row"><span class="cs-id num">${esc(r.cs_id)}</span><span class="cs-name">${esc(r.name)}</span>
+    <span class="st ${r.state === '待归档' ? 'st-qc' : 'st-disp'}">${esc(r.state)}</span></div>`).join('');
+}
+
+// ---- 动态 ----
+const evTag = { '接单': 'info', '开工': 'info', '派单': 'info', '报工': '', '质检': 'ok', '交付': 'ok', '归档': 'ok' };
+async function loadEvents() {
+  const rows = await (await fetch(API + '/api/events?limit=9')).json();
+  document.getElementById('feed').innerHTML = rows.map((e) => `
+    <div class="fi"><span class="fi-t num">${esc(String(e.occurred_at).slice(5, 16))}</span>
+      <span class="fi-tag ${evTag[e.event_type] || ''}">${esc(e.event_type)}</span>
+      <span class="fi-x"><b>${esc(e.order_name)}</b> · ${esc(e.node_name || '调度中心')}${e.tx_hash ? ' · 已上链' : ''}</span>
+    </div>`).join('');
+}
+
+function loadAll() { loadKpi(); loadMeta(); loadOrders(); loadNodes(); loadContracts(); loadEvents(); }
+document.getElementById('btn-refresh').addEventListener('click', loadAll);
+loadAll();
+setInterval(loadAll, 30000); // 30s 轮询
+</script>
+</body>
+</html>

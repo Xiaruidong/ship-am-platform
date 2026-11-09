@@ -1,0 +1,87 @@
+title: 面向特种装备维护的去中心化智能协同系统
+size: [1280, 720]
+theme:
+  colors:
+    primary: "#FF112D"
+    background: "#0A0A0A"
+    text: "#FFFFFF"
+    secondary: "#A0A0A0"
+    card: "#151515"
+    border: "#333333"
+  textStyles:
+    title:
+      fontSize: 48
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      lineHeight: 1.2
+    subtitle:
+      fontSize: 24
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.4
+    heading:
+      fontSize: 32
+      color: "$text"
+      fontFamily: "Liter, alimamashuheiti"
+      lineHeight: 1.3
+    body:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+    kpi:
+      fontSize: 56
+      color: "$primary"
+      fontFamily: "Liter"
+      lineHeight: 1.1
+    kpiLabel:
+      fontSize: 14
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.4
+    caption:
+      fontSize: 12
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.4
+    chapterNum:
+      fontSize: 72
+      color: "$primary"
+      fontFamily: "Liter"
+      lineHeight: 1.0
+  tableStyles:
+    default:
+      fontSize: 14
+      fontFamily: "Liter, MiSans"
+      headerFill: "$primary"
+      headerColor: "$text"
+      headerBold: true
+      bodyFill:
+        - "$card"
+        - "$background"
+      bodyColor: "$text"
+      border:
+        style: solid
+        width: 1
+        color: "$border"
+pages:
+  - pages/cover.page
+  - pages/toc.page
+  - pages/ch1_industry.page
+  - pages/market_policy.page
+  - pages/pain_points.page
+  - pages/ch2_tech.page
+  - pages/platform_position.page
+  - pages/tech_architecture.page
+  - pages/business_flow.page
+  - pages/core_innovation.page
+  - pages/competitive_advantage.page
+  - pages/ch3_business.page
+  - pages/business_model.page
+  - pages/partnership.page
+  - pages/ch4_finance.page
+  - pages/financial_forecast.page
+  - pages/funding_plan.page
+  - pages/development_roadmap.page
+  - pages/team.page
+  - pages/final.page

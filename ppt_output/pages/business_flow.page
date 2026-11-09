@@ -1,0 +1,232 @@
+pageType: content
+background:
+  type: solid
+  color: "$background"
+elements:
+  - elementId: deco-line
+    elementType: shape
+    bounds: [80, 58, 4, 36]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: page-title
+    elementType: text
+    bounds: [96, 50, 1100, 48]
+    content:
+      style: "$heading"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>核心业务流程：七步全链路闭环</p>
+  - elementId: flow-step1-bg
+    elementType: shape
+    bounds: [80, 130, 140, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+  - elementId: flow-step1-text
+    elementType: text
+    bounds: [80, 130, 140, 100]
+    content:
+      fontSize: 14
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.4
+      align: [center, middle]
+      text: |
+        <p><strong>故障识别</strong></p>
+        <p>与本地诊断</p>
+  - elementId: arrow1
+    elementType: shape
+    bounds: [220, 170, 30, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: flow-step2-bg
+    elementType: shape
+    bounds: [250, 130, 140, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: flow-step2-text
+    elementType: text
+    bounds: [250, 130, 140, 100]
+    content:
+      fontSize: 14
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.4
+      align: [center, middle]
+      text: |
+        <p><strong>需求接收</strong></p>
+        <p>与方案设计</p>
+  - elementId: arrow2
+    elementType: shape
+    bounds: [390, 170, 30, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: flow-step3-bg
+    elementType: shape
+    bounds: [420, 130, 140, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: flow-step3-text
+    elementType: text
+    bounds: [420, 130, 140, 100]
+    content:
+      fontSize: 14
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.4
+      align: [center, middle]
+      text: |
+        <p><strong>智能派单</strong></p>
+        <p>与合约生成</p>
+  - elementId: arrow3
+    elementType: shape
+    bounds: [560, 170, 30, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: flow-step4-bg
+    elementType: shape
+    bounds: [590, 130, 140, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: flow-step4-text
+    elementType: text
+    bounds: [590, 130, 140, 100]
+    content:
+      fontSize: 14
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.4
+      align: [center, middle]
+      text: |
+        <p><strong>分布式</strong></p>
+        <p>同步制造</p>
+  - elementId: arrow4
+    elementType: shape
+    bounds: [730, 170, 30, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: flow-step5-bg
+    elementType: shape
+    bounds: [760, 130, 140, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: flow-step5-text
+    elementType: text
+    bounds: [760, 130, 140, 100]
+    content:
+      fontSize: 14
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.4
+      align: [center, middle]
+      text: |
+        <p><strong>孪生质检</strong></p>
+        <p>与质量验证</p>
+  - elementId: arrow5
+    elementType: shape
+    bounds: [900, 170, 30, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: flow-step6-bg
+    elementType: shape
+    bounds: [930, 130, 140, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: flow-step6-text
+    elementType: text
+    bounds: [930, 130, 140, 100]
+    content:
+      fontSize: 14
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.4
+      align: [center, middle]
+      text: |
+        <p><strong>现场交付</strong></p>
+        <p>与安装</p>
+  - elementId: arrow6
+    elementType: shape
+    bounds: [1070, 170, 30, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: flow-step7-bg
+    elementType: shape
+    bounds: [1100, 130, 140, 100]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$card"
+  - elementId: flow-step7-text
+    elementType: text
+    bounds: [1100, 130, 140, 100]
+    content:
+      fontSize: 14
+      color: "$text"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.4
+      align: [center, middle]
+      text: |
+        <p><strong>数据归档</strong></p>
+        <p>与知识复用</p>
+  - elementId: desc-title
+    elementType: text
+    bounds: [80, 260, 300, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "Liter, alimamashuheiti"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>以舰船远程应急维修场景为例</p>
+  - elementId: desc-body
+    elementType: text
+    bounds: [80, 300, 1120, 340]
+    content:
+      fontSize: 16
+      color: "$secondary"
+      fontFamily: "Liter, MiSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p><strong>1. 故障识别与本地诊断：</strong>舰上人员识别装备故障，检查库存备件，采集故障数据、完成初步测量与需求上报</p>
+        <p style="margin-top:8px"><strong>2. 需求接收与方案设计：</strong>调度中心接收需求，工程师匹配零部件模型、优化设计方案，生成"模型+材料+工艺"标准数据包</p>
+        <p style="margin-top:8px"><strong>3. 智能派单与合约生成：</strong>系统根据节点位置、设备能力、负载情况智能匹配最优制造节点，自动生成订单合约空间</p>
+        <p style="margin-top:8px"><strong>4. 分布式同步制造：</strong>现场制造节点与岸基备份节点同步接收数据包，同步开展增材制造，实现并行生产</p>
+        <p style="margin-top:8px"><strong>5. 孪生质检与质量验证：</strong>岸基节点完成零件完整性能检测，结合数字孪生模型，通过"一虚两实"三角验证确认质量</p>
+        <p style="margin-top:8px"><strong>6. 现场交付与安装：</strong>现场节点完成零件尺寸验证与功能测试后，直接交付安装，完成应急维修</p>
+        <p style="margin-top:8px"><strong>7. 数据归档与知识复用：</strong>全流程数据上链存证，数字档案归入数据资源库，形成知识沉淀，支撑同类故障快速响应</p>
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [80, 680, 1120, 0]
+    shapeName: straightConnector1
+    border: {style: solid, width: 1, color: "$border"}
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 690, 60, 20]
+    content:
+      style: "$caption"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>09</p>
