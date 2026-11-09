@@ -12,7 +12,12 @@ const DispatchShell: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   // 分组折叠状态；默认全展开，记住上次选择
   const COLLAPSE_KEY = 'dispatch_menu_collapsed';
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>(() => {
-    try { return JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '{}'); } catch { return {}; }
+    // 首次使用默认只展开“订单业务”，其余收起；用户点过之后以用户选择为准
+    const fallback = { 总览: true, 订单业务: false, 数据资源: true, 节点协同: true, 系统: true };
+    try {
+      const raw = localStorage.getItem(COLLAPSE_KEY);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch { return fallback; }
   });
   const toggleGroup = (g: string) => {
     setCollapsed((prev) => {
@@ -109,7 +114,7 @@ const DispatchShell: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <span className="dp-marrow">{collapsed[g.group] ? '▸' : '▾'}</span>
                 {g.group}
               </div>
-              {!collapsed[g.group] && g.items.map((m) => (
+              {(!collapsed[g.group] || g.items.some((m) => m.key && location.pathname === m.key)) && g.items.map((m) => (
                 <div
                   key={m.label}
                   className={`dp-mi${m.key && location.pathname === m.key ? ' on' : ''}`}
