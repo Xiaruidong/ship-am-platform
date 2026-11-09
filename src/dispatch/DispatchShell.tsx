@@ -9,6 +9,18 @@ const DispatchShell: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const navigate = useNavigate();
   const location = useLocation();
   const [demandBadge, setDemandBadge] = useState(0);
+  // 分组折叠状态；默认全展开，记住上次选择
+  const COLLAPSE_KEY = 'dispatch_menu_collapsed';
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>(() => {
+    try { return JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '{}'); } catch { return {}; }
+  });
+  const toggleGroup = (g: string) => {
+    setCollapsed((prev) => {
+      const next = { ...prev, [g]: !prev[g] };
+      try { localStorage.setItem(COLLAPSE_KEY, JSON.stringify(next)); } catch { /* 忽略 */ }
+      return next;
+    });
+  };
 
   // 加载未读需求数
   const loadBadge = async () => {
@@ -89,8 +101,15 @@ const DispatchShell: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         <div className="dp-menu">
           {menu.map((g) => (
             <div key={g.group} className="dp-mgroup">
-              <div className="dp-mgroup-title">{g.group}</div>
-              {g.items.map((m) => (
+              <div
+                className="dp-mgroup-title dp-mgroup-toggle"
+                onClick={() => toggleGroup(g.group)}
+                title={collapsed[g.group] ? '展开' : '收起'}
+              >
+                <span className="dp-marrow">{collapsed[g.group] ? '▸' : '▾'}</span>
+                {g.group}
+              </div>
+              {!collapsed[g.group] && g.items.map((m) => (
                 <div
                   key={m.label}
                   className={`dp-mi${m.key && location.pathname === m.key ? ' on' : ''}`}
