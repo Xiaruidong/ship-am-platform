@@ -431,5 +431,11 @@ boot();
 (function step(){if(!document.hidden&&sg.style.display!=="none"){t+=0.00055;if(t>0.92)t=0.05;var p=rp.getPointAtLength(L*t);var p2=rp.getPointAtLength(Math.min(L*(t+0.01),L));var a=Math.atan2(p2.y-p.y,p2.x-p.x)*180/Math.PI;sg.setAttribute("transform","translate("+(p.x-675).toFixed(1)+","+(p.y-190).toFixed(1)+") rotate("+(a+90).toFixed(1)+" 675 190)")}requestAnimationFrame(step)})()})();
 
 </script>
+<script>
+/* 静态演示环境（GitHub Pages）：隐藏需要后端的管理入口 */
+if(location.hostname.indexOf('github.io')>-1){
+  document.querySelectorAll('a[href^="/dispatch"],a[href^="/workbench"]').forEach(function(a){a.style.display='none'});
+}
+</script>
 </body>
 </html>

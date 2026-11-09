@@ -536,5 +536,11 @@ function fit(){var s=Math.min(innerWidth/1920,innerHeight/1080);var el=$("stage"
 function boot(){buildTL();apply();tick();fit();setInterval(tick,1000);addEventListener("resize",fit)}
 boot();
 </script>
+<script>
+/* 静态演示环境（GitHub Pages）：隐藏需要后端的管理入口 */
+if(location.hostname.indexOf('github.io')>-1){
+  document.querySelectorAll('a[href^="/dispatch"],a[href^="/workbench"]').forEach(function(a){a.style.display='none'});
+}
+</script>
 </body>
 </html>

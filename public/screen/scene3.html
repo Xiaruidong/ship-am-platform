@@ -673,5 +673,11 @@ addEventListener("load",function(){setTimeout(function(){drawRadar(1)},80)});
 boot();
 
 </script>
+<script>
+/* 静态演示环境（GitHub Pages）：隐藏需要后端的管理入口 */
+if(location.hostname.indexOf('github.io')>-1){
+  document.querySelectorAll('a[href^="/dispatch"],a[href^="/workbench"]').forEach(function(a){a.style.display='none'});
+}
+</script>
 </body>
 </html>
