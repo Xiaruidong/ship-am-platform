@@ -95,6 +95,9 @@ header .admin-entry{margin-left:0}
 #mapTitle .b{font-size:13px;color:#5E8DB8;letter-spacing:2.2px;font-family:var(--mono);margin-top:4px}
 #wm{position:absolute;right:18px;bottom:102px;z-index:5;font-size:13px;color:#4E7BA6;letter-spacing:1px;pointer-events:none}
 #mapHud{position:absolute;right:18px;top:16px;z-index:4;display:flex;gap:9px;pointer-events:none}
+.scBar{display:flex;gap:6px;pointer-events:auto}
+.scBar a{font-size:15px;letter-spacing:1px;color:#7FB6DE;text-decoration:none;border:1px solid rgba(0,168,255,.28);background:rgba(3,16,36,.86);padding:6px 13px;transition:.16s}
+.scBar a:hover{color:#031024;background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px rgba(51,214,255,.5)}
 .hud{font-size:16px;color:#7BA4C9;letter-spacing:.5px;border:1px solid rgba(0,168,255,.25);background:rgba(3,16,36,.8);padding:6px 12px}
 .hud b{color:#7FE8FF;font-family:var(--mono);font-size:18px;margin-left:5px}
 
@@ -237,6 +240,8 @@ footer .fr{flex:none;font-family:var(--mono);font-size:15px;color:#5E8DB8}
 .dTphd .t{font-size:20px;color:#DDF1FF;letter-spacing:1.2px;display:flex;align-items:center;gap:8px}
 .dTphd .t i{width:7px;height:7px;background:var(--cyan);border-radius:50%}
 .dTphd .t b{font-family:var(--mono);font-size:16px;color:#4E7BA6;font-weight:400}
+.scLink{margin-left:14px;font-size:15px;color:#8FE7FF;text-decoration:none;border:1px solid rgba(51,214,255,.4);padding:3px 12px;letter-spacing:.6px;transition:.16s}
+.scLink:hover{color:#031024;background:var(--cyan);border-color:var(--cyan)}
 .dSort{margin-left:auto;display:flex;gap:8px}
 .dSort span{font-size:15px;color:#6E97BE;cursor:pointer;padding:3px 12px;border:1px solid rgba(0,168,255,.22);letter-spacing:.6px;transition:.15s}
 .dSort span:hover{color:#BFE6FF;border-color:rgba(0,168,255,.5)}
@@ -257,6 +262,13 @@ footer .fr{flex:none;font-family:var(--mono);font-size:15px;color:#5E8DB8}
 .dTC .pb .pc{font-family:var(--mono);font-size:15px;color:#8FB8DC;width:42px;text-align:right;flex:none}
 .dTC .ft{margin-top:8px;display:flex;align-items:center;font-size:13px;color:#4E7BA6;gap:6px}
 .dTC .ft .pr{margin-left:auto;padding:0 6px;font-size:12px;letter-spacing:.5px}
+/* 阶段大屏入口 */
+.tdSc{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:9px 16px;border:1px solid rgba(51,214,255,.45);background:linear-gradient(90deg,rgba(0,120,220,.22),rgba(0,80,170,.12));color:#8FE7FF;text-decoration:none;font-size:17px;letter-spacing:1px;transition:.18s}
+.tdSc:hover{border-color:var(--cyan);background:linear-gradient(90deg,rgba(0,150,255,.4),rgba(0,90,190,.25));color:#fff;box-shadow:0 0 18px rgba(51,214,255,.35)}
+.tdSc span{color:var(--cyan)}
+.dTC .dSc{position:absolute;right:8px;top:8px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#4E7BA6;border:1px solid rgba(0,168,255,.28);text-decoration:none;z-index:2;opacity:0;transition:.16s}
+.dTC:hover .dSc{opacity:1}
+.dTC .dSc:hover{color:#0A1A2E;background:var(--cyan);border-color:var(--cyan)}
 .dTC.none{cursor:default;border-style:dashed}
 .dTC.none:hover{transform:none}
 
@@ -737,6 +749,13 @@ footer .fr{font-size:13px;color:var(--t4)}
    <div class="hud">在航舰船<b>6</b></div>
    <div class="hud">在线节点<b>18/18</b></div>
    <div class="hud">链路时延<b>120ms</b></div>
+   <div class="scBar">
+    <a href="scene1.html" title="远海护航态势与故障告警">告警</a>
+    <a href="scene2.html" title="远程支援与方案生成">方案</a>
+    <a href="scene3.html" title="智能调度与生产选厂">调度</a>
+    <a href="scene4.html" title="生产过程监控">监控</a>
+    <a href="scene5.html" title="质量评估">质检</a>
+   </div>
   </div>
   <div id="wm">真实海岸线 · Natural Earth 110m · 节点位置为演示数据</div>
   <div id="flowBar">
@@ -1496,6 +1515,16 @@ function taskNode(t){
   }
   return t.base;
 }
+/* ================= 阶段子屏入口 ================= */
+var ST_SCENE={'待派单':'scene2.html','已派单':'scene3.html','生产中':'scene4.html','质检中':'scene5.html','已交付':'scene5.html','已归档':'scene5.html'};
+var SCENE_NAME={'scene1.html':'告警态势','scene2.html':'方案生成','scene3.html':'智能调度','scene4.html':'生产监控','scene5.html':'质量评估'};
+function sceneOf(status,scene){
+  var sc=ST_SCENE[status]||'scene4.html';
+  // 舰场景的待派单任务源于告警上报 → 告警态势屏
+  if(status==='待派单'&&scene==='舰')sc='scene1.html';
+  return sc;
+}
+
 /* ================= 右侧总体任务清单（真实订单 + 演示任务） ================= */
 var TL_TASKS=[],TL_LOADED=false;
 var TL_ST_COL={'待派单':'#8CA8C6','已派单':'#33D6FF','生产中':'#00D68F','质检中':'#F5C542','已交付':'#6E97BE','已归档':'#4E7BA6'};
@@ -1734,7 +1763,8 @@ function loadBaseTasks(nodeId){
   BASE_IS_SHIP=isShip;
   var kw=BASE_KW[nodeId]||[];
   var hdEl=document.querySelector('#dTp .dTphd .t');
-  if(hdEl)hdEl.innerHTML='<i></i>'+(isShip?'下发的打印任务':'在产任务清单')+' <b id="dTcount">—</b>';
+  if(hdEl)hdEl.innerHTML='<i></i>'+(isShip?'下发的打印任务':'在产任务清单')+' <b id="dTcount">—</b>'+
+    (isShip?'<a class="scLink" href="scene1.html" title="查看远海护航态势与故障告警">告警态势大屏 →</a>':'');
   var box=document.getElementById('dTcards');
   box.innerHTML='<div class="lempty">加载中…</div>';
   var demo=(window.TASKS||[]).filter(function(t){
@@ -1798,6 +1828,7 @@ function renderBaseTasks(isShip){
       ?('承制节点 '+(t.node&&t.node!=='—'?t.node:'待派单'))
       :((t.mat&&t.mat!=='—'?'材料 '+t.mat:'演示任务数据')+' · 交付窗口 '+t.time);
     return '<div class="dTC" data-oid="'+t.id+'">'+
+      '<a class="dSc" href="'+sceneOf(t.status,isShip?'舰':'岸')+'" title="进入'+SCENE_NAME[sceneOf(t.status,isShip?'舰':'岸')]+'大屏">⛶</a>'+
       '<div class="hd"><span class="st" style="color:'+c+';border-color:'+c+'">'+t.status+'</span>'+
       '<span class="no">'+t.id+'</span></div>'+
       '<div class="nm" title="'+t.name+'">'+t.name+'</div>'+
@@ -1807,7 +1838,10 @@ function renderBaseTasks(isShip){
     '</div>';
   }).join('');
   box.querySelectorAll('.dTC[data-oid]').forEach(function(el){
-    el.addEventListener('click',function(){openTaskDetail(el.getAttribute('data-oid'))});
+    el.addEventListener('click',function(e){
+      if(e.target.closest&&e.target.closest('.dSc'))return;
+      openTaskDetail(el.getAttribute('data-oid'));
+    });
   });
 }
 function closeDrawer(){
@@ -2204,6 +2238,7 @@ function openTaskDetail(orderId){
        '<span style="margin-left:auto;font-size:16px;color:#4E7BA6">'+STAGE_NAMES[Math.max(0,stage-1)]+'</span>'+
        '</div>'+
        cycHtml+
+       '<a class="tdSc" href="'+sceneOf(o.status,o.scene)+'">进入'+SCENE_NAME[sceneOf(o.status,o.scene)]+'大屏 <span>→</span></a>'+
        (o.process_parameters&&o.process_parameters.laserPower?'<div style="font-size:16px;color:#6E97BE;margin-top:8px">工艺：激光 '+o.process_parameters.laserPower+'W · 扫描 '+o.process_parameters.scanSpeed+'mm/s</div>':'');
 
      // 调用资源
@@ -2277,7 +2312,8 @@ function fillDetailFromDemo(tk,nb,stage){
     '<div class="bigPct">'+tk.pg+'<span style="font-size:20px">%</span></div>'+
     '<div class="bigBar"><i style="width:'+tk.pg+'%;background:'+barCol+'"></i></div>'+
     '<div style="display:flex;gap:14px;align-items:center">'+dots+
-    '<span style="margin-left:auto;font-size:16px;color:#4E7BA6">'+STAGE_NAMES[tk.st]+'</span></div>';
+    '<span style="margin-left:auto;font-size:16px;color:#4E7BA6">'+STAGE_NAMES[tk.st]+'</span></div>'+
+    '<a class="tdSc" href="'+sceneOf(stName[si]||'生产中',nb.t==='ship'?'舰':'岸')+'">进入'+SCENE_NAME[sceneOf(stName[si]||'生产中',nb.t==='ship'?'舰':'岸')]+'大屏 <span>→</span></a>';
 
   document.getElementById('tdRes').innerHTML=
     '<div class="th">调用的数据库资源</div>'+
