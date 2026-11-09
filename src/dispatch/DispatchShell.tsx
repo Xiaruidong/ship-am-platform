@@ -39,19 +39,44 @@ const DispatchShell: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   }, [location.pathname]);
 
   const menu = [
-    { key: '/dispatch', label: '首页 · 协同总览' },
-    { key: '/dispatch/demo', label: '演示剧场' },
-    { key: '/dispatch/library', label: '数据资源库' },
-    { key: '/dispatch/ai', label: 'AI 智能匹配' },
-    { key: '/dispatch/decision', label: '派单决策' },
-    { key: '/dispatch/demands', label: '需求单管理', badge: demandBadge },
-    { key: '/dispatch/orders', label: '订单管理' },
-    { key: '/dispatch/nodes', label: '制造节点' },
-    { key: '/dispatch/node-admin', label: '节点运维后台' },
-    { key: '/dispatch/node-client', label: '节点端' },
-    { key: '', label: '合约空间' },
-    { key: '/dispatch/settings', label: '系统设置' },
-    { key: '/', label: '指挥大屏（展示）' },
+    {
+      group: '总览',
+      items: [
+        { key: '/dispatch', label: '首页 · 协同总览' },
+        { key: '/dispatch/demo', label: '演示剧场' },
+      ],
+    },
+    {
+      group: '订单业务',
+      items: [
+        { key: '/dispatch/demands', label: '需求单管理', badge: demandBadge },
+        { key: '/dispatch/decision', label: '派单决策' },
+        { key: '/dispatch/ai', label: 'AI 智能匹配' },
+        { key: '/dispatch/orders', label: '订单管理' },
+      ],
+    },
+    {
+      group: '数据资源',
+      items: [
+        { key: '/dispatch/library', label: '数据资源库' },
+        { key: '', label: '合约空间' },
+      ],
+    },
+    {
+      group: '节点协同',
+      items: [
+        { key: '/dispatch/nodes', label: '制造节点' },
+        { key: '/dispatch/node-admin', label: '节点运维后台' },
+        { key: '/dispatch/node-client', label: '节点端' },
+      ],
+    },
+    {
+      group: '系统',
+      items: [
+        { key: '/dispatch/settings', label: '系统设置' },
+        { key: '/', label: '指挥大屏（展示）' },
+      ],
+    },
   ];
 
   return (
@@ -62,20 +87,25 @@ const DispatchShell: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           <div style={{ fontSize: 14, fontWeight: 600 }}>订单派发应用</div>
         </div>
         <div className="dp-menu">
-          {menu.map((m) => (
-            <div
-              key={m.label}
-              className={`dp-mi${m.key && location.pathname === m.key ? ' on' : ''}`}
-              onClick={() => {
-                if (!m.key && m.key !== '/') return;
-                if (m.key === '/dispatch/demands') markSeen();
-                navigate(m.key);
-              }}
-              style={{ opacity: m.key ? 1 : 0.55 }}
-            >
-              <span style={{ width: 15, height: 15, borderRadius: 4, border: '1.5px solid currentColor', opacity: 0.5 }} />
-              {m.label}
-              {!!m.badge && <Badge count={m.badge} size="small" style={{ marginLeft: 'auto' }} />}
+          {menu.map((g) => (
+            <div key={g.group} className="dp-mgroup">
+              <div className="dp-mgroup-title">{g.group}</div>
+              {g.items.map((m) => (
+                <div
+                  key={m.label}
+                  className={`dp-mi${m.key && location.pathname === m.key ? ' on' : ''}`}
+                  onClick={() => {
+                    if (!m.key && m.key !== '/') return;
+                    if (m.key === '/dispatch/demands') markSeen();
+                    navigate(m.key);
+                  }}
+                  style={{ opacity: m.key ? 1 : 0.55 }}
+                >
+                  <span style={{ width: 15, height: 15, borderRadius: 4, border: '1.5px solid currentColor', opacity: 0.5 }} />
+                  {m.label}
+                  {!!m.badge && <Badge count={m.badge} size="small" style={{ marginLeft: 'auto' }} />}
+                </div>
+              ))}
             </div>
           ))}
         </div>
